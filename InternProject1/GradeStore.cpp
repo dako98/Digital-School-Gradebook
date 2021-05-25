@@ -1,6 +1,11 @@
 #include "pch.h"
 #include "GradeStore.h"
 
+GradeStore::GradeStore()
+	:subjectStore(nullptr)
+{
+}
+
 void GradeStore::AddGrade(int studentNum, int subjectNum, const tm& date, int grade)
 {
 	Grade newGrade(studentNum, subjectNum, date, grade);

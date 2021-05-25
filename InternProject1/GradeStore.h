@@ -10,7 +10,7 @@
 class GradeStore
 {
 public:
-	GradeStore() = default;
+	GradeStore();
 
 	void AddGrade(int studentNum, int subjectNum, const tm& date, int grade);
 	void RemoveGrade(int studentNum, int subjectID, const tm& date);
@@ -26,6 +26,5 @@ private:
 	std::unordered_map<int, std::unordered_map<int, std::vector<Grade>>> grades;
 	
 	SubjectStore* subjectStore;
-	GradeStore* gradeStore;
 };
 

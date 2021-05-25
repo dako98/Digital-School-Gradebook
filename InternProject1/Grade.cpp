@@ -23,6 +23,21 @@ Grade::Grade(int studentNum, int subjectID, const tm& date, int grade)
 	}
 }
 
+int Grade::GetValue() const
+{
+	return grade;
+}
+
+int Grade::GetStudentNumber() const
+{
+	return studentNumber;
+}
+
+int Grade::GetSubjectID() const
+{
+	return subjectID;
+}
+
 tm Grade::GetDate() const
 {
 	return date;

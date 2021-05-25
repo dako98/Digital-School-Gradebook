@@ -1,6 +1,13 @@
 #include "pch.h"
 #include "Gradebook.h"
 
+Gradebook::Gradebook()
+    :studentStore()
+    ,gradeStore()
+    ,subjectStore()
+{
+}
+
 bool Gradebook::addStudent(const std::string& name, const tm& birthday)
 {
     studentStore.AddStudent(name, birthday);
@@ -9,7 +16,13 @@ bool Gradebook::addStudent(const std::string& name, const tm& birthday)
 
 bool Gradebook::addSubject(const std::string& name, int teacherID, const std::string& room)
 {
-	subjectStore.AddSubject({ name,teacherID, room });
+	subjectStore.AddSubject( Subject{ name,teacherID, room });
+    return false;
+}
+
+bool Gradebook::addTeacher(const std::string& name)
+{
+    // TODO
     return false;
 }
 
