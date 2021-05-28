@@ -66,6 +66,9 @@
     <ClInclude Include="AddStudentDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="EditStudentDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="InternProject1.cpp">
@@ -108,6 +111,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="AddStudentDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EditStudentDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

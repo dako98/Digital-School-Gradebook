@@ -7,6 +7,7 @@
 #include "afxdialogex.h"
 
 #include "AddStudentDlg.h"
+#include "EditStudentDlg.h"
 
 
 // ManageStudentsDlg dialog
@@ -31,6 +32,7 @@ void ManageStudentsDlg::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(ManageStudentsDlg, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON2, &ManageStudentsDlg::OnBnClickedButton2)
+	ON_BN_CLICKED(IDC_BUTTON3, &ManageStudentsDlg::OnBnClickedButton3)
 END_MESSAGE_MAP()
 
 
@@ -41,5 +43,13 @@ void ManageStudentsDlg::OnBnClickedButton2()
 {
 	// TODO: Add your control notification handler code here
 	AddStudentDlg dlg;
+	dlg.DoModal();
+}
+
+
+void ManageStudentsDlg::OnBnClickedButton3()
+{
+	// TODO: Add your control notification handler code here
+	EditStudentDlg dlg;
 	dlg.DoModal();
 }
