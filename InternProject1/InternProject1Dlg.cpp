@@ -8,6 +8,9 @@
 #include "InternProject1Dlg.h"
 #include "afxdialogex.h"
 
+#include "ManageStudentsDlg.h"
+
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -31,6 +34,7 @@ void CInternProject1Dlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CInternProject1Dlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
+	ON_BN_CLICKED(IDC_MANAGESTUDENTS, &CInternProject1Dlg::OnBnClickedManagestudents)
 END_MESSAGE_MAP()
 
 
@@ -86,3 +90,11 @@ HCURSOR CInternProject1Dlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+
+
+void CInternProject1Dlg::OnBnClickedManagestudents()
+{
+	// TODO: Add your control notification handler code here
+	ManageStudentsDlg dlg;
+	dlg.DoModal();
+}

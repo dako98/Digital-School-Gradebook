@@ -183,12 +183,14 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AddStudentDlg.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Grade.h" />
     <ClInclude Include="Gradebook.h" />
     <ClInclude Include="GradeStore.h" />
     <ClInclude Include="InternProject1.h" />
     <ClInclude Include="InternProject1Dlg.h" />
+    <ClInclude Include="ManageStudentsDlg.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Person.h" />
     <ClInclude Include="Resource.h" />
@@ -200,11 +202,13 @@
     <ClInclude Include="Teacher.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AddStudentDlg.cpp" />
     <ClCompile Include="Grade.cpp" />
     <ClCompile Include="Gradebook.cpp" />
     <ClCompile Include="GradeStore.cpp" />
     <ClCompile Include="InternProject1.cpp" />
     <ClCompile Include="InternProject1Dlg.cpp" />
+    <ClCompile Include="ManageStudentsDlg.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

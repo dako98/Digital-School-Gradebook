@@ -60,6 +60,12 @@
     <ClInclude Include="SubjectStore.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ManageStudentsDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AddStudentDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="InternProject1.cpp">
@@ -96,6 +102,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SubjectStore.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ManageStudentsDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AddStudentDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
