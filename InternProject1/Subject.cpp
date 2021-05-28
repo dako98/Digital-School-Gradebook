@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Subject.h"
 
-Subject::Subject(const CString name, int teacherID, const CString& room)
+Subject::Subject(const CString& name, int teacherID, const CString& room)
 {
 	if (name != "" && room != "" /*TODO: verify TeacherID*/)
 	{
@@ -13,6 +13,26 @@ Subject::Subject(const CString name, int teacherID, const CString& room)
 	{
 		throw std::invalid_argument("Invalid arguments.");
 	}
+}
+
+bool Subject::operator==(const Subject& other) const
+{
+	return this->teacherID == other.teacherID
+		&& this->name == other.name
+		&& this->room == other.room;
+}
+
+bool Subject::InitialiseID(int ID)
+{
+	bool changed = false;
+
+	if (!valid)
+	{
+		subjectID = ID;
+		valid = true;
+		changed = true;
+	}
+	return changed;
 }
 
 int Subject::GetID() const
