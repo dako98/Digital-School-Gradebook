@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Subject.h"
 
-Subject::Subject(const std::string name, int teacherID, const std::string& room)
+Subject::Subject(const CString name, int teacherID, const CString& room)
 {
 	if (name != "" && room != "" /*TODO: verify TeacherID*/)
 	{
@@ -25,12 +25,12 @@ int Subject::GetTeacher() const
 	return teacherID;
 }
 
-std::string Subject::GetName() const
+CString Subject::GetName() const
 {
 	return name;
 }
 
-std::string Subject::GetRoom() const
+CString Subject::GetRoom() const
 {
 	return room;
 }

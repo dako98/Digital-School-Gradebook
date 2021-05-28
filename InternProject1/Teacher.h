@@ -6,7 +6,7 @@
 class Teacher : public Person
 {
 public:
-	Teacher(const std::string& name, int teacherID);
+	Teacher(const CString& name, int teacherID);
 
 private:
 	int teacherID;

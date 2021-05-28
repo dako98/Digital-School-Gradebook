@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Person.h"
 
-Person::Person(const std::string& name)
+Person::Person(const CString& name)
 {
 	if (name!="")
 	{
@@ -13,7 +13,7 @@ Person::Person(const std::string& name)
 	}
 }
 
-std::string Person::getName() const
+CString Person::getName() const
 {
 	return name;
 }

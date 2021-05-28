@@ -7,7 +7,7 @@ StudentStore::StudentStore()
 {
 }
 
-void StudentStore::AddStudent(const std::string& name, const tm& birthday)
+void StudentStore::AddStudent(const CString& name, const tm& birthday)
 {
 	Student newStudent(name, birthday, students.size());
 	students.insert( { lastID, newStudent } );
@@ -19,7 +19,7 @@ void StudentStore::RemoveStudent(int number)
 	students.erase(number);
 }
 
-void StudentStore::EditStudent(int number, const std::string& name, const tm& birthday)
+void StudentStore::EditStudent(int number, const CString& name, const tm& birthday)
 {
 	auto found = students.find(number);
 

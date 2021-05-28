@@ -7,7 +7,7 @@ class Student :
 {
 public:
     Student() = default;
-    Student(const std::string& name, const tm &birthdate, int numberInClass);
+    Student(const CString& name, const tm &birthdate, int numberInClass);
 
 private:
     tm birthday;

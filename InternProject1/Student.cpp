@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Student.h"
 
-Student::Student(const std::string& name, const tm& birthdate, int numberInClass)
+Student::Student(const CString& name, const tm& birthdate, int numberInClass)
 	:Person(name)
 {
 	if (birthdate.tm_year < 0 || birthdate.tm_mon < 0 || birthdate.tm_mday <= 0)

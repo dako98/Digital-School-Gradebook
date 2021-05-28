@@ -7,11 +7,11 @@
 class Person
 {
 public:
-	Person(const std::string& name);
+	Person(const CString& name);
 
-	std::string getName() const;
+	CString getName() const;
 
 private:
-	std::string name;
+	CString name;
 };
 

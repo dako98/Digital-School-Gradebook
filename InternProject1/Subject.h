@@ -7,17 +7,17 @@ class Subject
 {
 public:
 	Subject() = default;
-	Subject(const std::string name, int teacherID, const std::string& room);
+	Subject(const CString name, int teacherID, const CString& room);
 
 	int GetID() const;
 	int GetTeacher() const;
-	std::string GetName() const;
-	std::string GetRoom() const;
+	CString GetName() const;
+	CString GetRoom() const;
 
 private:
 	int subjectID;
 	int teacherID;
-	std::string name;
-	std::string room;
+	CString name;
+	CString room;
 };
 

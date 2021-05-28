@@ -8,19 +8,19 @@ Gradebook::Gradebook()
 {
 }
 
-bool Gradebook::addStudent(const std::string& name, const tm& birthday)
+bool Gradebook::addStudent(const CString& name, const tm& birthday)
 {
     studentStore.AddStudent(name, birthday);
     return false;
 }
 
-bool Gradebook::addSubject(const std::string& name, int teacherID, const std::string& room)
+bool Gradebook::addSubject(const CString& name, int teacherID, const CString& room)
 {
 	subjectStore.AddSubject( Subject{ name,teacherID, room });
     return false;
 }
 
-bool Gradebook::addTeacher(const std::string& name)
+bool Gradebook::addTeacher(const CString& name)
 {
     // TODO
     return false;

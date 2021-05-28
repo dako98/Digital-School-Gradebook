@@ -12,9 +12,9 @@ class StudentStore
 public:
 	StudentStore();
 
-	void AddStudent(const std::string& name, const tm& birthday);
+	void AddStudent(const CString& name, const tm& birthday);
 	void RemoveStudent(int number);
-	void EditStudent(int number, const std::string& name, const tm& birthday);
+	void EditStudent(int number, const CString& name, const tm& birthday);
 	Student GetStudent(int number) const;
 	std::vector<Student> GetAllStudents() const;
 

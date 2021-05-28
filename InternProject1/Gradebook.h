@@ -19,9 +19,9 @@ public:
 
 	Gradebook();
 
-	bool addStudent(const std::string& name, const tm& birthday);
-	bool addSubject(const std::string& name, int teacherID, const std::string& room);
-	bool addTeacher(const std::string& name);
+	bool addStudent(const CString& name, const tm& birthday);
+	bool addSubject(const CString& name, int teacherID, const CString& room);
+	bool addTeacher(const CString& name);
 	bool addGrade(int studentNumber, int subjectID, const tm& date, int grade);
 
 private:
