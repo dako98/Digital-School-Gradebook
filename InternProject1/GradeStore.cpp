@@ -1,9 +1,19 @@
 #include "pch.h"
 #include "GradeStore.h"
 
+GradeStore* GradeStore::instance = nullptr;
+
 GradeStore::GradeStore()
-	:subjectStore(nullptr)
 {
+}
+
+GradeStore* GradeStore::GetInstance()
+{
+	if (!instance)
+	{
+		instance = new GradeStore;
+	}
+	return instance;
 }
 
 void GradeStore::AddGrade(int studentNum, int subjectNum, const COleDateTime& date, int grade)
@@ -56,7 +66,7 @@ float GradeStore::GetAverage(int studentNum, int subjectID) const
 
 void GradeStore::ClearStudent(int studentNum)
 {
-	std::vector<Subject> subjects = subjectStore->GetAllSubjects();
+	std::vector<Subject> subjects = SubjectStore::GetInstance()->GetAllSubjects();
 
 	for each (Subject subject in subjects)
 	{
@@ -90,4 +100,9 @@ std::vector<Grade> GradeStore::GetGrades(int studentNum, int subjectID) const
 
 	return result;
 //	return grades.find(subjectID).operator*().second.find(studentNum).operator*().second;
+}
+
+GradeStore::~GradeStore()
+{
+	delete instance;
 }

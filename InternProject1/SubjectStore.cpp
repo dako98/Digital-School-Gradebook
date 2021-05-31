@@ -1,9 +1,20 @@
 #include "pch.h"
 #include "SubjectStore.h"
 
+SubjectStore* SubjectStore::instance = nullptr;
+
 SubjectStore::SubjectStore()
 	:lastID(0)
 {
+}
+
+SubjectStore* SubjectStore::GetInstance()
+{
+	if (!instance)
+	{
+		instance = new SubjectStore;
+	}
+	return instance;
 }
 
 int SubjectStore::AddSubject(Subject subject)
@@ -58,4 +69,9 @@ std::vector<Subject> SubjectStore::GetAllSubjects() const
 		result.push_back(subject.second);
 	}
 	return result;
+}
+
+SubjectStore::~SubjectStore()
+{
+	delete instance;
 }
