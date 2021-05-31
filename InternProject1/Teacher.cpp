@@ -6,3 +6,8 @@ Teacher::Teacher(const CString& name, int teacherID)
 	,teacherID(teacherID)
 {
 }
+
+int Teacher::GetID() const
+{
+	return teacherID;
+}
