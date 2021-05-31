@@ -53,7 +53,7 @@ void AddStudentDlg::OnBnClickedOk()
 	{
 		StudentStore::GetInstance()->AddStudent(name, birthday);
 	}
-	catch (std::invalid_argument e)
+	catch (std::invalid_argument& e)
 	{
 		// TODO: Error message
 		return;
