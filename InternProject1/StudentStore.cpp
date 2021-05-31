@@ -37,7 +37,7 @@ void StudentStore::EditStudent(int number, const CString& name, const COleDateTi
 
 	if (found != students.end())
 	{
-		(*found).second = Student(name, birthday, number);
+		found->second = Student(name, birthday, number);
 	}
 	else
 	{

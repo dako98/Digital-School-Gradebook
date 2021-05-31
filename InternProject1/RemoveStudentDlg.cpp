@@ -7,10 +7,31 @@
 #include "afxdialogex.h"
 
 #include <vector>
+
 #include "StudentStore.h"
+#include "GradeStore.h"
 
 
 // RemoveStudentDlg dialog
+
+
+void populateList(CComboBox& list, const std::vector<Student>& src)
+{
+	list.ResetContent();
+	CString currentRow;
+
+	for (const Student& student : src)
+	{
+		currentRow.Format(_T("%d %s"), student.GetNumber(), student.getName());
+
+		list.AddString(currentRow);
+	}
+	if (src.size() > 0)
+	{
+		list.SetCurSel(0);
+	}
+}
+
 
 IMPLEMENT_DYNAMIC(RemoveStudentDlg, CDialog)
 
@@ -30,20 +51,11 @@ BOOL RemoveStudentDlg::OnInitDialog()
 
 	allStudents = StudentStore::GetInstance()->GetAllStudents();
 
-	CString currentRow;
+
+	studentList.ResetContent();
 
 	// Print all the students
-	for (const Student& student : allStudents)
-	{
-		currentRow.Format(_T("%d %s"), student.GetNumber(), student.getName());
-
-		studentList.AddString(currentRow);
-	}
-	if (allStudents.size() > 0)
-	{
-		studentList.SetCurSel(0);
-	}
-
+	populateList(studentList, allStudents);
 	UpdateData();
 
 
@@ -102,6 +114,9 @@ void RemoveStudentDlg::OnBnClickedButton1()
 		{
 			// TODO: Handle
 		}
+		// FIXME: Clearing list does not work.
+//		studentList.DeleteString(studentList.GetCurSel());
 	}
+	populateList(studentList, allStudents);
 	UpdateData();
 }
