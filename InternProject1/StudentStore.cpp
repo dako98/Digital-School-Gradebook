@@ -1,15 +1,27 @@
 #include "pch.h"
 #include "StudentStore.h"
 
+int StudentStore::instances = 0;
+StudentStore* StudentStore::instance = nullptr;
 
 StudentStore::StudentStore()
-	:lastID(0)
+	:lastID(1)
 {
+	instances++;
 }
 
-void StudentStore::AddStudent(const CString& name, const tm& birthday)
+StudentStore* StudentStore::GetInstance()
 {
-	Student newStudent(name, birthday, students.size());
+	if (!instance)
+	{
+		instance = new StudentStore;
+	}
+	return instance;
+}
+
+void StudentStore::AddStudent(const CString& name, const COleDateTime& birthday)
+{
+	Student newStudent(name, birthday, lastID);
 	students.insert( { lastID, newStudent } );
 	lastID++;
 }
@@ -19,7 +31,7 @@ void StudentStore::RemoveStudent(int number)
 	students.erase(number);
 }
 
-void StudentStore::EditStudent(int number, const CString& name, const tm& birthday)
+void StudentStore::EditStudent(int number, const CString& name, const COleDateTime& birthday)
 {
 	auto found = students.find(number);
 
@@ -55,4 +67,9 @@ std::vector<Student> StudentStore::GetAllStudents() const
 		allStudents.push_back(student.second);
 	}
 	return allStudents;
+}
+
+StudentStore::~StudentStore()
+{
+	instances--;
 }

@@ -10,18 +10,28 @@
 class StudentStore
 {
 public:
-	StudentStore();
+	static StudentStore *GetInstance();
 
-	void AddStudent(const CString& name, const tm& birthday);
+	StudentStore(const StudentStore& other) = delete;
+	StudentStore(StudentStore&& other) = default;
+	StudentStore& operator=(const StudentStore& other) = delete;
+	StudentStore& operator=(StudentStore&& other) = default;
+
+	void AddStudent(const CString& name, const COleDateTime& birthday);
 	void RemoveStudent(int number);
-	void EditStudent(int number, const CString& name, const tm& birthday);
+	void EditStudent(int number, const CString& name, const COleDateTime& birthday);
 	Student GetStudent(int number) const;
 	std::vector<Student> GetAllStudents() const;
 
+	~StudentStore();
 private:
+
+	StudentStore();
+	static StudentStore* instance;
+
 	std::unordered_map<int,Student> students;
 	int lastID;
+	static int instances;
 
-//	GradeStore* gradeStore;
 };
 
