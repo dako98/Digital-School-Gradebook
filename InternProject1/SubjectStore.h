@@ -8,9 +8,14 @@ class SubjectStore
 public:
 	static SubjectStore* GetInstance();
 
-	int		AddSubject(Subject subject);
+	SubjectStore(const SubjectStore& other) = delete;
+	SubjectStore(SubjectStore&& other) = default;
+	SubjectStore& operator=(const SubjectStore& other) = delete;
+	SubjectStore& operator=(SubjectStore&& other) = default;
+
+	void	AddSubject(const CString& name, int teacherID, const CString& room);
 	void	RemoveSubject(int subjectID);
-	void	EditSubject(int subjectID, const Subject& updatedSubject);
+	void	EditSubject(int subjectID, const CString& name, int teacherID, const CString& room);
 	Subject	GetSubject(int subjectID) const;
 	std::vector<Subject> GetAllSubjects() const;
 
