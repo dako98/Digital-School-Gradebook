@@ -78,21 +78,25 @@ END_MESSAGE_MAP()
 void EditStudentDlg::OnBnClickedOk()
 {
 	UpdateData();
+	allStudents = StudentStore::GetInstance()->GetAllStudents();
+
 	// TODO: Add your control notification handler code here
-	int studentID = allStudents[studentsComboBox.GetCurSel()].GetNumber();
+	if (allStudents.size() > 0)
+	{
+		int studentID = allStudents[studentsComboBox.GetCurSel()].GetNumber();
 
-	try
-	{
-		StudentStore::GetInstance()->EditStudent(studentID, studentNameVal, studentBirthdayVal);
+		try
+		{
+			StudentStore::GetInstance()->EditStudent(studentID, studentNameVal, studentBirthdayVal);
+		}
+		catch (const std::out_of_range& e)
+		{
+			// TODO: Handle
+		}
+		catch (const std::invalid_argument& e)
+		{
+			// TODO: Handle
+		}
 	}
-	catch (const std::out_of_range& e)
-	{
-		// TODO: Handle
-	}
-	catch (const std::invalid_argument& e)
-	{
-		// TODO: Handle
-	}
-
 	CDialog::OnOK();
 }
