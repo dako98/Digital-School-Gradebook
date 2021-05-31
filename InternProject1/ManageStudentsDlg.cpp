@@ -9,6 +9,7 @@
 #include "AddStudentDlg.h"
 #include "EditStudentDlg.h"
 #include "AllStudentsDlg.h"
+#include "RemoveStudentDlg.h"
 
 
 // ManageStudentsDlg dialog
@@ -36,6 +37,7 @@ BEGIN_MESSAGE_MAP(ManageStudentsDlg, CDialog)
 //	ON_BN_CLICKED(IDC_BUTTON3, &ManageStudentsDlg::OnBnClickedButton3)
 	ON_BN_CLICKED(IDC_ALL_STUDENTS, &ManageStudentsDlg::OnBnClickedAllStudents)
 	ON_BN_CLICKED(IDC_BUTTON3, &ManageStudentsDlg::OnBnClickedButton3)
+	ON_BN_CLICKED(IDC_BUTTON4, &ManageStudentsDlg::OnBnClickedButton4)
 END_MESSAGE_MAP()
 
 
@@ -63,5 +65,13 @@ void ManageStudentsDlg::OnBnClickedAllStudents()
 
 	// TODO: Add your control notification handler code here
 	AllStudentsDlg dlg;
+	dlg.DoModal();
+}
+
+
+void ManageStudentsDlg::OnBnClickedButton4()
+{
+	// TODO: Add your control notification handler code here
+	RemoveStudentDlg dlg;
 	dlg.DoModal();
 }
