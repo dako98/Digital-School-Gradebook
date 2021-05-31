@@ -184,6 +184,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AddStudentDlg.h" />
+    <ClInclude Include="AllStudentsDlg.h" />
     <ClInclude Include="EditStudentDlg.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Grade.h" />
@@ -204,6 +205,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AddStudentDlg.cpp" />
+    <ClCompile Include="AllStudentsDlg.cpp" />
     <ClCompile Include="EditStudentDlg.cpp" />
     <ClCompile Include="Grade.cpp" />
     <ClCompile Include="Gradebook.cpp" />
