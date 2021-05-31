@@ -4,19 +4,19 @@
 Gradebook::Gradebook()
     :studentStore(nullptr)
     ,gradeStore(nullptr)
-    ,subjectStore()
+    ,subjectStore(nullptr)
 {
 }
 
 bool Gradebook::addStudent(const CString& name, const COleDateTime& birthday)
 {
-    studentStore->AddStudent(name, birthday);
+//    studentStore->AddStudent(name, birthday);
     return false;
 }
 
 bool Gradebook::addSubject(const CString& name, int teacherID, const CString& room)
 {
-	subjectStore->AddSubject( Subject{ name,teacherID, room });
+//	subjectStore->AddSubject( Subject{ name,teacherID, room });
     return false;
 }
 
@@ -28,6 +28,6 @@ bool Gradebook::addTeacher(const CString& name)
 
 bool Gradebook::addGrade(int studentNumber, int subjectID, const COleDateTime& date, int grade)
 {
-    gradeStore->AddGrade(studentNumber, subjectID, date, grade);
+//    gradeStore->AddGrade(studentNumber, subjectID, date, grade);
     return false;
 }
