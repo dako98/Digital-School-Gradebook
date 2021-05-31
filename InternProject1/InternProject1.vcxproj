@@ -184,7 +184,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AddStudentDlg.h" />
+    <ClInclude Include="AddSubjectDlg.h" />
     <ClInclude Include="AllStudentsDlg.h" />
+    <ClInclude Include="AllSubjectsDlg.h" />
     <ClInclude Include="EditStudentDlg.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Grade.h" />
@@ -193,6 +195,7 @@
     <ClInclude Include="InternProject1.h" />
     <ClInclude Include="InternProject1Dlg.h" />
     <ClInclude Include="ManageStudentsDlg.h" />
+    <ClInclude Include="ManageSubjectsDlg.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Person.h" />
     <ClInclude Include="RemoveStudentDlg.h" />
@@ -203,10 +206,13 @@
     <ClInclude Include="SubjectStore.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Teacher.h" />
+    <ClInclude Include="TeacherStore.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AddStudentDlg.cpp" />
+    <ClCompile Include="AddSubjectDlg.cpp" />
     <ClCompile Include="AllStudentsDlg.cpp" />
+    <ClCompile Include="AllSubjectsDlg.cpp" />
     <ClCompile Include="EditStudentDlg.cpp" />
     <ClCompile Include="Grade.cpp" />
     <ClCompile Include="Gradebook.cpp" />
@@ -214,6 +220,7 @@
     <ClCompile Include="InternProject1.cpp" />
     <ClCompile Include="InternProject1Dlg.cpp" />
     <ClCompile Include="ManageStudentsDlg.cpp" />
+    <ClCompile Include="ManageSubjectsDlg.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -227,6 +234,7 @@
     <ClCompile Include="Subject.cpp" />
     <ClCompile Include="SubjectStore.cpp" />
     <ClCompile Include="Teacher.cpp" />
+    <ClCompile Include="TeacherStore.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="InternProject1.rc" />

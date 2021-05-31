@@ -9,6 +9,7 @@
 #include "afxdialogex.h"
 
 #include "ManageStudentsDlg.h"
+#include "ManageSubjectsDlg.h"
 
 
 #ifdef _DEBUG
@@ -35,6 +36,7 @@ BEGIN_MESSAGE_MAP(CInternProject1Dlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_MANAGESTUDENTS, &CInternProject1Dlg::OnBnClickedManagestudents)
+	ON_BN_CLICKED(IDC_BUTTON6, &CInternProject1Dlg::OnBnClickedButton6)
 END_MESSAGE_MAP()
 
 
@@ -96,5 +98,13 @@ void CInternProject1Dlg::OnBnClickedManagestudents()
 {
 	// TODO: Add your control notification handler code here
 	ManageStudentsDlg dlg;
+	dlg.DoModal();
+}
+
+
+void CInternProject1Dlg::OnBnClickedButton6()
+{
+	// TODO: Add your control notification handler code here
+	ManageSubjectsDlg dlg;
 	dlg.DoModal();
 }
