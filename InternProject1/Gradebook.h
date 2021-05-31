@@ -19,15 +19,15 @@ public:
 
 	Gradebook();
 
-	bool addStudent(const CString& name, const tm& birthday);
+	bool addStudent(const CString& name, const COleDateTime& birthday);
 	bool addSubject(const CString& name, int teacherID, const CString& room);
 	bool addTeacher(const CString& name);
-	bool addGrade(int studentNumber, int subjectID, const tm& date, int grade);
+	bool addGrade(int studentNumber, int subjectID, const COleDateTime& date, int grade);
 
 private:
 
 	// StudentNumber -> grades
-	StudentStore	studentStore;
+	StudentStore*	studentStore;
 	GradeStore		gradeStore;
 	SubjectStore	subjectStore;
 

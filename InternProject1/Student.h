@@ -7,10 +7,13 @@ class Student :
 {
 public:
     Student() = default;
-    Student(const CString& name, const tm &birthdate, int numberInClass);
+    Student(const CString& name, const COleDateTime&birthdate, int numberInClass);
+
+    COleDateTime GetBirthday() const;
+    int GetNumber() const;
 
 private:
-    tm birthday;
+    COleDateTime birthday;
     int number;
 };
 

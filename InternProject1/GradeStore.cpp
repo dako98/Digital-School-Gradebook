@@ -6,14 +6,14 @@ GradeStore::GradeStore()
 {
 }
 
-void GradeStore::AddGrade(int studentNum, int subjectNum, const tm& date, int grade)
+void GradeStore::AddGrade(int studentNum, int subjectNum, const COleDateTime& date, int grade)
 {
 	Grade newGrade(studentNum, subjectNum, date, grade);
 
 	grades[subjectNum][studentNum].push_back(newGrade);
 }
 
-void GradeStore::RemoveGrade(int studentNum, int subjectID, const tm& date)
+void GradeStore::RemoveGrade(int studentNum, int subjectID, const COleDateTime& date)
 {
 	// TODO: validate studentNum and subjectID
 	// TODO: Get array in a better way.
@@ -22,21 +22,15 @@ void GradeStore::RemoveGrade(int studentNum, int subjectID, const tm& date)
 	std::vector<Grade>::iterator toDelete = studentGrades->begin();
 	while (toDelete != studentGrades->end())
 	{
-		if (
-				(*toDelete).GetDate().tm_year	== date.tm_year
-			&&	(*toDelete).GetDate().tm_mon	== date.tm_mon
-			&&	(*toDelete).GetDate().tm_mday	== date.tm_mday
-			)
+		if (toDelete->GetDate() == date)
 			break;
 		else
-			continue;
-
-		toDelete++;
+			toDelete++;
 	}
 	studentGrades->erase(toDelete);
 }
 
-void GradeStore::EditGrade(int studentNum, int subjectNum, const tm& date, int grade)
+void GradeStore::EditGrade(int studentNum, int subjectNum, const COleDateTime& date, int grade)
 {
 	RemoveGrade(studentNum, subjectNum, date);
 	AddGrade(studentNum, subjectNum, date, grade);

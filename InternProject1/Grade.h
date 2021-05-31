@@ -20,18 +20,18 @@ class Grade
 {
 public:
 
-	Grade(int studentNum, int subjectID, const tm& date, int grade);
+	Grade(int studentNum, int subjectID, const COleDateTime& date, int grade);
 	
 	int GetValue() const;
 	int GetStudentNumber() const;
 	int GetSubjectID() const;
-	tm GetDate() const;
+	COleDateTime GetDate() const;
 
 private:
 
 	int studentNumber;
 	int subjectID;
-	tm date;
+	COleDateTime date;
 	int grade;
 };
 

@@ -12,9 +12,9 @@ class GradeStore
 public:
 	GradeStore();
 
-	void AddGrade(int studentNum, int subjectNum, const tm& date, int grade);
-	void RemoveGrade(int studentNum, int subjectID, const tm& date);
-	void EditGrade(int studentNum, int subjectNum, const tm& date, int grade);
+	void AddGrade(int studentNum, int subjectNum, const COleDateTime& date, int grade);
+	void RemoveGrade(int studentNum, int subjectID, const COleDateTime& date);
+	void EditGrade(int studentNum, int subjectNum, const COleDateTime& date, int grade);
 	float GetAverage(int studentNum, int subjectID) const;
 	void ClearStudent(int studentNum);
 

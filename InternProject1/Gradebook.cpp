@@ -2,15 +2,15 @@
 #include "Gradebook.h"
 
 Gradebook::Gradebook()
-    :studentStore()
+    :studentStore(nullptr)
     ,gradeStore()
     ,subjectStore()
 {
 }
 
-bool Gradebook::addStudent(const CString& name, const tm& birthday)
+bool Gradebook::addStudent(const CString& name, const COleDateTime& birthday)
 {
-    studentStore.AddStudent(name, birthday);
+    studentStore->AddStudent(name, birthday);
     return false;
 }
 
@@ -26,7 +26,7 @@ bool Gradebook::addTeacher(const CString& name)
     return false;
 }
 
-bool Gradebook::addGrade(int studentNumber, int subjectID, const tm& date, int grade)
+bool Gradebook::addGrade(int studentNumber, int subjectID, const COleDateTime& date, int grade)
 {
     gradeStore.AddGrade(studentNumber, subjectID, date, grade);
     return false;
