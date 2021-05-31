@@ -28,8 +28,8 @@ private:
 
 	// StudentNumber -> grades
 	StudentStore*	studentStore;
-	GradeStore		gradeStore;
-	SubjectStore	subjectStore;
+	GradeStore*		gradeStore;
+	SubjectStore*	subjectStore;
 
 };
 
