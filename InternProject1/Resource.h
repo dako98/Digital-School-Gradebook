@@ -10,7 +10,6 @@
 #define IDD_ALL_STUDENTS                136
 #define IDC_EDIT1                       1000
 #define IDC_DATETIMEPICKER1             1001
-#define IDC_BUTTON1                     1002
 #define IDC_ALL_STUDENTS                1002
 #define IDC_BUTTON5                     1006
 #define IDC_BUTTON6                     1007
@@ -20,7 +19,6 @@
 #define IDC_BUTTON4                     1011
 #define IDC_MANAGESTUDENTS              1012
 #define IDC_COMBO1                      1013
-#define IDC_EDIT2                       1014
 #define IDC_LIST2                       1016
 
 // Next default values for new objects
