@@ -71,5 +71,6 @@ std::vector<Student> StudentStore::GetAllStudents() const
 
 StudentStore::~StudentStore()
 {
+	delete instance;
 	instances--;
 }
