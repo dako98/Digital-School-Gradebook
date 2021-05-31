@@ -7,11 +7,10 @@ class Subject
 {
 public:
 	Subject() = default;
-	Subject(const CString& name, int teacherID, const CString& room);
+	Subject(const CString& name, int teacherID, const CString& room, int subjectID);
 
 	bool operator==(const Subject& other) const;
 
-	bool InitialiseID(int ID);
 
 	int GetID() const;
 	int GetTeacher() const;
@@ -24,6 +23,5 @@ private:
 	CString name;
 	CString room;
 
-	bool valid;
 };
 
