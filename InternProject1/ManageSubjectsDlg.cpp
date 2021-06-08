@@ -9,6 +9,7 @@
 #include "AllSubjectsDlg.h"
 #include "AddSubjectDlg.h"
 #include "EditSubjectDlg.h"
+#include "RemoveSubjectDlg.h"
 
 
 // ManageSubjectsDlg dialog
@@ -35,6 +36,7 @@ BEGIN_MESSAGE_MAP(ManageSubjectsDlg, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON1, &ManageSubjectsDlg::OnBnClickedButton1)
 	ON_BN_CLICKED(IDC_BUTTON2, &ManageSubjectsDlg::OnBnClickedButton2)
 	ON_BN_CLICKED(IDC_BUTTON3, &ManageSubjectsDlg::OnBnClickedButton3)
+	ON_BN_CLICKED(IDC_BUTTON4, &ManageSubjectsDlg::OnBnClickedButton4)
 END_MESSAGE_MAP()
 
 
@@ -61,5 +63,13 @@ void ManageSubjectsDlg::OnBnClickedButton3()
 {
 	// TODO: Add your control notification handler code here
 	EditSubjectDlg dlg;
+	dlg.DoModal();
+}
+
+
+void ManageSubjectsDlg::OnBnClickedButton4()
+{
+	// TODO: Add your control notification handler code here
+	RemoveSubjectDlg dlg;
 	dlg.DoModal();
 }

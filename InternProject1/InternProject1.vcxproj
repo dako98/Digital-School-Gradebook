@@ -200,6 +200,7 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="Person.h" />
     <ClInclude Include="RemoveStudentDlg.h" />
+    <ClInclude Include="RemoveSubjectDlg.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Student.h" />
     <ClInclude Include="StudentStore.h" />
@@ -231,6 +232,7 @@
     </ClCompile>
     <ClCompile Include="Person.cpp" />
     <ClCompile Include="RemoveStudentDlg.cpp" />
+    <ClCompile Include="RemoveSubjectDlg.cpp" />
     <ClCompile Include="Student.cpp" />
     <ClCompile Include="StudentStore.cpp" />
     <ClCompile Include="Subject.cpp" />

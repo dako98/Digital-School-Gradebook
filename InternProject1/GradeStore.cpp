@@ -75,6 +75,11 @@ void GradeStore::ClearStudent(int studentNum)
 	}
 }
 
+void GradeStore::ClearSubject(int subjectID)
+{
+	grades.erase(subjectID);
+}
+
 std::vector<Grade> GradeStore::GetGrades(int studentNum, int subjectID) const
 {
 	// TODO: Think of a better way. This does not look OK.
