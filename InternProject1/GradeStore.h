@@ -22,6 +22,9 @@ public:
 	void EditGrade(int studentNum, int subjectNum, const COleDateTime& date, int grade);
 	float GetAverage(int studentNum, int subjectID) const;
 	float GetAverage(int studentNum) const;
+	std::vector<int> GetExcellent() const;
+	std::vector<int> GetFails() const;
+	std::vector<int> GetWithGrade(GRADES grade, int count) const;
 	void ClearStudent(int studentNum);
 	void ClearSubject(int subjectID);
 
