@@ -21,6 +21,7 @@ public:
 	void RemoveGrade(int studentNum, int subjectID, const COleDateTime& date);
 	void EditGrade(int studentNum, int subjectNum, const COleDateTime& date, int grade);
 	float GetAverage(int studentNum, int subjectID) const;
+	float GetAverage(int studentNum) const;
 	void ClearStudent(int studentNum);
 	void ClearSubject(int subjectID);
 

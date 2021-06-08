@@ -64,11 +64,33 @@ float GradeStore::GetAverage(int studentNum, int subjectID) const
 	return average;
 }
 
+float GradeStore::GetAverage(int studentNum) const
+{
+	std::vector<Subject> subjects = SubjectStore::GetInstance()->GetAllSubjects();
+
+	float average = 0;
+	int sum = 0;
+	int count = 0;
+	for (const auto& subject : grades)
+	{
+		std::vector<Grade> studentGrades = subject.second.find(studentNum)->second;
+
+		for (const Grade& grade : studentGrades)
+		{
+			sum += grade.GetValue();
+		}
+		count += studentGrades.size();
+	}
+	average = (float)sum / count;
+
+	return average;
+}
+
 void GradeStore::ClearStudent(int studentNum)
 {
 	std::vector<Subject> subjects = SubjectStore::GetInstance()->GetAllSubjects();
 
-	for each (Subject subject in subjects)
+	for (Subject& subject : subjects)
 	{
 		// TODO: Test if it actually works.
 		grades[subject.GetID()].erase(grades[subject.GetID()].find(studentNum));
