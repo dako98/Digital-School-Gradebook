@@ -8,6 +8,7 @@
 
 #include "AllSubjectsDlg.h"
 #include "AddSubjectDlg.h"
+#include "EditSubjectDlg.h"
 
 
 // ManageSubjectsDlg dialog
@@ -33,6 +34,7 @@ void ManageSubjectsDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(ManageSubjectsDlg, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON1, &ManageSubjectsDlg::OnBnClickedButton1)
 	ON_BN_CLICKED(IDC_BUTTON2, &ManageSubjectsDlg::OnBnClickedButton2)
+	ON_BN_CLICKED(IDC_BUTTON3, &ManageSubjectsDlg::OnBnClickedButton3)
 END_MESSAGE_MAP()
 
 
@@ -51,5 +53,13 @@ void ManageSubjectsDlg::OnBnClickedButton2()
 {
 	// TODO: Add your control notification handler code here
 	AddSubjectDlg dlg;
+	dlg.DoModal();
+}
+
+
+void ManageSubjectsDlg::OnBnClickedButton3()
+{
+	// TODO: Add your control notification handler code here
+	EditSubjectDlg dlg;
 	dlg.DoModal();
 }

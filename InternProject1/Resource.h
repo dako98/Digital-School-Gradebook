@@ -12,6 +12,7 @@
 #define IDD_MANAGE_SUBJECTS_DIALOG      140
 #define IDD_ALL_SUBJECTS                144
 #define IDD_ADD_SUBJECT_DIALOG          146
+#define IDD_EDIT_SUBJECT_DIALOG         148
 #define IDC_EDIT1                       1000
 #define IDC_DATETIMEPICKER1             1001
 #define IDC_ALL_STUDENTS                1002
@@ -27,14 +28,15 @@
 #define IDC_BUTTON1                     1017
 #define IDC_LIST1                       1018
 #define IDC_EDIT2                       1019
+#define IDC_COMBO2                      1020
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        148
+#define _APS_NEXT_RESOURCE_VALUE        150
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1020
+#define _APS_NEXT_CONTROL_VALUE         1021
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
