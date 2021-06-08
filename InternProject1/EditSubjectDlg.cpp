@@ -148,9 +148,12 @@ void EditSubjectDlg::OnBnClickedOk()
 	// TODO: Add your control notification handler code here
 	UpdateData();
 
-	Teacher newTeacher = allTeachers[teacherComboBox.GetCurSel()];
+	if (allSubjects.size() > 0)
+	{
+		Teacher newTeacher = allTeachers[teacherComboBox.GetCurSel()];
 
-	SubjectStore::GetInstance()->EditSubject(allSubjects[subjectComboBox.GetCurSel()].GetID(), subjectNameComboBoxVal, newTeacher.GetID(), roomNameVal);
+		SubjectStore::GetInstance()->EditSubject(allSubjects[subjectComboBox.GetCurSel()].GetID(), subjectNameComboBoxVal, newTeacher.GetID(), roomNameVal);
+	}
 
 	CDialog::OnOK();
 }
