@@ -70,11 +70,12 @@ void RemoveSubjectDlg::OnBnClickedButton1()
 {
 	// TODO: Add your control notification handler code here
 
+	// FIXME: Crashes if there are no Subjects. The same doesn't happen when
+	// removing students. I don't know why.
 	UpdateData();
-	allStudents = StudentStore::GetInstance()->GetAllStudents();
+	allSubjects = SubjectStore::GetInstance()->GetAllSubjects();
 
-	// TODO: Add your control notification handler code here
-	if (allStudents.size() > 0)
+	if (allSubjects.size() > 0)
 	{
 		int subjectID = allSubjects[subjectsComboBox.GetCurSel()].GetID();
 
@@ -103,8 +104,6 @@ void RemoveSubjectDlg::OnBnClickedButton1()
 		{
 			// TODO: Handle
 		}
-		// FIXME: Clearing list does not work.
-//		studentList.DeleteString(studentList.GetCurSel());
 	}
 	LoadSubjects();
 	UpdateData();

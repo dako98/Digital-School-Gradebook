@@ -84,7 +84,6 @@ void RemoveStudentDlg::OnBnClickedButton1()
 	UpdateData();
 	allStudents = StudentStore::GetInstance()->GetAllStudents();
 
-	// TODO: Add your control notification handler code here
 	if (allStudents.size() > 0)
 	{
 		int studentID = allStudents[studentList.GetCurSel()].GetNumber();
