@@ -45,4 +45,6 @@ public:
 	
 	CString gradeText;
 	int gradeSliderVal;
+	afx_msg void OnBnClickedOk();
+	COleDateTime gradeDateVal;
 };

@@ -17,6 +17,7 @@ IMPLEMENT_DYNAMIC(AddGradeDlg, CDialog)
 AddGradeDlg::AddGradeDlg(CWnd* pParent /*=nullptr*/)
 	: CDialog(IDD_ADD_GRADE, pParent)
 	, gradeSliderVal(0)
+	, gradeDateVal(COleDateTime::GetCurrentTime())
 {
 
 }
@@ -62,6 +63,7 @@ void AddGradeDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_SLIDER2, gradeSlider);
 	DDX_Text(pDX,/* IDCANCEL*/ IDC_ADD_GRADE_TXT_GRADE_TEXT, gradeText);
 	DDX_Slider(pDX, IDC_SLIDER2, gradeSliderVal);
+	DDX_DateTimeCtrl(pDX, IDC_DATETIMEPICKER1, gradeDateVal);
 }
 
 
@@ -108,7 +110,37 @@ void AddGradeDlg::PrintSubjects()
 
 BEGIN_MESSAGE_MAP(AddGradeDlg, CDialog)
 	ON_WM_HSCROLL()
+	ON_BN_CLICKED(IDOK, &AddGradeDlg::OnBnClickedOk)
 END_MESSAGE_MAP()
 
 
 // AddGradeDlg message handlers
+
+
+void AddGradeDlg::OnBnClickedOk()
+{
+	// TODO: Add your control notification handler code here
+
+	UpdateData();
+
+	if (allStudents.size() > 0 && allSubjects.size() > 0)
+	{
+		int studentID = allStudents[studentComboBox.GetCurSel()].GetNumber();
+		int subjectID = allSubjects[subjectComboBox.GetCurSel()].GetID();
+
+		try
+		{
+			GradeStore::GetInstance()->AddGrade(studentID, subjectID, gradeDateVal , gradeSliderVal);
+		}
+		catch (const std::out_of_range& e)
+		{
+			// TODO: Handle
+		}
+		catch (const std::invalid_argument& e)
+		{
+			// TODO: Handle
+		}
+	}
+
+	CDialog::OnOK();
+}
