@@ -49,19 +49,17 @@ void EditSubjectDlg::LoadSubjects()
 }
 
 
-
+// TODO: Why am I doing this?
 int Search_rec(const int key, const std::vector<Teacher>& arr, int low, int high)
 {
 	// TODO: verify correctness
 
 	int mid = low + (high - low) / 2;
 
-	if (arr[mid].GetID() == key)
-	{
-		return mid;
-	}
-	else if (low >= high)
+	if (low > high)
 		return - 1;
+	else if (arr[mid].GetID() == key)
+		return mid;
 	else if (arr[mid].GetID() < key)
 		Search_rec(key, arr, low, mid - 1);
 	else if (arr[mid].GetID() > key)
@@ -70,7 +68,7 @@ int Search_rec(const int key, const std::vector<Teacher>& arr, int low, int high
 
 int Search(const int key, const const std::vector<Teacher>& arr)
 {
-	return Search_rec(key, arr, 0, arr.size());
+	return Search_rec(key, arr, 0, arr.size() - 1);
 }
 
 
