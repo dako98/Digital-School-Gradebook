@@ -16,9 +16,9 @@ public:
 	TeacherStore& operator=(const TeacherStore& other) = delete;
 	TeacherStore& operator=(TeacherStore&& other) = default;
 
-	void AddTeacher(const CString & name, const COleDateTime & birthday);
+	void AddTeacher(const CString & name);
 	void RemoveTeacher(int number);
-	void EditTeacher(int number, const CString & name, const COleDateTime & birthday);
+	void EditTeacher(int number, const CString & name);
 	Teacher GetTeacher(int number) const;
 	std::vector<Teacher> GetAllTeachers() const;
 

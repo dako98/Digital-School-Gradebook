@@ -17,7 +17,7 @@ TeacherStore* TeacherStore::GetInstance()
 	return instance;
 }
 
-void TeacherStore::AddTeacher(const CString& name, const COleDateTime& birthday)
+void TeacherStore::AddTeacher(const CString& name)
 {
 	Teacher newTeacher(name, lastID);
 	teachers.insert({ lastID, newTeacher });
@@ -29,7 +29,7 @@ void TeacherStore::RemoveTeacher(int number)
 	teachers.erase(number);
 }
 
-void TeacherStore::EditTeacher(int number, const CString& name, const COleDateTime& birthday)
+void TeacherStore::EditTeacher(int number, const CString& name)
 {
 	auto found = teachers.find(number);
 

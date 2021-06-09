@@ -13,8 +13,9 @@
 #define IDD_ALL_SUBJECTS                144
 #define IDD_ADD_SUBJECT_DIALOG          146
 #define IDD_EDIT_SUBJECT_DIALOG         148
-#define IDD_DIALOG1                     150
 #define IDD_REMOVE_SUBJECT_DIALOG       150
+#define IDD_MANAGE_GRADES               152
+#define IDD_ADD_GRADE                   154
 #define IDC_EDIT1                       1000
 #define IDC_DATETIMEPICKER1             1001
 #define IDC_ALL_STUDENTS                1002
@@ -31,14 +32,20 @@
 #define IDC_LIST1                       1018
 #define IDC_EDIT2                       1019
 #define IDC_COMBO2                      1020
+#define IDC_RADIO4                      1024
+#define IDC_RADIO5                      1025
+#define IDC_RADIO1                      1026
+#define IDC_RADIO2                      1027
+#define IDC_SLIDER2                     1030
+#define IDC_ADD_GRADE_TXT_GRADE_TEXT    1031
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        152
+#define _APS_NEXT_RESOURCE_VALUE        156
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1021
+#define _APS_NEXT_CONTROL_VALUE         1032
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

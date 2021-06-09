@@ -25,4 +25,13 @@ protected:
 public:
 	CListBox allStudentsList;
 	CString allStudentsListVal;
+	CButton studentsRadioBtn;
+	afx_msg void OnBnClickedRadio4();
+
+private:
+	void PrintAllStudents();
+	void PrintAllTeachers();
+
+public:
+	afx_msg void OnBnClickedRadio5();
 };

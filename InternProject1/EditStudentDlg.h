@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "Student.h"
+#include "Teacher.h"
 
 // EditStudentDlg dialog
 
@@ -33,7 +34,15 @@ public:
 
 private:
 	std::vector<Student> allStudents;
+	std::vector<Teacher> allTeachers;
+	void PrintStudents();
+	void PrintTeachers();
+
 public:
 	CEdit studentName;
 	CDateTimeCtrl studentBirthday;
+	CButton studentsRadioBtn;
+	CButton teachersRadioBtn;
+	afx_msg void OnBnClickedRadio2();
+	afx_msg void OnBnClickedRadio1();
 };

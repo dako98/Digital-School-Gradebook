@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "Student.h"
+#include "Teacher.h"
 
 // RemoveStudentDlg dialog
 
@@ -31,4 +32,13 @@ public:
 
 private:
 	std::vector<Student> allStudents;
+	std::vector<Teacher> allTeachers;
+	void PrintStudents();
+	void PrintTeachers();
+
+public:
+	CButton studentRadioBtn;
+	CButton teacherRadioBtn;
+	afx_msg void OnBnClickedRadio1();
+	afx_msg void OnBnClickedRadio2();
 };
