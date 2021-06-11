@@ -7,6 +7,7 @@
 #include "afxdialogex.h"
 
 #include "AddGradeDlg.h"
+#include "EditGradeDlg.h"
 
 
 // ManageGradesDlg dialog
@@ -31,6 +32,8 @@ void ManageGradesDlg::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(ManageGradesDlg, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON1, &ManageGradesDlg::OnBnClickedButton1)
+	ON_BN_CLICKED(IDC_BUTTON3, &ManageGradesDlg::OnBnClickedButton3)
+	ON_BN_CLICKED(IDC_BUTTON2, &ManageGradesDlg::OnBnClickedButton2)
 END_MESSAGE_MAP()
 
 
@@ -40,6 +43,21 @@ END_MESSAGE_MAP()
 void ManageGradesDlg::OnBnClickedButton1()
 {
 	// TODO: Add your control notification handler code here
+
+}
+
+void ManageGradesDlg::OnBnClickedButton2()
+{
+	// TODO: Add your control notification handler code here
 	AddGradeDlg dlg;
 	dlg.DoModal();
 }
+
+void ManageGradesDlg::OnBnClickedButton3()
+{
+	// TODO: Add your control notification handler code here
+	EditGradeDlg dlg;
+	dlg.DoModal();
+}
+
+
