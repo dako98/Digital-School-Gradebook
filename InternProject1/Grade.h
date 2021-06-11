@@ -27,6 +27,8 @@ public:
 	int GetSubjectID() const;
 	COleDateTime GetDate() const;
 
+	static CString MapName(const int value);
+
 private:
 
 	int studentNumber;

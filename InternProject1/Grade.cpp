@@ -39,3 +39,28 @@ COleDateTime Grade::GetDate() const
 {
 	return date;
 }
+
+CString Grade::MapName(const int value)
+{
+	CString name;
+
+	switch (value)
+	{
+	case GRADES::A:		name = "Excellent";
+		break;
+	case GRADES::B:		name = "Very good";
+		break;
+	case GRADES::C:		name = "Good";
+		break;
+	case GRADES::D:		name = "Average";
+		break;
+	case GRADES::F:		name = "Bad";
+		break;
+
+	default:
+		name = "";
+		break;
+	}
+
+	return name;
+}
