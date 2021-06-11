@@ -212,6 +212,7 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Teacher.h" />
     <ClInclude Include="TeacherStore.h" />
+    <ClInclude Include="Utility.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AddGradeDlg.cpp" />
@@ -245,6 +246,7 @@
     <ClCompile Include="SubjectStore.cpp" />
     <ClCompile Include="Teacher.cpp" />
     <ClCompile Include="TeacherStore.cpp" />
+    <ClCompile Include="Utility.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="InternProject1.rc" />
