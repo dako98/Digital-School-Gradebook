@@ -26,17 +26,21 @@ RemoveSubjectDlg::~RemoveSubjectDlg()
 
 void RemoveSubjectDlg::LoadSubjects()
 {
+	subjectsComboBox.ResetContent();
 
 	allSubjects = SubjectStore::GetInstance()->GetAllSubjects();
 
 	CString currentRow;
 
 	// Print all the subjects
+	int index = 0;
 	for (const Subject& subject : allSubjects)
 	{
 		currentRow.Format(_T("%d %s"), subject.GetID(), subject.GetName());
 
-		subjectsComboBox.AddString(currentRow);
+		int i = subjectsComboBox.AddString(currentRow);
+		subjectsComboBox.SetItemData(i, index);
+		index++;
 	}
 	if (allSubjects.size() > 0)
 	{
@@ -46,7 +50,9 @@ void RemoveSubjectDlg::LoadSubjects()
 
 BOOL RemoveSubjectDlg::OnInitDialog()
 {
+	CDialog::OnInitDialog();
 
+	LoadSubjects();
 
 	return 0;
 }
@@ -77,7 +83,7 @@ void RemoveSubjectDlg::OnBnClickedButton1()
 
 	if (allSubjects.size() > 0)
 	{
-		int subjectID = allSubjects[subjectsComboBox.GetCurSel()].GetID();
+		int subjectID = allSubjects[subjectsComboBox.GetItemData(subjectsComboBox.GetCurSel())].GetID();
 
 		try
 		{

@@ -8,28 +8,15 @@
 
 #include <vector>
 
+#include "Utility.h"
+
 #include "Teacher.h"
 #include "TeacherStore.h"
 #include "SubjectStore.h"
 
 // AddSubjectDlg dialog
 
-void populateList(CComboBox& list, const std::vector<Teacher>& src)
-{
-	list.ResetContent();
-	CString currentRow;
 
-	for (const Teacher& teacher : src)
-	{
-		currentRow.Format(_T("%d %s"), teacher.GetID(), teacher.getName());
-
-		list.AddString(currentRow);
-	}
-	if (src.size() > 0)
-	{
-		list.SetCurSel(0);
-	}
-}
 
 IMPLEMENT_DYNAMIC(AddSubjectDlg, CDialog)
 
@@ -82,7 +69,7 @@ void AddSubjectDlg::OnBnClickedOk()
 	UpdateData();
 	if (allTeachers.size() > 0)
 	{
-		int teacherID = allTeachers[teacherList.GetCurSel()].GetID();
+		int teacherID = allTeachers[teacherList.GetItemData(teacherList.GetCurSel())].GetID();
 
 		try
 		{

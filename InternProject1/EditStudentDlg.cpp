@@ -74,7 +74,7 @@ void EditStudentDlg::OnBnClickedOk()
 		// TODO: Add your control notification handler code here
 		if (allStudents.size() > 0)
 		{
-			int studentID = allStudents[studentsComboBox.GetCurSel()].GetNumber();
+			int studentID = allStudents[studentsComboBox.GetItemData(studentsComboBox.GetCurSel())].GetNumber();
 
 			try
 			{
@@ -97,7 +97,7 @@ void EditStudentDlg::OnBnClickedOk()
 		// TODO: Add your control notification handler code here
 		if (allTeachers.size() > 0)
 		{
-			int teacherID = allTeachers[studentsComboBox.GetCurSel()].GetID();
+			int teacherID = allTeachers[studentsComboBox.GetItemData(studentsComboBox.GetCurSel())].GetID();
 
 			try
 			{
@@ -124,20 +124,21 @@ void EditStudentDlg::PrintStudents()
 	CString currentRow;
 
 	// Print all the students
+	int index = 0;
 	for (const Student& student : allStudents)
 	{
 		currentRow.Format(_T("%d %s"), student.GetNumber(), student.getName());
 
-		studentsComboBox.AddString(currentRow);
+		int i = studentsComboBox.AddString(currentRow);
+		studentsComboBox.SetItemData(i, index);
+		index++;
 	}
 	if (allStudents.size() > 0)
 	{
-		studentsComboBox.SetCurSel(0);
-		studentName.SetWindowTextW(allStudents[studentsComboBox.GetCurSel()].getName());
-		studentBirthday.SetTime(allStudents[studentsComboBox.GetCurSel()].GetBirthday());
-
-		//		studentNameVal = allStudents[studentsComboBox.GetCurSel()].getName();
-		//		studentBirthdayVal = allStudents[studentsComboBox.GetCurSel()].GetBirthday();
+		int selected = 0;
+		studentsComboBox.SetCurSel(selected);
+		studentName.SetWindowTextW(allStudents[studentsComboBox.GetItemData(selected)].getName());
+		studentBirthday.SetTime(allStudents[studentsComboBox.GetItemData(selected)].GetBirthday());
 	}
 
 }
@@ -149,16 +150,20 @@ void EditStudentDlg::PrintTeachers()
 	CString currentRow;
 
 	// Print all the teachers
+	int index = 0;
 	for (const Teacher& teacher : allTeachers)
 	{
 		currentRow.Format(_T("%d %s"), teacher.GetID(), teacher.getName());
 
-		studentsComboBox.AddString(currentRow);
+		int i = studentsComboBox.AddString(currentRow);
+		studentsComboBox.SetItemData(i, index);
+		index++;
 	}
 	if (allTeachers.size() > 0)
 	{
-		studentsComboBox.SetCurSel(0);
-		studentName.SetWindowTextW(allTeachers[studentsComboBox.GetCurSel()].getName());
+		int selected = 0;
+		studentsComboBox.SetCurSel(selected);
+		studentName.SetWindowTextW(allTeachers[studentsComboBox.GetItemData(selected)].getName());
 	}
 }
 

@@ -36,7 +36,7 @@ BOOL AddGradeDlg::OnInitDialog()
 	gradeSlider.SetRange(GRADES::INVALID + 1, GRADES::COUNT - 1, TRUE);
 	gradeSlider.SetPos(GRADES::INVALID + 1);
 
-
+	UpdateData(FALSE);
 
 	return 0;
 }
@@ -47,7 +47,7 @@ void AddGradeDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 
 	if (gradeSliderVal > 0)
 	{
-		gradeText.Format(_T("%d"), gradeSliderVal);
+		gradeText.Format(_T("%d %s"), gradeSliderVal, Grade::MapName(gradeSliderVal));
 
 		UpdateData(FALSE);
 	
@@ -61,7 +61,7 @@ void AddGradeDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_COMBO2, subjectComboBox);
 	DDX_Control(pDX, IDC_DATETIMEPICKER1, gradeDate);
 	DDX_Control(pDX, IDC_SLIDER2, gradeSlider);
-	DDX_Text(pDX,/* IDCANCEL*/ IDC_ADD_GRADE_TXT_GRADE_TEXT, gradeText);
+	DDX_Text(pDX, IDC_ADD_GRADE_TXT_GRADE_TEXT, gradeText);
 	DDX_Slider(pDX, IDC_SLIDER2, gradeSliderVal);
 	DDX_DateTimeCtrl(pDX, IDC_DATETIMEPICKER1, gradeDateVal);
 }
@@ -74,16 +74,18 @@ void AddGradeDlg::PrintStudents()
 	CString currentRow;
 
 	// Print all the students
+	int index = 0;
 	for (const Student& student : allStudents)
 	{
 		currentRow.Format(_T("%d %s"), student.GetNumber(), student.getName());
 
-		studentComboBox.AddString(currentRow);
+		int i = studentComboBox.AddString(currentRow);
+		studentComboBox.SetItemData(i, index);
+		index++;
 	}
 	if (allStudents.size() > 0)
 	{
 		studentComboBox.SetCurSel(0);
-
 	}
 
 }
@@ -95,11 +97,14 @@ void AddGradeDlg::PrintSubjects()
 	CString currentRow;
 
 	// Print all the students
+	int index = 0;
 	for (const Subject& subject : allSubjects)
 	{
 		currentRow.Format(_T("%d %s"), subject.GetID(), subject.GetName());
 
-		subjectComboBox.AddString(currentRow);
+		int i = subjectComboBox.AddString(currentRow);
+		subjectComboBox.SetItemData(i, index);
+		index++;
 	}
 	if (allStudents.size() > 0)
 	{
@@ -125,8 +130,8 @@ void AddGradeDlg::OnBnClickedOk()
 
 	if (allStudents.size() > 0 && allSubjects.size() > 0)
 	{
-		int studentID = allStudents[studentComboBox.GetCurSel()].GetNumber();
-		int subjectID = allSubjects[subjectComboBox.GetCurSel()].GetID();
+		int studentID = allStudents[studentComboBox.GetItemData(studentComboBox.GetCurSel())].GetNumber();
+		int subjectID = allSubjects[subjectComboBox.GetItemData(subjectComboBox.GetCurSel())].GetID();
 
 		try
 		{

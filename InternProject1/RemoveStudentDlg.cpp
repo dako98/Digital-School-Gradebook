@@ -8,6 +8,8 @@
 
 #include <vector>
 
+#include "Utility.h"
+
 #include "StudentStore.h"
 #include "GradeStore.h"
 #include "TeacherStore.h"
@@ -16,22 +18,28 @@
 // RemoveStudentDlg dialog
 
 
-void populateList(CComboBox& list, const std::vector<Student>& src)
+
+/*
+void populateList(CComboBox& list, const std::vector<Teacher>& src)
 {
 	list.ResetContent();
 	CString currentRow;
 
-	for (const Student& student : src)
+	int index = 0;
+	for (const Teacher& teacher : src)
 	{
-		currentRow.Format(_T("%d %s"), student.GetNumber(), student.getName());
+		currentRow.Format(_T("%d %s"), teacher.GetID(), teacher.getName());
 
-		list.AddString(currentRow);
+		int i = list.AddString(currentRow);
+		list.SetItemData(i, index);
+		index++;
 	}
 	if (src.size() > 0)
 	{
 		list.SetCurSel(0);
 	}
 }
+*/
 
 
 IMPLEMENT_DYNAMIC(RemoveStudentDlg, CDialog)
@@ -103,7 +111,7 @@ void RemoveStudentDlg::OnBnClickedButton1()
 
 		if (allStudents.size() > 0)
 		{
-			int studentID = allStudents[studentList.GetCurSel()].GetNumber();
+			int studentID = allStudents[studentList.GetItemData(studentList.GetCurSel())].GetNumber();
 
 			try
 			{
@@ -140,7 +148,7 @@ void RemoveStudentDlg::OnBnClickedButton1()
 	{
 		if (allTeachers.size() > 0)
 		{
-			int teacherID = allTeachers[studentList.GetCurSel()].GetID();
+			int teacherID = allTeachers[studentList.GetItemData(studentList.GetCurSel())].GetID();
 
 			try
 			{
@@ -181,38 +189,13 @@ void RemoveStudentDlg::PrintStudents()
 {
 	allStudents = StudentStore::GetInstance()->GetAllStudents();
 
-	CString currentRow;
-
-	// Print all the students
-	for (const Student& student : allStudents)
-	{
-		currentRow.Format(_T("%d %s"), student.GetNumber(), student.getName());
-
-		studentList.AddString(currentRow);
-	}
-	if (allStudents.size() > 0)
-	{
-		studentList.SetCurSel(0);
-
-	}
-
+	populateList(studentList, allStudents);
 }
 
 void RemoveStudentDlg::PrintTeachers()
 {
 	allTeachers = TeacherStore::GetInstance()->GetAllTeachers();
 
-	CString currentRow;
-
-	// Print all the teachers
-	for (const Teacher& teacher : allTeachers)
-	{
-		currentRow.Format(_T("%d %s"), teacher.GetID(), teacher.getName());
-
-		studentList.AddString(currentRow);
-	}
-	if (allTeachers.size() > 0)
-	{
-		studentList.SetCurSel(0);
-	}
+	populateList(studentList, allTeachers);
 }
+

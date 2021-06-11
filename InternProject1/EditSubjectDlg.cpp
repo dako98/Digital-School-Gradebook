@@ -6,6 +6,8 @@
 #include "EditSubjectDlg.h"
 #include "afxdialogex.h"
 
+#include "Utility.h"
+
 #include "TeacherStore.h"
 #include "SubjectStore.h"
 
@@ -34,17 +36,21 @@ void EditSubjectDlg::LoadSubjects()
 	CString currentRow;
 
 	// Print all the subjects
+	int index = 0;
 	for (const Subject& subject : allSubjects)
 	{
 		currentRow.Format(_T("%d %s"), subject.GetID(), subject.GetName());
 
-		subjectComboBox.AddString(currentRow);
+		int i = subjectComboBox.AddString(currentRow);
+		subjectComboBox.SetItemData(i, index);
+		index++;
 	}
 	if (allSubjects.size() > 0)
 	{
+		int selected = 0;
 		subjectComboBox.SetCurSel(0);
-		subjectNameComboBox.SetWindowTextW(allSubjects[subjectComboBox.GetCurSel()].GetName());
-		roomName.SetWindowTextW(allSubjects[subjectComboBox.GetCurSel()].GetName());
+		subjectNameComboBox.SetWindowTextW(allSubjects[selected].GetName());
+		roomName.SetWindowTextW(allSubjects[selected].GetName());
 	}
 }
 
@@ -80,19 +86,26 @@ void EditSubjectDlg::LoadTeachers()
 	CString currentRow;
 
 	// Print all the subjects
+	int index = 0;
 	for (const Teacher& teacher : allTeachers)
 	{
 		currentRow.Format(_T("%d %s"), teacher.GetID(), teacher.getName());
 
-		teacherComboBox.AddString(currentRow);
+		int i = teacherComboBox.AddString(currentRow);
+		teacherComboBox.SetItemData(i, index);
+		index++;
 	}
 	if (allTeachers.size() > 0)
 	{
-		Subject currentSubject = allSubjects[subjectComboBox.GetCurSel()];
+		Subject currentSubject = allSubjects[subjectComboBox.GetItemData(subjectComboBox.GetCurSel())];
 
-		int currentTeacherIndex = Search(currentSubject.GetTeacher(), allTeachers);
+//		int currentTeacherIndex = Search(currentSubject.GetTeacher(), allTeachers);
 
-		teacherComboBox.SetCurSel(currentTeacherIndex);
+		int indexInList = Search(currentSubject.GetTeacher(), allTeachers);
+
+		teacherComboBox.SetCurSel(indexInList);
+
+//		teacherComboBox.SetCurSel(GetIndexByData(currentSubject.GetTeacher(),teacherComboBox));
 //		teacherComboBox.SetWindowTextW(allTeachers[teacherComboBox.GetCurSel()].getName());
 	}
 }
@@ -133,9 +146,15 @@ END_MESSAGE_MAP()
 void EditSubjectDlg::OnCbnSelchangeCombo1()
 {
 	// TODO: Add your control notification handler code here
-	subjectNameComboBox.SetWindowTextW(allSubjects[subjectComboBox.GetCurSel()].GetName());
-	teacherComboBox.SetCurSel(Search(allSubjects[subjectComboBox.GetCurSel()].GetTeacher(), allTeachers));
-	roomName.SetWindowTextW(allSubjects[subjectComboBox.GetCurSel()].GetName());
+	subjectNameComboBox.SetWindowTextW(allSubjects[subjectComboBox.GetItemData(subjectComboBox.GetCurSel())].GetName());
+
+	Subject currentSubject = allSubjects[subjectComboBox.GetItemData(subjectComboBox.GetCurSel())];
+
+	int index = Search(currentSubject.GetTeacher(), allTeachers);
+	teacherComboBox.SetCurSel(GetIndexByData(index, teacherComboBox));
+
+//	teacherComboBox.SetCurSel(Search(allSubjects[subjectComboBox.GetCurSel()].GetTeacher(), allTeachers));
+	roomName.SetWindowTextW(allSubjects[subjectComboBox.GetItemData(subjectComboBox.GetCurSel())].GetRoom());
 
 	UpdateData();
 }
@@ -148,9 +167,21 @@ void EditSubjectDlg::OnBnClickedOk()
 
 	if (allSubjects.size() > 0)
 	{
-		Teacher newTeacher = allTeachers[teacherComboBox.GetCurSel()];
+		int newTeacherID = allTeachers[teacherComboBox.GetItemData(teacherComboBox.GetCurSel())].GetID();
+		int subjectID = allSubjects[subjectComboBox.GetItemData(subjectComboBox.GetCurSel())].GetID();
 
-		SubjectStore::GetInstance()->EditSubject(allSubjects[subjectComboBox.GetCurSel()].GetID(), subjectNameComboBoxVal, newTeacher.GetID(), roomNameVal);
+		try
+		{
+			SubjectStore::GetInstance()->EditSubject(subjectID, subjectNameComboBoxVal, newTeacherID, roomNameVal);
+		}
+		catch (const std::invalid_argument& e)
+		{
+			// TODO: Handle
+		}
+		catch (const std::out_of_range& e)
+		{
+			// TODO: Handle
+		}
 	}
 
 	CDialog::OnOK();
