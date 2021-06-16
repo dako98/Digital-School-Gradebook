@@ -2,6 +2,7 @@
 
 #include <stdexcept>
 #include <string>
+#include <iostream>
 
 class Subject
 {
@@ -17,7 +18,12 @@ public:
 	CString GetName() const;
 	CString GetRoom() const;
 
+	friend std::ostream& operator<<(std::ostream& out, const Subject& obj);
+	friend std::istream& operator>>(std::istream& in, Subject& obj);
+
+
 private:
+
 	int subjectID;
 	int teacherID;
 	CString name;

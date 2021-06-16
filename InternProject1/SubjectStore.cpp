@@ -8,6 +8,15 @@ SubjectStore::SubjectStore()
 {
 }
 
+void SubjectStore::Initialise(const std::string& path)
+{
+	file.open(path);
+	if (!file)
+	{
+		throw std::exception{};
+	}
+}
+
 SubjectStore* SubjectStore::GetInstance()
 {
 	if (!instance)
@@ -20,59 +29,110 @@ SubjectStore* SubjectStore::GetInstance()
 void SubjectStore::AddSubject(const CString& name, int teacherID, const CString& room)
 {
 	Subject newSubject(name, teacherID, room, lastID);
-	subjects.insert({ lastID, newSubject });
+//	subjects.insert({ lastID, newSubject });
+	file << newSubject;
 	lastID++;
 }
 
 void SubjectStore::RemoveSubject(int subjectID)
 {
-	auto found = subjects.find(subjectID);
+	// Get all subjects
+	std::vector<Subject> subjects = GetAllSubjects();
 
-	if (found != subjects.end())
+	auto found = subjects.begin();
+	bool isFound = false;
+
+	while (found != subjects.end())
 	{
-		subjects.erase(found);
+		if (found->GetID() == subjectID)
+		{
+			isFound = true;
+			subjects.erase(found);
+			break;
+		}
+		found++;
+	}
+	if (!isFound)
+	{
+		throw std::out_of_range("Invalid student number.");
+	}
+
+	// Write all subjects
+	for (const Subject& subject : subjects)
+	{
+		file << subject;
 	}
 }
 
 void SubjectStore::EditSubject(int subjectID, const CString& name, int teacherID, const CString& room)
 {
-	auto found = subjects.find(subjectID);
+	// Get all subjects 
+	std::vector<Subject> subjects = GetAllSubjects();
 
-	if (found != subjects.end())
+	auto found = subjects.begin();
+
+	while (found != subjects.end())
 	{
-		found->second = Subject{ name, teacherID, room, subjectID };
+		if (found->GetID() == subjectID)
+		{
+			*found = Subject{ name, teacherID, room, subjectID };
+			break;
+		}
+		found++;
 	}
-	else
+	if (found == subjects.end())
 	{
 		throw std::out_of_range("Invalid student number.");
 	}
+
+	// Write all subjects
+	for (const Subject& subject : subjects)
+	{
+		file << subject;
+	}
+
 }
 
-Subject SubjectStore::GetSubject(int subjectID) const
+Subject SubjectStore::GetSubject(int subjectID) 
 {
-	auto found = subjects.find(subjectID);
+	// Get all subjects
+	std::vector<Subject> subjects = GetAllSubjects();
+
+	auto found = subjects.begin();
 	Subject result;
 
-	if (found != subjects.end())
+	while (found != subjects.end())
 	{
-		result = found->second;
+		if (found->GetID() == subjectID)
+		{
+			result = *found;
+			break;
+		}
+		found++;
 	}
-	else
+	if (found == subjects.end())
 	{
 		throw std::out_of_range("Invalid student number.");
 	}
 	return result;
 }
 
-std::vector<Subject> SubjectStore::GetAllSubjects() const
+std::vector<Subject> SubjectStore::GetAllSubjects() 
 {
 	std::vector<Subject> result;
-	result.resize(subjects.size());
+	
+	// FIXME: Can not read for a second time.
 
-	for (const auto& subject : subjects)
+	Subject tmp;
+	file.seekp(0);
+	file.seekg(0);
+	while (!file.eof())
 	{
-		result.push_back(subject.second);
+//		tmp.ReadFromFile(file);
+		file >> tmp;
+		result.push_back(tmp);
 	}
+
 	return result;
 }
 

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Subject.h"
 
+
 Subject::Subject(const CString& name, int teacherID, const CString& room, int subjectID)
 {
 	if (name != "" && room != "" /*TODO: verify TeacherID*/)
@@ -41,4 +42,38 @@ CString Subject::GetName() const
 CString Subject::GetRoom() const
 {
 	return room;
+}
+
+
+std::ostream& operator<<(std::ostream& out, const Subject& obj)
+{
+	// <id> <teacher> "<name>" "<room>"
+	//
+	out << obj.subjectID << ' '
+		<< obj.teacherID << ' '
+		<< '\"' << CT2A(obj.name) << '\"' << ' '
+		<< '\"' << CT2A(obj.room) << '\"' << '\n'
+		<< std::flush;
+	return out;
+}
+
+std::istream& operator>>(std::istream& in, Subject& obj)
+{
+	std::string tmp;
+
+	in >> obj.subjectID;
+	in.ignore(1);
+
+	in >> obj.teacherID;
+	in.ignore(2);
+
+	std::getline(in, tmp, '\"');
+	obj.name = CString{ tmp.c_str() };
+	in.ignore(2);
+
+	std::getline(in, tmp, '\"');
+	obj.room = CString{ tmp.c_str() };
+	in.ignore(1);
+	
+	return in;
 }
