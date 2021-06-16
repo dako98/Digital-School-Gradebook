@@ -76,12 +76,14 @@ void EditGradeDlg::OnBnClickedOk()
 
 	if (studentInList != CB_ERR && subjectInList != CB_ERR && gradeInList != CB_ERR && valueInList != CB_ERR)
 	{
-		int studentNum = studentsComboBox.GetItemData(studentInList);
-		int subjectID = subjectsComboBox.GetItemData(subjectInList);
+		int studentNum = allStudents[studentsComboBox.GetItemData(studentInList)].GetNumber();
+		int subjectID = allSubjects[subjectsComboBox.GetItemData(subjectInList)].GetID();
 		int updatedGradeValue = gradeValue.GetItemData(updatedGradeInList);
+		int gradeID = studentGrades[allGradesComboBox.GetItemData(gradeInList)].GetID();
+
 		ATL::COleDateTime gradeDate = studentGrades[gradeInList].GetDate();
 
-		GradeStore::GetInstance()->EditGrade(studentNum, subjectID, gradeDate, updatedGradeInList);
+		GradeStore::GetInstance()->EditGrade(gradeID, studentNum, subjectID, gradeDate, updatedGradeValue);
 	}
 
 	CDialog::OnOK();
@@ -209,10 +211,10 @@ void EditGradeDlg::UpdateGradeInList()
 	int studentIndexInList = studentsComboBox.GetCurSel();
 	int subjectIndexInList = subjectsComboBox.GetCurSel();
 	int gradeIndexInList = allGradesComboBox.GetCurSel();
-	int updatedGradeValue = studentGrades[allGradesComboBox.GetItemData(gradeIndexInList)].GetValue();
 
 	if (studentIndexInList != CB_ERR && subjectIndexInList != CB_ERR && gradeIndexInList != CB_ERR)
 	{
+		int updatedGradeValue = studentGrades[allGradesComboBox.GetItemData(gradeIndexInList)].GetValue();
 		gradeValue.SetCurSel(GetIndexByData(updatedGradeValue, gradeValue));
 	}
 }
@@ -248,13 +250,23 @@ void EditGradeDlg::OnBnClickedButton1()
 {
 	// TODO: Add your control notification handler code here
 
-	try
+	int studentIndexInList = studentsComboBox.GetCurSel();
+	int subjectIndexInList = subjectsComboBox.GetCurSel();
+	int gradeIndexInList = allGradesComboBox.GetCurSel();
+
+	currentGradeIndex = allGradesComboBox.GetItemData(gradeIndexInList);
+
+	if (studentIndexInList != CB_ERR && subjectIndexInList != CB_ERR && gradeIndexInList != CB_ERR)
 	{
-		GradeStore::GetInstance()->RemoveGrade(currentStudentNum,currentSubjectID,studentGrades[currentGradeIndex].GetDate());
-	}
-	catch (const std::out_of_range& e)
-	{
-		// TODO: Handle
+		try
+		{
+			int gradeID = studentGrades[currentGradeIndex].GetID();
+			GradeStore::GetInstance()->RemoveGrade(gradeID);
+		}
+		catch (const std::out_of_range& e)
+		{
+			// TODO: Handle
+		}
 	}
 
 	CDialog::OnOK();
