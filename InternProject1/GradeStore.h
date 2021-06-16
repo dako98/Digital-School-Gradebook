@@ -2,10 +2,10 @@
 
 #include <vector>
 #include <unordered_map>
+#include <set>
 
 #include "Grade.h"
 #include "GradeStore.h"
-#include "SubjectStore.h"
 
 class GradeStore
 {
@@ -17,14 +17,16 @@ public:
 	GradeStore& operator=(const GradeStore& other) = delete;
 	GradeStore& operator=(GradeStore&& other) = default;
 
-	void AddGrade(int studentNum, int subjectNum, const COleDateTime& date, int grade);
+	bool AddGrade(int studentNum, int subjectNum, const COleDateTime& date, int grade);
 	void RemoveGrade(int studentNum, int subjectID, const COleDateTime& date);
-	void EditGrade(int studentNum, int subjectNum, const COleDateTime& date, int grade);
+	bool EditGrade(int studentNum, int subjectNum, const COleDateTime& date, int grade);
 	float GetAverage(int studentNum, int subjectID) const;
 	float GetAverage(int studentNum) const;
-	std::vector<int> GetExcellent() const;
-	std::vector<int> GetFails() const;
-	std::vector<int> GetWithGrade(GRADES grade, int count) const;
+	std::set<int> GetExcellent() const;
+	std::set<int> GetFails() const;
+	std::set<int> GetWithGradeStreek(GRADES grade, int count) const;
+	std::vector<Grade> GetAllGrades() const;
+	std::vector<Grade> GetAllGrades(int studentNum) const;
 	void ClearStudent(int studentNum);
 	void ClearSubject(int subjectID);
 
@@ -36,9 +38,13 @@ private:
 	GradeStore();
 	static GradeStore* instance;
 
+	int GetCount(int studentNum) const;
+	int GetCount(int studentNum, int subjectID) const;
+
 	// SubjectID -> Student -> Grades
 	std::unordered_map<int, std::unordered_map<int, std::vector<Grade>>> grades;
 	
+	int lastID;
 //	SubjectStore* subjectStore;
 };
 

@@ -49,9 +49,9 @@ Student StudentStore::GetStudent(int number) const
 {
 	auto found = students.find(number);
 	
-	if (found!=students.end())
+	if (found != students.end())
 	{
-		return (*found).second;
+		return found->second;
 	}
 	else
 	{
@@ -67,6 +67,21 @@ std::vector<Student> StudentStore::GetAllStudents() const
 		allStudents.push_back(student.second);
 	}
 	return allStudents;
+}
+
+std::vector<Student> StudentStore::GetBirthdayers(const COleDateTime& date) const
+{
+	std::vector<Student> birthdayers;
+
+	for (const auto& student : students)
+	{
+		if (student.second.GetBirthday().GetDay() == date.GetDay() &&
+			student.second.GetBirthday().GetMonth() == date.GetMonth())
+		{
+			birthdayers.push_back(student.second);
+		}
+	}
+	return birthdayers;
 }
 
 StudentStore::~StudentStore()

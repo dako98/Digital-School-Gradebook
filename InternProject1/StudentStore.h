@@ -21,6 +21,7 @@ public:
 	void EditStudent(int number, const CString& name, const COleDateTime& birthday);
 	Student GetStudent(int number) const;
 	std::vector<Student> GetAllStudents() const;
+	std::vector<Student> GetBirthdayers(const COleDateTime& date) const;
 
 	~StudentStore();
 private:
