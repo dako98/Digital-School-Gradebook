@@ -1,23 +1,29 @@
 #include "pch.h"
 #include "Grade.h"
+#include "StudentStore.h"
+#include "SubjectStore.h"
 
-Grade::Grade(int studentNum, int subjectID, const COleDateTime& date, int grade)
+Grade::Grade(int studentNum, int subjectID, const COleDateTime& date, int grade, int ID)
 {
-	if (/* validate student num*/
-		/* validate subject ID*/
-		(grade > GRADES::INVALID && grade < GRADES::COUNT))
+	if (Validate(studentNum, subjectID, date, grade))
 	{
-		this->studentNumber	= studentNum;
-		this->subjectID		= subjectID;
+		this->studentNumber = studentNum;
+		this->subjectID = subjectID;
 
 		this->date = date;
 
 		this->grade = grade;
+		this->id = ID;
 	}
 	else
 	{
 		throw std::invalid_argument("Invalid grade arguments.");
 	}
+}
+
+int Grade::GetID() const
+{
+	return id;
 }
 
 int Grade::GetValue() const
@@ -63,4 +69,16 @@ CString Grade::MapName(const int value)
 	}
 
 	return name;
+}
+
+bool Grade::Validate(int studentNum, int subjectID, const COleDateTime& date, int grade)
+{
+	bool isValid = false;
+	if (/* validate student num*/
+		/* validate subject ID*/
+		(grade > GRADES::INVALID && grade < GRADES::COUNT))
+	{
+		isValid = true;;
+	}
+	return isValid;
 }

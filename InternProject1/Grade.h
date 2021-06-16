@@ -20,17 +20,20 @@ class Grade
 {
 public:
 
-	Grade(int studentNum, int subjectID, const COleDateTime& date, int grade);
+	Grade(int studentNum, int subjectID, const COleDateTime& date, int grade, int gradeID);
 	
+	int GetID() const;
 	int GetValue() const;
 	int GetStudentNumber() const;
 	int GetSubjectID() const;
 	COleDateTime GetDate() const;
 
 	static CString MapName(const int value);
+	static bool Validate(int studentNum, int subjectID, const COleDateTime& date, int grade);
 
 private:
 
+	int id;
 	int studentNumber;
 	int subjectID;
 	COleDateTime date;
