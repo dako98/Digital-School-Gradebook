@@ -7,6 +7,11 @@
 #include "InternProject1.h"
 #include "InternProject1Dlg.h"
 
+#include "GradeStore.h"
+#include "StudentStore.h"
+#include "SubjectStore.h"
+#include "TeacherStore.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -30,16 +35,23 @@ CInternProject1App::CInternProject1App()
 	// Place all significant initialization in InitInstance
 }
 
-
+void InitialiseStorages();
 // The one and only CInternProject1App object
 
 CInternProject1App theApp;
+
+
+
 
 
 // CInternProject1App initialization
 
 BOOL CInternProject1App::InitInstance()
 {
+
+	InitialiseStorages();
+
+
 	// InitCommonControlsEx() is required on Windows XP if an application
 	// manifest specifies use of ComCtl32.dll version 6 or later to enable
 	// visual styles.  Otherwise, any window creation will fail.
@@ -105,3 +117,8 @@ BOOL CInternProject1App::InitInstance()
 	return FALSE;
 }
 
+void InitialiseStorages()
+{
+//	StudentStore::Initialise();
+	SubjectStore::GetInstance()->Initialise("Subjects.txt");
+}
