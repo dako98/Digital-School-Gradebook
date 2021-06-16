@@ -78,13 +78,48 @@ void GradeStore::RemoveGrade(int studentNum, int subjectID, const COleDateTime& 
 	studentGrades->erase(toDelete);
 }
 
-bool GradeStore::EditGrade(int studentNum, int subjectNum, const COleDateTime& date, int grade)
+void GradeStore::RemoveGrade(int id)
+{
+	Grade grade = GetGrade(id);
+
+	std::vector<Grade>* studentGrades = &grades[grade.GetSubjectID()][grade.GetStudentNumber()];
+
+	std::vector<Grade>::iterator toDelete = studentGrades->begin();
+
+	while (toDelete != studentGrades->end())
+	{
+		if (toDelete->GetID() == id)
+		{
+			studentGrades->erase(toDelete);
+			break;
+		}
+		else
+			toDelete++;
+	}
+
+}
+
+Grade GradeStore::GetGrade(int id) const
+{
+	std::vector<Grade> allGrades = GetAllGrades();
+
+	for (const Grade& grade : allGrades)
+	{
+		if (grade.GetID() == id)
+		{
+			return grade;
+		}
+	}
+
+}
+
+bool GradeStore::EditGrade(int id, int studentNum, int subjectNum, const COleDateTime& date, int grade)
 {
 	bool isOK;
 
 	if (isOK = Grade::Validate(studentNum, subjectNum, date, grade))
 	{
-		RemoveGrade(studentNum, subjectNum, date);
+		RemoveGrade(id);
 		AddGrade(studentNum, subjectNum, date, grade);
 	}
 	return isOK;

@@ -18,8 +18,9 @@ public:
 	GradeStore& operator=(GradeStore&& other) = default;
 
 	bool AddGrade(int studentNum, int subjectNum, const COleDateTime& date, int grade);
+	void RemoveGrade(int id);
 	void RemoveGrade(int studentNum, int subjectID, const COleDateTime& date);
-	bool EditGrade(int studentNum, int subjectNum, const COleDateTime& date, int grade);
+	bool EditGrade(int id, int studentNum, int subjectNum, const COleDateTime& date, int grade);
 	float GetAverage(int studentNum, int subjectID) const;
 	float GetAverage(int studentNum) const;
 	std::set<int> GetExcellent() const;
@@ -38,6 +39,7 @@ private:
 	GradeStore();
 	static GradeStore* instance;
 
+	Grade GetGrade(int id) const;
 	int GetCount(int studentNum) const;
 	int GetCount(int studentNum, int subjectID) const;
 
