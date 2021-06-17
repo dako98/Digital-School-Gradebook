@@ -10,11 +10,15 @@ SubjectStore::SubjectStore()
 
 void SubjectStore::Initialise(const std::string& path)
 {
-	file.open(path);
+	file.open(path, std::ios::in | std::ios::out);
 	if (!file)
 	{
 		throw std::exception{};
 	}
+	this->path = path;
+	GetAllSubjects();
+
+	file.close();
 }
 
 SubjectStore* SubjectStore::GetInstance()
@@ -28,9 +32,12 @@ SubjectStore* SubjectStore::GetInstance()
 
 void SubjectStore::AddSubject(const CString& name, int teacherID, const CString& room)
 {
+	file.open(path, std::ios::out | std::ios::app);
 	Subject newSubject(name, teacherID, room, lastID);
-//	subjects.insert({ lastID, newSubject });
+
+	file.seekp(0, file.end);
 	file << newSubject;
+	file.close();
 	lastID++;
 }
 
@@ -57,11 +64,14 @@ void SubjectStore::RemoveSubject(int subjectID)
 		throw std::out_of_range("Invalid student number.");
 	}
 
+	file.open(path, std::ios::out);
+
 	// Write all subjects
 	for (const Subject& subject : subjects)
 	{
 		file << subject;
 	}
+	file.close();
 }
 
 void SubjectStore::EditSubject(int subjectID, const CString& name, int teacherID, const CString& room)
@@ -85,12 +95,14 @@ void SubjectStore::EditSubject(int subjectID, const CString& name, int teacherID
 		throw std::out_of_range("Invalid student number.");
 	}
 
+	file.open(path, std::ios::out);
+
 	// Write all subjects
 	for (const Subject& subject : subjects)
 	{
 		file << subject;
 	}
-
+	file.close();
 }
 
 Subject SubjectStore::GetSubject(int subjectID) 
@@ -121,18 +133,19 @@ std::vector<Subject> SubjectStore::GetAllSubjects()
 {
 	std::vector<Subject> result;
 	
-	// FIXME: Can not read for a second time.
+	file.open(path, std::ios::in);
 
 	Subject tmp;
-	file.seekp(0);
-	file.seekg(0);
-	while (!file.eof())
+	file.seekp(0, file.beg);
+	file.seekg(0, file.beg);
+	while (file.peek() != EOF)
 	{
-//		tmp.ReadFromFile(file);
 		file >> tmp;
 		result.push_back(tmp);
+//		lastID = std::max(lastID, tmp.GetID());
+		lastID = (lastID > tmp.GetID()) ? lastID : tmp.GetID();
 	}
-
+	file.close();
 	return result;
 }
 

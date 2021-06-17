@@ -62,18 +62,21 @@ std::istream& operator>>(std::istream& in, Subject& obj)
 	std::string tmp;
 
 	in >> obj.subjectID;
-	in.ignore(1);
+	in >> std::ws;
 
 	in >> obj.teacherID;
-	in.ignore(2);
+	in >> std::ws;
 
+	in.ignore(1);
 	std::getline(in, tmp, '\"');
 	obj.name = CString{ tmp.c_str() };
-	in.ignore(2);
+	in >> std::ws;
 
+	in.ignore(1);
 	std::getline(in, tmp, '\"');
 	obj.room = CString{ tmp.c_str() };
-	in.ignore(1);
 	
+	in >> std::ws;
+
 	return in;
 }
