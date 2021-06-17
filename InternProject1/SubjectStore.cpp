@@ -13,7 +13,7 @@ void SubjectStore::Initialise(const std::string& path)
 	file.open(path, std::ios::in | std::ios::out);
 	if (!file)
 	{
-		throw std::exception{};
+		throw std::exception{"Can't open Subjects file."};
 	}
 	this->path = path;
 	GetAllSubjects();
@@ -92,7 +92,7 @@ void SubjectStore::EditSubject(int subjectID, const CString& name, int teacherID
 	}
 	if (found == subjects.end())
 	{
-		throw std::out_of_range("Invalid student number.");
+		throw std::out_of_range("Invalid subject number.");
 	}
 
 	file.open(path, std::ios::out);
