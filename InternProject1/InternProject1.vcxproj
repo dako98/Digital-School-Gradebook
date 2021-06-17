@@ -188,6 +188,7 @@
     <ClInclude Include="AddSubjectDlg.h" />
     <ClInclude Include="AllStudentsDlg.h" />
     <ClInclude Include="AllSubjectsDlg.h" />
+    <ClInclude Include="CStudent.h" />
     <ClInclude Include="EditGradeDlg.h" />
     <ClInclude Include="EditStudentDlg.h" />
     <ClInclude Include="EditSubjectDlg.h" />
@@ -220,6 +221,7 @@
     <ClCompile Include="AddSubjectDlg.cpp" />
     <ClCompile Include="AllStudentsDlg.cpp" />
     <ClCompile Include="AllSubjectsDlg.cpp" />
+    <ClCompile Include="CStudent.cpp" />
     <ClCompile Include="EditGradeDlg.cpp" />
     <ClCompile Include="EditStudentDlg.cpp" />
     <ClCompile Include="EditSubjectDlg.cpp" />
