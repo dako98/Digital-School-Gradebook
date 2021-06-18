@@ -25,6 +25,9 @@ public:
     BOOL Delete(const int nID);
     BOOL Load(const int nStudentID, T& recStudent);
 
+	int LastID() const;
+	BOOL LoadAll(std::vector<T>& out);
+
 private:
     BOOL _LoadAll(std::vector<T>& allStudents, std::fstream& file);
     BOOL _AddBulk(const std::vector<T>& allStudents, std::fstream& file);
@@ -41,6 +44,14 @@ template<class T>
 Storage<T>::Storage(const std::string& path)
 	:path(path)
 {
+	std::fstream file(path, std::ios::in | std::ios::out);
+
+	if (!file.is_open())
+	{
+		throw std::exception{ "Can not read/write to file." };
+	}
+
+	file.close();
 }
 
 template<class T>
@@ -53,7 +64,7 @@ BOOL Storage<T>::Add(T& recStudent)
 {
 	BOOL isGood = TRUE;
 
-	if (recStudent.Validate())
+	if (isGood &= recStudent.Validate())
 	{
 		std::ofstream file(path, std::ofstream::app);
 
@@ -101,7 +112,7 @@ BOOL Storage<T>::_AddBulk(const std::vector<T>& allStudents, std::fstream& file)
 
 	for (const T& student : allStudents)
 	{
-		if (isGood && student.Validate())
+		if (isGood &= student.Validate())
 		{
 
 			file << student << '\n';
@@ -109,7 +120,6 @@ BOOL Storage<T>::_AddBulk(const std::vector<T>& allStudents, std::fstream& file)
 			isGood &= file.good();
 		}
 	}
-	file.close();
 
 	return isGood;
 }
@@ -177,6 +187,33 @@ BOOL Storage<T>::Load(const int nStudentID, T& recStudent)
 	}
 
 	return isGood;
+}
+
+template<class T>
+inline int Storage<T>::LastID() const
+{
+	std::ifstream file(path);
+	int lastID = 1;
+	T tmp;
+	while (file >> tmp)
+	{
+		lastID = max(lastID, tmp.nID);
+	}
+	file.close();
+
+	return lastID;
+}
+
+template<class T>
+inline BOOL Storage<T>::LoadAll(std::vector<T>& out)
+{
+	std::fstream file(path);
+	if (file.is_open())
+	{
+		_LoadAll(out, file);
+	}
+	file.close();
+	return 0;
 }
 
 template<class T>
