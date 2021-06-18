@@ -26,7 +26,7 @@ std::istream& operator>>(std::istream& in, SUBJECT& obj)
             {
                 in.ignore(1);
 
-                in.getline(tmp.szName, len);
+                in.getline(tmp.szName, len + 1);
 
                 if (in.good())
                 {

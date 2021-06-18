@@ -138,7 +138,7 @@ BOOL CStudent::Load(const int nStudentID, STUDENT& recStudent)
 					if (file.good() && count <= MAX_NAME_SIZE)
 					{
 						// Get name
-						file.getline(tmp.szFirstName, count);
+						file.getline(tmp.szFirstName, count + 1);
 
 						// Check format
 						if (file.peek() == ',')
@@ -157,7 +157,7 @@ BOOL CStudent::Load(const int nStudentID, STUDENT& recStudent)
 					if (file.good() && count <= MAX_NAME_SIZE)
 					{
 						// Get name
-						file.getline(tmp.szLastName, count);
+						file.getline(tmp.szLastName, count + 1);
 
 						// Check format
 						if (file.peek() == ',')
@@ -225,7 +225,7 @@ BOOL CStudent::_LoadAll(std::vector<STUDENT>& allStudents, std::fstream& file)
 				if (file.good() && count <= MAX_NAME_SIZE)
 				{
 					// Get name
-					file.getline(tmp.szFirstName, count);
+					file.getline(tmp.szFirstName, count + 1);
 
 					// Check format
 					if (file.peek() == ',')
@@ -244,7 +244,7 @@ BOOL CStudent::_LoadAll(std::vector<STUDENT>& allStudents, std::fstream& file)
 				if (file.good() && count <= MAX_NAME_SIZE)
 				{
 					// Get name
-					file.getline(tmp.szLastName, count);
+					file.getline(tmp.szLastName, count + 1);
 
 					// Check format
 					if (file.peek() == ',')
@@ -303,20 +303,8 @@ STUDENT::STUDENT()
 BOOL STUDENT::Validate() const
 {
 	return (PERSON::Validate() &&
-		dtBirthDate.year < COleDateTime::GetCurrentTime().GetYear());
+		dtBirthDate.year <= COleDateTime::GetCurrentTime().GetYear());
 }
-
-/*
-std::ostream& operator<<(std::ostream& out, const STUDENT& obj)
-{
-	out << obj.nID << ',' <<
-		strlen(obj.szFirstName) << ' ' << obj.szFirstName << ',' <<
-		strlen(obj.szLastName) << ' ' << obj.szLastName << ',' <<
-		obj.dtBirthDate.year << ' ' << obj.dtBirthDate.month << ' ' << obj.dtBirthDate.day << '\n';
-
-	return out;
-}
-*/
 
 std::ostream& operator<<(std::ostream& out, const STUDENT& obj)
 {
@@ -325,84 +313,6 @@ std::ostream& operator<<(std::ostream& out, const STUDENT& obj)
 
 	return out;
 }
-
-/*
-std::istream& operator>>(std::istream& in, STUDENT& obj)
-{
-	STUDENT tmp;
-
-	in >> tmp.nID;
-
-	if (in.good())
-	{
-		int count;
-		in >> count;
-
-		// Validate name lenght
-		if (in.good() && count <= MAX_NAME_SIZE)
-		{
-			// Get name
-			in.getline(tmp.szFirstName, count);
-
-			// Check format
-			if (in.good() && in.peek() == ',')
-			{
-				in.ignore(1);
-			}
-			else
-			{
-				in.setstate(std::ios_base::failbit);
-			}
-		} // !First name
-		else
-		{
-			in.setstate(std::ios_base::failbit);
-		}
-
-		if (in.good())
-		{
-			in >> count;
-			// Validate name lenght
-			if (in.good() && count <= MAX_NAME_SIZE)
-			{
-				// Get name
-				in.getline(tmp.szLastName, count);
-
-				// Check format
-				if (in.good() && in.peek() == ',')
-				{
-					in.ignore(1);
-				}
-				else
-				{
-					in.setstate(std::ios_base::failbit);
-				}
-			}// !Last name
-			else
-			{
-				in.setstate(std::ios_base::failbit);
-			}
-		}
-		// Birth date
-		in >> tmp.dtBirthDate.year >> tmp.dtBirthDate.month >> tmp.dtBirthDate.day;
-		if (in.good())
-		{
-			in.ignore(1);
-		}
-		else
-		{
-			in.setstate(std::ios_base::failbit);
-		}
-	}// !Right number
-
-	if (in.good())
-	{
-		obj = tmp;
-	}
-
-	return in;
-}
-*/
 
 std::istream& operator>>(std::istream& in, STUDENT& obj)
 {
@@ -414,14 +324,6 @@ std::istream& operator>>(std::istream& in, STUDENT& obj)
 	{
 		// Birth date
 		in >> tmp.dtBirthDate.year >> tmp.dtBirthDate.month >> tmp.dtBirthDate.day;
-		//if (in.good())
-		//{
-		//	in.ignore(1);
-		//}
-		//else
-		//{
-		//	in.setstate(std::ios_base::failbit);
-		//}
 	}
 
 	if (in.good())
