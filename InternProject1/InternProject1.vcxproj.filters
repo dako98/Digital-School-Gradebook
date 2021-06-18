@@ -108,6 +108,24 @@
     <ClInclude Include="CStudent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CSubject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Storage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CTeacher.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CPerson.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CGrade.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CombinedStudentDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="InternProject1.cpp">
@@ -192,6 +210,24 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CStudent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CSubject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Storage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CTeacher.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CPerson.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CGrade.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CombinedStudentDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

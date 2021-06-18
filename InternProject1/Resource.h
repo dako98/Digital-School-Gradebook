@@ -17,6 +17,7 @@
 #define IDD_MANAGE_GRADES               152
 #define IDD_ADD_GRADE                   154
 #define IDD_EDIT_GRADE                  156
+#define IDD_STUDENT_COMBINED            158
 #define IDC_EDIT1                       1000
 #define IDC_DATETIMEPICKER1             1001
 #define IDC_ALL_STUDENTS                1002
@@ -41,14 +42,15 @@
 #define IDC_ADD_GRADE_TXT_GRADE_TEXT    1031
 #define IDC_COMBO3                      1032
 #define IDC_COMBO4                      1033
+#define IDC_EDIT3                       1034
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        158
+#define _APS_NEXT_RESOURCE_VALUE        160
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1034
+#define _APS_NEXT_CONTROL_VALUE         1035
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

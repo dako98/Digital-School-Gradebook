@@ -11,6 +11,9 @@
 #include "AllStudentsDlg.h"
 #include "RemoveStudentDlg.h"
 
+#include "CombinedStudentDlg.h"
+#include "Utility.h"
+
 
 // ManageStudentsDlg dialog
 
@@ -47,7 +50,8 @@ END_MESSAGE_MAP()
 void ManageStudentsDlg::OnBnClickedButton2()
 {
 	// TODO: Add your control notification handler code here
-	AddStudentDlg dlg;
+	//AddStudentDlg dlg;
+	CombinedStudentDlg dlg(eDialogMode_Add);
 	dlg.DoModal();
 }
 
@@ -55,7 +59,8 @@ void ManageStudentsDlg::OnBnClickedButton2()
 void ManageStudentsDlg::OnBnClickedButton3()
 {
 	// TODO: Add your control notification handler code here
-	EditStudentDlg dlg;
+//	EditStudentDlg dlg;
+	CombinedStudentDlg dlg(eDialogMode_Edit);
 	dlg.DoModal();
 }
 
@@ -65,6 +70,7 @@ void ManageStudentsDlg::OnBnClickedAllStudents()
 
 	// TODO: Add your control notification handler code here
 	AllStudentsDlg dlg;
+//	CombinedStudentDlg dlg(eDialogMode_View);
 	dlg.DoModal();
 }
 
@@ -72,6 +78,7 @@ void ManageStudentsDlg::OnBnClickedAllStudents()
 void ManageStudentsDlg::OnBnClickedButton4()
 {
 	// TODO: Add your control notification handler code here
-	RemoveStudentDlg dlg;
+//	RemoveStudentDlg dlg;
+	CombinedStudentDlg dlg(eDialogMode_Remove);
 	dlg.DoModal();
 }
