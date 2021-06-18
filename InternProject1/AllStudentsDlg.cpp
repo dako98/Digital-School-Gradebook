@@ -10,6 +10,10 @@
 #include "Teacher.h"
 #include "TeacherStore.h"
 
+#include "CStudent.h"
+#include "Storage.h"
+#include "Utility.h"
+
 // AllStudentsDlg dialog
 
 IMPLEMENT_DYNAMIC(AllStudentsDlg, CDialog)
@@ -26,13 +30,18 @@ AllStudentsDlg::~AllStudentsDlg()
 
 void AllStudentsDlg::PrintAllStudents()
 {
-	std::vector<Student> allStudents = StudentStore::GetInstance()->GetAllStudents();
+	std::vector<STUDENT> allStudents;
+	//= StudentStore::GetInstance()->GetAllStudents();
+	Storage<STUDENT> st(studentsPath);
+	st.LoadAll(allStudents);
 
 	CString currentRow;
 
-	for (const Student& student : allStudents)
+	for (const auto& student : allStudents)
 	{
-		currentRow.Format(_T("%d %s %s"), student.GetNumber(), student.getName(), student.GetBirthday().Format());
+//		currentRow.Format(_T("%d %s %s"), student.GetNumber(), student.getName(), student.GetBirthday().Format());
+		currentRow.Format(_T("%d %s %s %s"), student.nID, student.szFirstName, student.szLastName,
+			COleDateTime(student.dtBirthDate).Format());
 
 		allStudentsList.AddString(currentRow);
 	}
