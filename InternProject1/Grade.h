@@ -5,7 +5,7 @@
 
 enum GRADES
 {
-	INVALID,
+	INVALID = -1,
 
 	F,
 	D,
