@@ -3,16 +3,27 @@
 #include <string>
 #include <vector>
 
-const int MAX_NAME_SIZE = 50;
+#include "CPerson.h"
 
-struct STUDENT
+struct STUDENT : public PERSON
 {
-    char szFirstName[MAX_NAME_SIZE + 1];
-    char szLastName[MAX_NAME_SIZE + 1];
-    int nID;
+//static const int MAX_NAME_SIZE = 50;
+
+
+    STUDENT();
+
+//    char szFirstName[MAX_NAME_SIZE + 1];
+//    char szLastName[MAX_NAME_SIZE + 1];
+//    int nID;
     DBTIMESTAMP dtBirthDate;
 
-    BOOL Validate() const;
+    virtual BOOL Validate() const override;
+
+    friend std::ostream& operator<<(std::ostream& out, const STUDENT& obj);
+    friend std::istream& operator>>(std::istream& in, STUDENT& obj);
+
+//    virtual std::ostream& operator<<(std::ostream& out) const;
+//    virtual std::istream& operator>>(std::istream& in);
 };
 
 class CStudent

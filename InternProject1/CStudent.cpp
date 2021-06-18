@@ -4,6 +4,8 @@
 #include <fstream>
 #include <vector>
 
+static const int MAX_NAME_SIZE = 50;
+
 CStudent::CStudent(const std::string& path)
 	:path(path)
 {
@@ -292,7 +294,140 @@ BOOL CStudent::_LoadAll(std::vector<STUDENT>& allStudents, std::fstream& file)
 	return isGood;
 }
 
+STUDENT::STUDENT()
+	:PERSON()
+	,dtBirthDate()
+{
+}
+
 BOOL STUDENT::Validate() const
 {
-	return (strcmp(szFirstName, "") != 0 && strcmp(szLastName, "") != 0 && nID > 0, dtBirthDate.year < COleDateTime::GetCurrentTime().GetYear());
+	return (PERSON::Validate() &&
+		dtBirthDate.year < COleDateTime::GetCurrentTime().GetYear());
+}
+
+/*
+std::ostream& operator<<(std::ostream& out, const STUDENT& obj)
+{
+	out << obj.nID << ',' <<
+		strlen(obj.szFirstName) << ' ' << obj.szFirstName << ',' <<
+		strlen(obj.szLastName) << ' ' << obj.szLastName << ',' <<
+		obj.dtBirthDate.year << ' ' << obj.dtBirthDate.month << ' ' << obj.dtBirthDate.day << '\n';
+
+	return out;
+}
+*/
+
+std::ostream& operator<<(std::ostream& out, const STUDENT& obj)
+{
+	out << (PERSON)obj << ' ' <<
+		obj.dtBirthDate.year << ' ' << obj.dtBirthDate.month << ' ' << obj.dtBirthDate.day;
+
+	return out;
+}
+
+/*
+std::istream& operator>>(std::istream& in, STUDENT& obj)
+{
+	STUDENT tmp;
+
+	in >> tmp.nID;
+
+	if (in.good())
+	{
+		int count;
+		in >> count;
+
+		// Validate name lenght
+		if (in.good() && count <= MAX_NAME_SIZE)
+		{
+			// Get name
+			in.getline(tmp.szFirstName, count);
+
+			// Check format
+			if (in.good() && in.peek() == ',')
+			{
+				in.ignore(1);
+			}
+			else
+			{
+				in.setstate(std::ios_base::failbit);
+			}
+		} // !First name
+		else
+		{
+			in.setstate(std::ios_base::failbit);
+		}
+
+		if (in.good())
+		{
+			in >> count;
+			// Validate name lenght
+			if (in.good() && count <= MAX_NAME_SIZE)
+			{
+				// Get name
+				in.getline(tmp.szLastName, count);
+
+				// Check format
+				if (in.good() && in.peek() == ',')
+				{
+					in.ignore(1);
+				}
+				else
+				{
+					in.setstate(std::ios_base::failbit);
+				}
+			}// !Last name
+			else
+			{
+				in.setstate(std::ios_base::failbit);
+			}
+		}
+		// Birth date
+		in >> tmp.dtBirthDate.year >> tmp.dtBirthDate.month >> tmp.dtBirthDate.day;
+		if (in.good())
+		{
+			in.ignore(1);
+		}
+		else
+		{
+			in.setstate(std::ios_base::failbit);
+		}
+	}// !Right number
+
+	if (in.good())
+	{
+		obj = tmp;
+	}
+
+	return in;
+}
+*/
+
+std::istream& operator>>(std::istream& in, STUDENT& obj)
+{
+	STUDENT tmp;
+
+	in >> (PERSON)tmp;
+
+	if (in.good())
+	{
+		// Birth date
+		in >> tmp.dtBirthDate.year >> tmp.dtBirthDate.month >> tmp.dtBirthDate.day;
+		//if (in.good())
+		//{
+		//	in.ignore(1);
+		//}
+		//else
+		//{
+		//	in.setstate(std::ios_base::failbit);
+		//}
+	}
+
+	if (in.good())
+	{
+		obj = tmp;
+	}
+
+	return in;
 }
