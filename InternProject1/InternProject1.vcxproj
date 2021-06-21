@@ -189,7 +189,9 @@
     <ClInclude Include="AllStudentsDlg.h" />
     <ClInclude Include="AllSubjectsDlg.h" />
     <ClInclude Include="CGrade.h" />
+    <ClInclude Include="CombinedGradeDlg.h" />
     <ClInclude Include="CombinedStudentDlg.h" />
+    <ClInclude Include="CombinedSubjectDlg.h" />
     <ClInclude Include="CombinedTeacherDlg.h" />
     <ClInclude Include="CPerson.h" />
     <ClInclude Include="CStudent.h" />
@@ -221,6 +223,7 @@
     <ClInclude Include="Teacher.h" />
     <ClInclude Include="TeacherStore.h" />
     <ClInclude Include="Utility.h" />
+    <ClInclude Include="ViewAllGradesDlg.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AddGradeDlg.cpp" />
@@ -229,7 +232,9 @@
     <ClCompile Include="AllStudentsDlg.cpp" />
     <ClCompile Include="AllSubjectsDlg.cpp" />
     <ClCompile Include="CGrade.cpp" />
+    <ClCompile Include="CombinedGradeDlg.cpp" />
     <ClCompile Include="CombinedStudentDlg.cpp" />
+    <ClCompile Include="CombinedSubjectDlg.cpp" />
     <ClCompile Include="CombinedTeacherDlg.cpp" />
     <ClCompile Include="CPerson.cpp" />
     <ClCompile Include="CStudent.cpp" />
@@ -263,6 +268,7 @@
     <ClCompile Include="Teacher.cpp" />
     <ClCompile Include="TeacherStore.cpp" />
     <ClCompile Include="Utility.cpp" />
+    <ClCompile Include="ViewAllGradesDlg.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="InternProject1.rc" />
