@@ -8,6 +8,10 @@
 
 #include "AddGradeDlg.h"
 #include "EditGradeDlg.h"
+#include "ViewAllGradesDlg.h"
+
+#include "CombinedGradeDlg.h"
+#include "Utility.h"
 
 
 // ManageGradesDlg dialog
@@ -43,21 +47,23 @@ END_MESSAGE_MAP()
 void ManageGradesDlg::OnBnClickedButton1()
 {
 	// TODO: Add your control notification handler code here
-
+	ViewAllGradesDlg dlg;
+	dlg.DoModal();
 }
 
 void ManageGradesDlg::OnBnClickedButton2()
 {
 	// TODO: Add your control notification handler code here
-	AddGradeDlg dlg;
-	dlg.DoModal();
+//	AddGradeDlg dlg;
+//	CombinedGradeDlg dlg(eDialogMode_Add,)
+//	dlg.DoModal();
 }
 
 void ManageGradesDlg::OnBnClickedButton3()
 {
 	// TODO: Add your control notification handler code here
-	EditGradeDlg dlg;
-	dlg.DoModal();
+//	EditGradeDlg dlg;
+//	dlg.DoModal();
 }
 
 
