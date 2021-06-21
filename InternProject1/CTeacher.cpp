@@ -3,6 +3,11 @@
 
 
 
+TEACHER::TEACHER()
+	:PERSON()
+{
+}
+
 BOOL TEACHER::Validate() const
 {
 	return (PERSON::Validate());
@@ -19,21 +24,19 @@ std::ostream& operator<<(std::ostream& out, const TEACHER& obj)
 
 std::istream& operator>>(std::istream& in, TEACHER& obj)
 {
-	TEACHER tmp;
+	obj.Read(in);
 
-	in >> (PERSON)tmp;
+	return in;
+}
+
+void TEACHER::Read(std::istream& in)
+{
+	PERSON::Read(in);
 
 	if (in.good())
 	{
-		in >> tmp.nID;
-
-		if (in.good())
-		{
-			obj = tmp;
-		}
+		in >> nID;
 	}
-
-	return in;
 }
 
 /*

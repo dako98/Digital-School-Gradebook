@@ -22,6 +22,8 @@ struct STUDENT : public PERSON
     friend std::ostream& operator<<(std::ostream& out, const STUDENT& obj);
     friend std::istream& operator>>(std::istream& in, STUDENT& obj);
 
+protected:
+    void Read(std::istream& in);
 //    virtual std::ostream& operator<<(std::ostream& out) const;
 //    virtual std::istream& operator>>(std::istream& in);
 };

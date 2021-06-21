@@ -17,6 +17,18 @@ BOOL GRADE::Validate() const
 		dtDate.minute <= now.minute);
 }
 
+void GRADE::Read(std::istream& in)
+{
+	in >> nID >>
+		nStudentID >>
+		nSubjectID >>
+		dtDate.year >>
+		dtDate.month >>
+		dtDate.day >>
+		dtDate.hour >>
+		dtDate.minute;
+}
+
 std::ostream& operator<<(std::ostream& out, const GRADE& obj)
 {
 	out << obj.nID << ' ' <<
@@ -33,14 +45,7 @@ std::ostream& operator<<(std::ostream& out, const GRADE& obj)
 
 std::istream& operator>>(std::istream& in, GRADE& obj)
 {
-	in >> obj.nID >>
-		obj.nStudentID >>
-		obj.nSubjectID >>
-		obj.dtDate.year >>
-		obj.dtDate.month >>
-		obj.dtDate.day >>
-		obj.dtDate.hour >>
-		obj.dtDate.minute;
+	obj.Read(in);
 
 	return in;
 }

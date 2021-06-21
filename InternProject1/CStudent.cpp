@@ -306,6 +306,18 @@ BOOL STUDENT::Validate() const
 		dtBirthDate.year <= COleDateTime::GetCurrentTime().GetYear());
 }
 
+void STUDENT::Read(std::istream& in)
+{
+	PERSON::Read(in);
+	
+	if (in.good())
+	{
+		// Birth date
+		in >> dtBirthDate.year >> dtBirthDate.month >> dtBirthDate.day;
+	}
+
+}
+
 std::ostream& operator<<(std::ostream& out, const STUDENT& obj)
 {
 	out << (PERSON)obj << ' ' <<
@@ -316,20 +328,7 @@ std::ostream& operator<<(std::ostream& out, const STUDENT& obj)
 
 std::istream& operator>>(std::istream& in, STUDENT& obj)
 {
-	STUDENT tmp;
-
-	in >> (PERSON)tmp;
-
-	if (in.good())
-	{
-		// Birth date
-		in >> tmp.dtBirthDate.year >> tmp.dtBirthDate.month >> tmp.dtBirthDate.day;
-	}
-
-	if (in.good())
-	{
-		obj = tmp;
-	}
+	obj.Read(in);
 
 	return in;
 }

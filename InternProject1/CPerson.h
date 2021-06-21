@@ -15,6 +15,8 @@ struct PERSON
 	friend std::ostream& operator<<(std::ostream& out, const PERSON& obj);
 	friend std::istream& operator>>(std::istream& in, PERSON& obj);
 
+protected:
+	void Read(std::istream& in);
 //	virtual std::ostream& operator<<(std::ostream& out) const;
 //	virtual std::istream& operator>>(std::istream& in);
 
