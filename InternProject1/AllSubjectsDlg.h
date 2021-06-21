@@ -24,4 +24,9 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	CListBox subjectsList;
+	afx_msg void OnBnClickedButtonAdd();
+	afx_msg void OnBnClickedButtonEdit();
+	afx_msg void OnBnClickedButtonRemove();
+private:
+	void PrintAll();
 };

@@ -9,11 +9,14 @@
 #include <vector>
 
 #include "SubjectStore.h"
+#include "Storage.h"
+#include "CSubject.h"
+#include "CombinedSubjectDlg.h"
 
 
 // AllSubjectsDlg dialog
 
-
+/*
 void populateList(CListBox& list, const std::vector<Subject>& src)
 {
 	list.ResetContent();
@@ -29,7 +32,7 @@ void populateList(CListBox& list, const std::vector<Subject>& src)
 	{
 		list.SetCurSel(0);
 	}
-}
+}*/
 
 IMPLEMENT_DYNAMIC(AllSubjectsDlg, CDialog)
 
@@ -43,14 +46,30 @@ AllSubjectsDlg::~AllSubjectsDlg()
 {
 }
 
+void AllSubjectsDlg::PrintAll()
+{
+	std::vector<SUBJECT> all;
+	Storage<SUBJECT> su(subjectsPath);
+	su.LoadAll(all);
+
+	CString currentRow;
+
+	for (const auto& subject : all)
+	{
+		//		currentRow.Format(_T("%d %s %s"), student.GetNumber(), student.getName(), student.GetBirthday().Format());
+		currentRow.Format(_T("%d %s %s"), subject.nID, subject.szName, subject.szRoom);
+
+		int index = subjectsList.AddString(currentRow);
+		subjectsList.SetItemData(index, subject.nID);
+	}
+}
+
 BOOL AllSubjectsDlg::OnInitDialog()
 {
-	CDialog::OnInitDialog();
+	if(!CDialog::OnInitDialog())
+		return FALSE;
 
-	std::vector<Subject> allSubjects = SubjectStore::GetInstance()->GetAllSubjects();
-
-	populateList(subjectsList, allSubjects);
-	UpdateData();
+	PrintAll();
 
 	return 0;
 }
@@ -63,7 +82,48 @@ void AllSubjectsDlg::DoDataExchange(CDataExchange* pDX)
 
 
 BEGIN_MESSAGE_MAP(AllSubjectsDlg, CDialog)
+	ON_BN_CLICKED(IDC_BUTTON1, &AllSubjectsDlg::OnBnClickedButtonAdd)
+	ON_BN_CLICKED(IDC_BUTTON2, &AllSubjectsDlg::OnBnClickedButtonEdit)
+	ON_BN_CLICKED(IDC_BUTTON3, &AllSubjectsDlg::OnBnClickedButtonRemove)
 END_MESSAGE_MAP()
 
 
 // AllSubjectsDlg message handlers
+
+
+void AllSubjectsDlg::OnBnClickedButtonAdd()
+{
+	SUBJECT tmp;
+	Storage<SUBJECT> store(subjectsPath);
+	
+	tmp.nID = store.LastID() + 1;
+
+	CombinedSubjectDlg dlg(eDialogMode_Add, tmp);
+	dlg.DoModal();
+	// TODO: Add your control notification handler code here
+}
+
+
+void AllSubjectsDlg::OnBnClickedButtonEdit()
+{
+	SUBJECT tmp;
+	Storage<SUBJECT> store(subjectsPath);
+
+	store.Load(subjectsList.GetItemData(subjectsList.GetCurSel()), tmp);
+
+	CombinedSubjectDlg dlg(eDialogMode_Edit, tmp);
+	dlg.DoModal();
+	// TODO: Add your control notification handler code here
+}
+
+
+void AllSubjectsDlg::OnBnClickedButtonRemove()
+{
+	SUBJECT tmp;
+	Storage<SUBJECT> store(studentsPath);
+
+	store.Load(subjectsList.GetItemData(subjectsList.GetCurSel()), tmp);
+
+	CombinedSubjectDlg dlg(eDialogMode_Remove, tmp);
+	dlg.DoModal();
+}
