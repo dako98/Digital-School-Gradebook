@@ -38,24 +38,3 @@ void TEACHER::Read(std::istream& in)
 		in >> nID;
 	}
 }
-
-/*
-std::ostream& TEACHER::operator<<(std::ostream& out) const
-{
-	PERSON::operator<<(out) << nID;
-
-	return out;
-}
-
-std::istream& TEACHER::operator>>(std::istream& in)
-{
-	PERSON::operator>>(in);
-
-	if (in.good())
-	{
-		in >> nID;
-	}
-
-	return in;
-}
-*/

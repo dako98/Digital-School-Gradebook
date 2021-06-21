@@ -7,14 +7,8 @@
 
 struct STUDENT : public PERSON
 {
-//static const int MAX_NAME_SIZE = 50;
-
-
     STUDENT();
 
-//    char szFirstName[MAX_NAME_SIZE + 1];
-//    char szLastName[MAX_NAME_SIZE + 1];
-//    int nID;
     DBTIMESTAMP dtBirthDate;
 
     virtual BOOL Validate() const override;
@@ -24,8 +18,6 @@ struct STUDENT : public PERSON
 
 protected:
     void Read(std::istream& in);
-//    virtual std::ostream& operator<<(std::ostream& out) const;
-//    virtual std::istream& operator>>(std::istream& in);
 };
 
 class CStudent
