@@ -35,8 +35,8 @@ CombinedTeacherDlg::CombinedTeacherDlg(DialogMode eMode, const TEACHER& data)
 
 BOOL CombinedTeacherDlg::OnInitDialog()
 {
-	CDialog::OnInitDialog();
-
+	if (!CDialog::OnInitDialog())
+		return FALSE;
 
 	teacherNumberVal = tmp.nID;
 	teacherFirstName.SetWindowText(CString(tmp.szFirstName));
@@ -45,9 +45,7 @@ BOOL CombinedTeacherDlg::OnInitDialog()
 
 	switch (m_eDialogMode)
 	{
-		//	case DialogMode::eDialogMode_View:
 	case DialogMode::eDialogMode_Remove:
-
 
 		teacherFirstName.EnableWindow(FALSE);
 		teacherLastName.EnableWindow(FALSE);
@@ -56,6 +54,7 @@ BOOL CombinedTeacherDlg::OnInitDialog()
 		break;
 
 	case DialogMode::eDialogMode_Add:
+
 		UpdateData(FALSE);
 
 	case DialogMode::eDialogMode_Edit:
@@ -106,7 +105,7 @@ void CombinedTeacherDlg::OnBnClickedOk()
 
 	st.nID = teacherNumberVal;
 
-	teacherFirstName.GetWindowTextW(buff);
+	teacherFirstName.GetWindowText(buff);
 
 	if (buff.GetLength() <= TEACHER::MAX_NAME_SIZE)
 	{
@@ -156,6 +155,7 @@ void CombinedTeacherDlg::OnBnClickedOk()
 	if (!isOK)
 	{
 		int errorBox = MessageBox((LPCWSTR)L"Error! Check your input.", NULL, MB_OK | MB_ICONWARNING);
+		return;
 	}
 
 	CDialog::OnOK();
