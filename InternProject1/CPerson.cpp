@@ -13,48 +13,6 @@ std::ostream& operator<<(std::ostream& out, const PERSON& obj)
 
 std::istream& operator>>(std::istream& in, PERSON& obj)
 {
-/*
-	int count;
-	in >> count;
-
-	// Validate name lenght
-	if (in.good() && count <= PERSON::MAX_NAME_SIZE)
-	{
-		// Get name
-		in.ignore(1);
-		in.read(tmp.szFirstName, count);
-		tmp.szFirstName[count] = '\0';
-
-	} // !First name
-	else
-	{
-		in.setstate(std::ios_base::failbit);
-	}
-
-	if (in.good())
-	{
-		in >> count;
-		// Validate name lenght
-		if (in.good() && count <= PERSON::MAX_NAME_SIZE)
-		{
-			// Get name
-			in.ignore(1);
-			in.read(tmp.szLastName, count);
-			tmp.szLastName[count] = '\0';
-
-		}// !Last name
-		else
-		{
-			in.setstate(std::ios_base::failbit);
-		}
-	}
-
-	if (in.good())
-	{
-		obj = tmp;
-	}
-	*/
-
 	obj.Read(in);
 
 	return in;
@@ -99,6 +57,13 @@ void PERSON::Read(std::istream& in)
 			in.setstate(std::ios_base::failbit);
 		}
 	}
+}
+
+PERSON::PERSON()
+{
+	nID = -1;
+	szFirstName[0] = '\0';
+	szLastName[0] = '\0';
 }
 
 BOOL PERSON::Validate() const
