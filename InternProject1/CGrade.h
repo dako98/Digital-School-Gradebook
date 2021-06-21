@@ -19,11 +19,13 @@ struct GRADE
 		COUNT
 	};
 
+	GRADE();
+
 	int nID;
 	int nStudentID;
 	int nSubjectID;
 	DBTIMESTAMP dtDate;
-	GRADES value;
+	int value;
 
 	BOOL Validate() const;
 
