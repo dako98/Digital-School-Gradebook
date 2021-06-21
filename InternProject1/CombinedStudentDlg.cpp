@@ -178,6 +178,7 @@ void CombinedStudentDlg::OnBnClickedOk()
 	if (!isOK)
 	{
 		int errorBox = MessageBox((LPCWSTR)L"Error! Check your input.", NULL, MB_OK | MB_ICONWARNING);
+		return;
 	}
 
 	CDialog::OnOK();
