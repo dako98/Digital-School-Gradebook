@@ -48,7 +48,7 @@ Storage<T>::Storage(const std::string& path)
 
 	if (!file.is_open())
 	{
-		throw std::exception{ "Can not read/write to file." };
+		throw std::exception{ std::string{"Can not access file: \"" + path + "\""}.c_str() };
 	}
 
 	file.close();
@@ -82,11 +82,11 @@ BOOL Storage<T>::Edit(T& recStudent)
 	BOOL isGood = TRUE;
 
 	std::vector<T> students;
-	std::fstream file(path, std::fstream::trunc);
+	std::fstream file(path, std::ios::in);
 
-	if (isGood &= file.is_open())
+	if (isGood && file.good())
 	{
-		if (isGood &= _LoadAll(students, file))
+		if (isGood = _LoadAll(students, file))
 		{
 			int count = students.size();
 
@@ -97,7 +97,10 @@ BOOL Storage<T>::Edit(T& recStudent)
 					students[i] = recStudent;
 				}
 			}
-			isGood &= _AddBulk(students, file);
+			file.close();
+			file.open(path, std::ios::out | std::ios::trunc);
+
+			isGood = _AddBulk(students, file);
 		}
 	}
 	file.close();
@@ -130,7 +133,7 @@ BOOL Storage<T>::Delete(const int nStudentID)
 	BOOL isGood = TRUE;
 
 	std::vector<T> students;
-	std::fstream file(path, std::fstream::trunc);
+	std::fstream file(path, std::ios::in);
 
 	if (isGood &= file.is_open())
 	{
@@ -140,11 +143,14 @@ BOOL Storage<T>::Delete(const int nStudentID)
 
 			for (size_t i = 0; i < count; i++)
 			{
-				if (isGood && students[i].nID == nStudentID)
+				if (students[i].nID == nStudentID)
 				{
 					students.erase(students.begin() + i);
 				}
 			}
+			file.close();
+			file.open(path, std::ios::out | std::ios::trunc);
+
 			isGood &= _AddBulk(students, file);
 		}
 	}
@@ -193,7 +199,7 @@ template<class T>
 inline int Storage<T>::LastID() const
 {
 	std::ifstream file(path);
-	int lastID = 1;
+	int lastID = 0;
 	T tmp;
 	while (file >> tmp)
 	{
@@ -207,13 +213,13 @@ inline int Storage<T>::LastID() const
 template<class T>
 inline BOOL Storage<T>::LoadAll(std::vector<T>& out)
 {
-	std::fstream file(path);
+	std::fstream file(path, std::ios::in);
 	if (file.is_open())
 	{
 		_LoadAll(out, file);
 	}
 	file.close();
-	return 0;
+	return TRUE;
 }
 
 template<class T>
@@ -224,13 +230,14 @@ BOOL Storage<T>::_LoadAll(std::vector<T>& allStudents, std::fstream& file)
 
 	allStudents.clear();
 
-	if (file.is_open())
+	if (file.good())
 	{
 		int count;
 
 		while (file.good() && file.peek() != EOF)
 		{
 			file >> tmp;
+			file.ignore(1);
 
 			if (file.good() && tmp.Validate())
 			{
