@@ -7,6 +7,7 @@
 #include "afxdialogex.h"
 
 #include "CStudent.h"
+#include "CGrade.h"
 #include "Storage.h"
 
 // FIXME: Make it work from the Utility file
@@ -27,12 +28,13 @@ CombinedStudentDlg::CombinedStudentDlg(CWnd* pParent /*=nullptr*/)
 
 }
 
-CombinedStudentDlg::CombinedStudentDlg(DialogMode eDialogMode)
+CombinedStudentDlg::CombinedStudentDlg(DialogMode eDialogMode,const STUDENT& student)
 	: CDialog(IDD_STUDENT_COMBINED, nullptr)
 	, m_eDialogMode(eDialogMode)
 	, studentNumberVal(0)
 	, studentBirthDateVal(COleDateTime::GetCurrentTime())
 	, studentStore(studentsPath)
+	, student(student)
 {
 }
 
@@ -40,19 +42,26 @@ BOOL CombinedStudentDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
+	studentNumberVal = student.nID;
+	studentBirthDateVal = student.dtBirthDate;
+	studentFirstName.SetWindowText(CString(student.szFirstName));
+	studentLastName.SetWindowText(CString(student.szLastName));
+	UpdateData(FALSE);
+
 	switch (m_eDialogMode)
 	{
-	case DialogMode::eDialogMode_View:
+//	case DialogMode::eDialogMode_View:
 	case DialogMode::eDialogMode_Remove:
 
 		studentBirthDate.EnableWindow(FALSE);
 		studentFirstName.EnableWindow(FALSE);
 		studentLastName.EnableWindow(FALSE);
 		studentNumber.EnableWindow(FALSE);
+
 		break;
 
 	case DialogMode::eDialogMode_Add:
-		studentNumberVal = studentStore.LastID();
+//		studentNumberVal = studentStore.LastID() + 1;
 		UpdateData(FALSE);
 
 	case DialogMode::eDialogMode_Edit:
@@ -99,7 +108,7 @@ void CombinedStudentDlg::OnBnClickedOk()
 {
 	UpdateData();
 	
-	BOOL hasError = TRUE;
+	BOOL isOK = TRUE;
 	STUDENT st;
 	CString buff;
 
@@ -134,15 +143,29 @@ void CombinedStudentDlg::OnBnClickedOk()
 	{
 	case DialogMode::eDialogMode_Add:
 
-		hasError = studentStore.Add(st);
+		isOK = studentStore.Add(st);
 		break;
 	case DialogMode::eDialogMode_Edit:
 
-		hasError = studentStore.Edit(st);
+		isOK = studentStore.Edit(st);
 		break;
 	case DialogMode::eDialogMode_Remove:
+	{
+		isOK = studentStore.Delete(st.nID);
 
-		hasError = studentStore.Delete(st.nID);
+		Storage<GRADE> gradeStore(gradesPath);
+		std::vector<GRADE> allGrades;
+
+		gradeStore.LoadAll(allGrades);
+
+		for (const auto& grade : allGrades)
+		{
+			if (grade.nStudentID == st.nID)
+			{
+				gradeStore.Delete(grade.nID);
+			}
+		}
+	}
 		break;
 	
 	case DialogMode::eDialogMode_View:
@@ -152,7 +175,7 @@ void CombinedStudentDlg::OnBnClickedOk()
 		break;
 	}
 	
-	if (!hasError)
+	if (!isOK)
 	{
 		int errorBox = MessageBox((LPCWSTR)L"Error! Check your input.", NULL, MB_OK | MB_ICONWARNING);
 	}

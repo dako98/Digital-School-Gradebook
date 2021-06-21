@@ -190,6 +190,7 @@
     <ClInclude Include="AllSubjectsDlg.h" />
     <ClInclude Include="CGrade.h" />
     <ClInclude Include="CombinedStudentDlg.h" />
+    <ClInclude Include="CombinedTeacherDlg.h" />
     <ClInclude Include="CPerson.h" />
     <ClInclude Include="CStudent.h" />
     <ClInclude Include="CSubject.h" />
@@ -229,6 +230,7 @@
     <ClCompile Include="AllSubjectsDlg.cpp" />
     <ClCompile Include="CGrade.cpp" />
     <ClCompile Include="CombinedStudentDlg.cpp" />
+    <ClCompile Include="CombinedTeacherDlg.cpp" />
     <ClCompile Include="CPerson.cpp" />
     <ClCompile Include="CStudent.cpp" />
     <ClCompile Include="CSubject.cpp" />

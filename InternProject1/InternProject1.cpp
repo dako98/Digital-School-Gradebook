@@ -119,6 +119,6 @@ BOOL CInternProject1App::InitInstance()
 
 void InitialiseStorages()
 {
-	SubjectStore::GetInstance()->Initialise("Subjects.txt");
-	StudentStore::GetInstance()->Initialise("Students.txt");
+//	SubjectStore::GetInstance()->Initialise("Subjects.txt");
+//	StudentStore::GetInstance()->Initialise("Students.txt");
 }

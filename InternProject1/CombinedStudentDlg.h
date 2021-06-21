@@ -11,7 +11,7 @@ class CombinedStudentDlg : public CDialog
 
 public:
 	CombinedStudentDlg(CWnd* pParent = nullptr);   // standard constructor
-	CombinedStudentDlg(DialogMode eMode);
+	CombinedStudentDlg(DialogMode eMode, const STUDENT& data);
 
 	BOOL OnInitDialog() override;
 
@@ -28,6 +28,7 @@ protected:
 private:
 	DialogMode m_eDialogMode;
 	Storage<STUDENT> studentStore;
+	STUDENT student;
 
 	DECLARE_MESSAGE_MAP()
 public:

@@ -51,8 +51,8 @@ void ManageStudentsDlg::OnBnClickedButton2()
 {
 	// TODO: Add your control notification handler code here
 	//AddStudentDlg dlg;
-	CombinedStudentDlg dlg(eDialogMode_Add);
-	dlg.DoModal();
+	CombinedStudentDlg dlg(eDialogMode_Add, STUDENT());
+//	dlg.DoModal();
 }
 
 
@@ -60,8 +60,8 @@ void ManageStudentsDlg::OnBnClickedButton3()
 {
 	// TODO: Add your control notification handler code here
 //	EditStudentDlg dlg;
-	CombinedStudentDlg dlg(eDialogMode_Edit);
-	dlg.DoModal();
+	CombinedStudentDlg dlg(eDialogMode_Edit, STUDENT());
+//	dlg.DoModal();
 }
 
 
@@ -79,6 +79,6 @@ void ManageStudentsDlg::OnBnClickedButton4()
 {
 	// TODO: Add your control notification handler code here
 //	RemoveStudentDlg dlg;
-	CombinedStudentDlg dlg(eDialogMode_Remove);
-	dlg.DoModal();
+	CombinedStudentDlg dlg(eDialogMode_Remove, STUDENT());
+//	dlg.DoModal();
 }

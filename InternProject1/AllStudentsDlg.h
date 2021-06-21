@@ -31,7 +31,11 @@ public:
 private:
 	void PrintAllStudents();
 	void PrintAllTeachers();
+	void PrintAll();
 
 public:
 	afx_msg void OnBnClickedRadio5();
+	afx_msg void OnBnClickedButtonEdit();
+	afx_msg void OnBnClickedButtonAdd();
+	afx_msg void OnBnClickedButtonRemove();
 };
