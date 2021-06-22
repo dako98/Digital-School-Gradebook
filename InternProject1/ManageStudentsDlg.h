@@ -29,4 +29,5 @@ public:
 	afx_msg void OnBnClickedButtonAverage();
 	afx_msg void OnBnClickedButtonExcellents();
 	afx_msg void OnBnClickedButtonBirthdayers();
+	afx_msg void OnBnClickedButtonFails();
 };

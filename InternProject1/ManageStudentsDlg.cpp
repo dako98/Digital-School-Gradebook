@@ -15,6 +15,7 @@
 #include "StudentAverageDlg.h"
 #include "ExcellentStudentsDlg.h"
 #include "BirthdayersDlg.h"
+#include "FailsDlg.h"
 #include "Utility.h"
 
 
@@ -47,6 +48,7 @@ BEGIN_MESSAGE_MAP(ManageStudentsDlg, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON6, &ManageStudentsDlg::OnBnClickedButtonAverage)
 	ON_BN_CLICKED(IDC_BUTTON5, &ManageStudentsDlg::OnBnClickedButtonExcellents)
 	ON_BN_CLICKED(IDC_BUTTON1, &ManageStudentsDlg::OnBnClickedButtonBirthdayers)
+	ON_BN_CLICKED(IDC_BUTTON7, &ManageStudentsDlg::OnBnClickedButtonFails)
 END_MESSAGE_MAP()
 
 
@@ -111,4 +113,12 @@ void ManageStudentsDlg::OnBnClickedButtonBirthdayers()
 	// TODO: Add your control notification handler code here
 	BirthdayersDlg dlg;
 	dlg.DoModal();
+}
+
+
+void ManageStudentsDlg::OnBnClickedButtonFails()
+{
+	FailsDlg dlg;
+	dlg.DoModal();
+	// TODO: Add your control notification handler code here
 }

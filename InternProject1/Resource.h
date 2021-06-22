@@ -22,6 +22,10 @@
 #define IDD_GRADES_COMBINED             162
 #define IDD_ALL_GRADES                  164
 #define IDD_SUBJECT_COMBINED            166
+#define IDD_STUDENT_AVERAGE_GRADE       168
+#define IDD_EXCELLENT_STUDENTS          170
+#define IDD_FAILS                       172
+#define IDD_BIRTHDAYERS                 174
 #define IDC_EDIT1                       1000
 #define IDC_DATETIMEPICKER1             1001
 #define IDC_ALL_STUDENTS                1002
@@ -55,7 +59,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        168
+#define _APS_NEXT_RESOURCE_VALUE        176
 #define _APS_NEXT_COMMAND_VALUE         32771
 #define _APS_NEXT_CONTROL_VALUE         1040
 #define _APS_NEXT_SYMED_VALUE           101
