@@ -12,19 +12,11 @@ GRADE::GRADE()
 
 BOOL GRADE::Validate() const
 {
-	DBTIMESTAMP now;
-	COleDateTime::GetCurrentTime().GetAsDBTIMESTAMP(now);
-
 	return (nID > 0 &&
 		nStudentID > 0 &&
 		nSubjectID > 0 &&
 		value > GRADE::GRADES::INVALID && value < GRADE::GRADES::COUNT&&
 		COleDateTime(dtDate) <= COleDateTime::GetCurrentTime());
-/*		dtDate.year <= now.year &&
-		dtDate.month <= now.month &&
-		dtDate.day <= now.day &&
-		dtDate.hour <= now.hour &&
-		dtDate.minute <= now.minute);*/
 }
 
 void GRADE::Read(std::istream& in)

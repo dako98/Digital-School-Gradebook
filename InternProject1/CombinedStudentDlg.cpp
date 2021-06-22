@@ -40,7 +40,8 @@ CombinedStudentDlg::CombinedStudentDlg(DialogMode eDialogMode,const STUDENT& stu
 
 BOOL CombinedStudentDlg::OnInitDialog()
 {
-	CDialog::OnInitDialog();
+	if(!CDialog::OnInitDialog())
+		return FALSE;
 
 	studentNumberVal = student.nID;
 	studentBirthDateVal = student.dtBirthDate;
@@ -61,7 +62,6 @@ BOOL CombinedStudentDlg::OnInitDialog()
 		break;
 
 	case DialogMode::eDialogMode_Add:
-//		studentNumberVal = studentStore.LastID() + 1;
 		UpdateData(FALSE);
 
 	case DialogMode::eDialogMode_Edit:
@@ -78,6 +78,8 @@ BOOL CombinedStudentDlg::OnInitDialog()
 		throw std::exception{ "Invalid window state." };
 		break;
 	}
+
+	return TRUE;
 }
 
 CombinedStudentDlg::~CombinedStudentDlg()

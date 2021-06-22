@@ -10,7 +10,7 @@ static int GetIndexByData(const int target, const CComboBox& comboBox)
 	int result = CB_ERR;
 	int length = comboBox.GetCount();
 
-	for (size_t i = 0; i < length; i++)
+	for (int i = 0; i < length; i++)
 	{
 		if (comboBox.GetItemData(i) == target)
 		{

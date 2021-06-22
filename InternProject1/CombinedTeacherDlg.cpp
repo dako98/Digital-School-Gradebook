@@ -15,15 +15,6 @@
 
 IMPLEMENT_DYNAMIC(CombinedTeacherDlg, CDialog)
 
-CombinedTeacherDlg::CombinedTeacherDlg(CWnd* pParent /*=nullptr*/)
-	: CDialog(IDD_TEACHER_COMBINED, pParent)
-	, store(teachersPath)
-	, teacherNumberVal(0)
-	, tmp()
-{
-
-}
-
 CombinedTeacherDlg::CombinedTeacherDlg(DialogMode eMode, const TEACHER& data)
 	: CDialog(IDD_TEACHER_COMBINED, nullptr)
 	, m_eDialogMode(eMode)

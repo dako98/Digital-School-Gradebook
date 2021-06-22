@@ -43,47 +43,45 @@ ViewAllGradesDlg::~ViewAllGradesDlg()
 
 void ViewAllGradesDlg::PrintAllGrades()
 {
-		std::vector<GRADE> allGrades;
-		std::vector<STUDENT> allStudents;
-		std::vector<SUBJECT> allSubjects;
+	gradesList.ResetContent();
 
-		Storage<GRADE> gr(gradesPath);
-		Storage<STUDENT> st(studentsPath);
-		Storage<SUBJECT> su(subjectsPath);
+	std::vector<GRADE> allGrades;
+	std::vector<STUDENT> allStudents;
+	std::vector<SUBJECT> allSubjects;
 
-		gr.LoadAll(allGrades);
-		st.LoadAll(allStudents);
-		su.LoadAll(allSubjects);
+	Storage<GRADE> gr(gradesPath);
+	Storage<STUDENT> st(studentsPath);
+	Storage<SUBJECT> su(subjectsPath);
 
-		std::unordered_map<int, std::pair<CString, CString>> studentNameMap;
-		std::unordered_map<int, CString> subjectNameMap;
+	gr.LoadAll(allGrades);
+	st.LoadAll(allStudents);
+	su.LoadAll(allSubjects);
 
-		for (const auto& student : allStudents)
-		{
-			studentNameMap[student.nID] = std::make_pair<CString, CString>(CString{ student.szFirstName }, CString{ student.szLastName });
-		}
-		for (const auto& subject : allSubjects)
-		{
-			subjectNameMap[subject.nID] = CString{ subject.szName };
-		}
+	std::unordered_map<int, std::pair<CString, CString>> studentNameMap;
+	std::unordered_map<int, CString> subjectNameMap;
 
-		CString currentRow;
+	for (const auto& student : allStudents)
+	{
+		studentNameMap[student.nID] = std::make_pair<CString, CString>(CString{ student.szFirstName }, CString{ student.szLastName });
+	}
+	for (const auto& subject : allSubjects)
+	{
+		subjectNameMap[subject.nID] = CString{ subject.szName };
+	}
 
+	CString currentRow;
 
+	for (const auto& grade : allGrades)
+	{
+		currentRow.Format(_T("%d %s %s %s"),
+			grade.nID,
+			studentNameMap[grade.nStudentID].first,
+			subjectNameMap[grade.nSubjectID],
+			MapGradeName(grade.value));
 
-		for (const auto& grade : allGrades)
-		{
-			//		currentRow.Format(_T("%d %s %s"), student.GetNumber(), student.getName(), student.GetBirthday().Format());
-			currentRow.Format(_T("%d %s %s %s"),
-				grade.nID, 
-				studentNameMap[grade.nStudentID].first, 
-				subjectNameMap[grade.nSubjectID], 
-				MapGradeName(grade.value));
-
-			int index = gradesList.AddString(currentRow);
-			gradesList.SetItemData(index, grade.nID);
-		}
-	
+		int index = gradesList.AddString(currentRow);
+		gradesList.SetItemData(index, grade.nID);
+	}
 }
 
 void ViewAllGradesDlg::DoDataExchange(CDataExchange* pDX)
