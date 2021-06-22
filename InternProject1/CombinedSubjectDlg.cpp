@@ -42,8 +42,8 @@ BOOL CombinedSubjectDlg::OnInitDialog()
 	{
 		currentRow.Format(_T("%d %s %s"),
 			teacher.nID,
-			teacher.szFirstName,
-			teacher.szLastName);
+			CString{ teacher.szFirstName },
+			CString{ teacher.szLastName });
 
 		int index = teacherDropdown.AddString(currentRow);
 		teacherDropdown.SetItemData(index, teacher.nID);

@@ -47,7 +47,9 @@ void AddGradeDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 
 	if (gradeSliderVal > 0)
 	{
-		gradeText.Format(_T("%d %s"), gradeSliderVal, Grade::MapName(gradeSliderVal));
+		gradeText.Format(_T("%d %s"),
+			gradeSliderVal,
+			Grade::MapName(gradeSliderVal));
 
 		UpdateData(FALSE);
 	
@@ -77,7 +79,9 @@ void AddGradeDlg::PrintStudents()
 	int index = 0;
 	for (const Student& student : allStudents)
 	{
-		currentRow.Format(_T("%d %s"), student.GetNumber(), student.getName());
+		currentRow.Format(_T("%d %s"), 
+			student.GetNumber(), 
+			student.getName());
 
 		int i = studentComboBox.AddString(currentRow);
 		studentComboBox.SetItemData(i, index);

@@ -35,7 +35,10 @@ void CombinedGradeDlg::PrintAllStudents()
 
 	for (const auto& student : allStudents)
 	{
-		currentRow.Format(_T("%d %s %s"), student.nID, student.szFirstName, student.szLastName);
+		currentRow.Format(_T("%d %s %s"), 
+			student.nID, 
+			CString{ student.szFirstName },
+			CString{ student.szLastName });
 
 		int index = studentDropdown.AddString(currentRow);
 		studentDropdown.SetItemData(index, student.nID);
@@ -53,7 +56,9 @@ void CombinedGradeDlg::PrintAllSubjects()
 
 	for (const auto& student : allStudents)
 	{
-		currentRow.Format(_T("%d %s"), student.nID, student.szName);
+		currentRow.Format(_T("%d %s"), 
+			student.nID, 
+			CString{ student.szName });
 
 		int index = subjectDropdown.AddString(currentRow);
 		subjectDropdown.SetItemData(index, student.nID);
@@ -70,11 +75,13 @@ BOOL CombinedGradeDlg::OnInitDialog()
 
 	// Load all students
 	PrintAllStudents();
+
 	// Select student
 	studentDropdown.SetCurSel(GetIndexByData(tmp.nStudentID, studentDropdown));
 
 	// Load all subjects
 	PrintAllSubjects();
+
 	// Select subject
 	subjectDropdown.SetCurSel(GetIndexByData(tmp.nSubjectID, subjectDropdown));
 
@@ -84,6 +91,7 @@ BOOL CombinedGradeDlg::OnInitDialog()
 		int index = gradeDropdown.AddString(MapGradeName(i));
 		gradeDropdown.SetItemData(index, i);
 	}
+
 	// Select grade value
 	gradeDropdown.SetCurSel(GetIndexByData(tmp.value, gradeDropdown));
 
@@ -94,7 +102,6 @@ BOOL CombinedGradeDlg::OnInitDialog()
 
 	switch (m_eDialogMode)
 	{
-		//	case DialogMode::eDialogMode_View:
 	case DialogMode::eDialogMode_Remove:
 
 		studentDropdown.EnableWindow(FALSE);

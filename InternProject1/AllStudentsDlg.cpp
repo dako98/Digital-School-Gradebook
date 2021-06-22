@@ -51,7 +51,6 @@ void AllStudentsDlg::PrintAll()
 void AllStudentsDlg::PrintAllStudents()
 {
 	std::vector<STUDENT> allStudents;
-	//= StudentStore::GetInstance()->GetAllStudents();
 	Storage<STUDENT> st(studentsPath);
 	st.LoadAll(allStudents);
 
@@ -59,8 +58,10 @@ void AllStudentsDlg::PrintAllStudents()
 
 	for (const auto& student : allStudents)
 	{
-//		currentRow.Format(_T("%d %s %s"), student.GetNumber(), student.getName(), student.GetBirthday().Format());
-		currentRow.Format(_T("%d %s %s %s"), student.nID, student.szFirstName, student.szLastName,
+		currentRow.Format(_T("%d %s %s %s"), 
+			student.nID, 
+			CString{ student.szFirstName },
+			CString{ student.szLastName },
 			COleDateTime(student.dtBirthDate).Format());
 
 		int index = allStudentsList.AddString(currentRow);
@@ -118,8 +119,10 @@ void AllStudentsDlg::PrintAllTeachers()
 
 	for (const auto& student : all)
 	{
-		//		currentRow.Format(_T("%d %s %s"), student.GetNumber(), student.getName(), student.GetBirthday().Format());
-		currentRow.Format(_T("%d %s %s"), student.nID, student.szFirstName, student.szLastName);
+		currentRow.Format(_T("%d %s %s"), 
+			student.nID, 
+			CString{ student.szFirstName },
+			CString{ student.szLastName });
 
 		int index = allStudentsList.AddString(currentRow);
 		allStudentsList.SetItemData(index, student.nID);
