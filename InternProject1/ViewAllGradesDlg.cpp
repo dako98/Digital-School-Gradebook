@@ -117,27 +117,33 @@ void ViewAllGradesDlg::OnBnClickedButtonAdd()
 
 void ViewAllGradesDlg::OnBnClickedButtonEdit()
 {
-	GRADE tmp;
-	Storage<GRADE> studentStore(gradesPath);
+	if (gradesList.GetCurSel() != LB_ERR)
+	{
+		GRADE tmp;
+		Storage<GRADE> studentStore(gradesPath);
 
-	studentStore.Load(gradesList.GetItemData(gradesList.GetCurSel()), tmp);
+		studentStore.Load(gradesList.GetItemData(gradesList.GetCurSel()), tmp);
 
-	CombinedGradeDlg dlg(eDialogMode_Edit, tmp);
-	dlg.DoModal();
+		CombinedGradeDlg dlg(eDialogMode_Edit, tmp);
+		dlg.DoModal();
 
-	PrintAllGrades();
+		PrintAllGrades();
+	}
 }
 
 
 void ViewAllGradesDlg::OnBnClickedButtonRemove()
 {
-	GRADE tmp;
-	Storage<GRADE> studentStore(gradesPath);
+	if (gradesList.GetCurSel() != LB_ERR)
+	{
+		GRADE tmp;
+		Storage<GRADE> studentStore(gradesPath);
 
-	studentStore.Load(gradesList.GetItemData(gradesList.GetCurSel()), tmp);
+		studentStore.Load(gradesList.GetItemData(gradesList.GetCurSel()), tmp);
 
-	CombinedGradeDlg dlg(eDialogMode_Remove, tmp);
-	dlg.DoModal();
+		CombinedGradeDlg dlg(eDialogMode_Remove, tmp);
+		dlg.DoModal();
 
-	PrintAllGrades();
+		PrintAllGrades();
+	}
 }
