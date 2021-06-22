@@ -30,6 +30,8 @@ ViewAllGradesDlg::ViewAllGradesDlg(CWnd* pParent /*=nullptr*/)
 
 BOOL ViewAllGradesDlg::OnInitDialog()
 {
+	CDialog::OnInitDialog();
+
 	PrintAllGrades();
 
 	return 0;
@@ -87,7 +89,7 @@ void ViewAllGradesDlg::PrintAllGrades()
 void ViewAllGradesDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_LIST1, gradesList);
+	DDX_Control(pDX, IDC_GRADES_LIST, gradesList);
 }
 
 
@@ -110,6 +112,8 @@ void ViewAllGradesDlg::OnBnClickedButtonAdd()
 
 	CombinedGradeDlg dlg(eDialogMode_Add, tmp);
 	dlg.DoModal();
+
+	PrintAllGrades();
 }
 
 
@@ -122,6 +126,8 @@ void ViewAllGradesDlg::OnBnClickedButtonEdit()
 
 	CombinedGradeDlg dlg(eDialogMode_Edit, tmp);
 	dlg.DoModal();
+
+	PrintAllGrades();
 }
 
 
@@ -134,4 +140,6 @@ void ViewAllGradesDlg::OnBnClickedButtonRemove()
 
 	CombinedGradeDlg dlg(eDialogMode_Remove, tmp);
 	dlg.DoModal();
+
+	PrintAllGrades();
 }
