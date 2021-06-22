@@ -48,6 +48,8 @@ AllSubjectsDlg::~AllSubjectsDlg()
 
 void AllSubjectsDlg::PrintAll()
 {
+	subjectsList.ResetContent();
+
 	std::vector<SUBJECT> all;
 	Storage<SUBJECT> su(subjectsPath);
 	su.LoadAll(all);
@@ -57,7 +59,10 @@ void AllSubjectsDlg::PrintAll()
 	for (const auto& subject : all)
 	{
 		//		currentRow.Format(_T("%d %s %s"), student.GetNumber(), student.getName(), student.GetBirthday().Format());
-		currentRow.Format(_T("%d %s %s"), subject.nID, subject.szName, subject.szRoom);
+		currentRow.Format(_T("%d %s %s"),
+			subject.nID,
+			CString{ subject.szName },
+			CString{ subject.szRoom });
 
 		int index = subjectsList.AddString(currentRow);
 		subjectsList.SetItemData(index, subject.nID);
@@ -100,30 +105,42 @@ void AllSubjectsDlg::OnBnClickedButtonAdd()
 
 	CombinedSubjectDlg dlg(eDialogMode_Add, tmp);
 	dlg.DoModal();
+
+	PrintAll();
 	// TODO: Add your control notification handler code here
 }
 
 
 void AllSubjectsDlg::OnBnClickedButtonEdit()
 {
-	SUBJECT tmp;
-	Storage<SUBJECT> store(subjectsPath);
+	if (subjectsList.GetCurSel() != LB_ERR)
+	{
+		SUBJECT tmp;
+		Storage<SUBJECT> store(subjectsPath);
 
-	store.Load(subjectsList.GetItemData(subjectsList.GetCurSel()), tmp);
+		store.Load(subjectsList.GetItemData(subjectsList.GetCurSel()), tmp);
 
-	CombinedSubjectDlg dlg(eDialogMode_Edit, tmp);
-	dlg.DoModal();
+		CombinedSubjectDlg dlg(eDialogMode_Edit, tmp);
+		dlg.DoModal();
+
+		PrintAll();
+	}
 	// TODO: Add your control notification handler code here
 }
 
 
 void AllSubjectsDlg::OnBnClickedButtonRemove()
 {
-	SUBJECT tmp;
-	Storage<SUBJECT> store(studentsPath);
+	if (subjectsList.GetCurSel() != LB_ERR)
+	{
+		SUBJECT tmp;
+		Storage<SUBJECT> store(studentsPath);
 
-	store.Load(subjectsList.GetItemData(subjectsList.GetCurSel()), tmp);
+		store.Load(subjectsList.GetItemData(subjectsList.GetCurSel()), tmp);
 
-	CombinedSubjectDlg dlg(eDialogMode_Remove, tmp);
-	dlg.DoModal();
+		CombinedSubjectDlg dlg(eDialogMode_Remove, tmp);
+		dlg.DoModal();
+
+		PrintAll();
+	}
 }
