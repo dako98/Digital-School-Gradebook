@@ -139,15 +139,11 @@ BOOL Storage<T>::Delete(const int nStudentID)
 	{
 		if (isGood &= _LoadAll(students, file))
 		{
-			int count = students.size();
 
-			for (size_t i = 0; i < count; i++)
-			{
-				if (students[i].nID == nStudentID)
-				{
-					students.erase(students.begin() + i);
-				}
-			}
+			students.erase(std::remove_if(students.begin(), students.end(),
+				[nStudentID](const T& s) {return s.nID == nStudentID; }),
+				students.end());
+
 			file.close();
 			file.open(path, std::ios::out | std::ios::trunc);
 
