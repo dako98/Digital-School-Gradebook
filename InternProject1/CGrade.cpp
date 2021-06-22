@@ -18,12 +18,13 @@ BOOL GRADE::Validate() const
 	return (nID > 0 &&
 		nStudentID > 0 &&
 		nSubjectID > 0 &&
-		value > GRADE::GRADES::INVALID && value < GRADE::GRADES::COUNT &&
-		dtDate.year <= now.year &&
+		value > GRADE::GRADES::INVALID && value < GRADE::GRADES::COUNT&&
+		COleDateTime(dtDate) <= COleDateTime::GetCurrentTime());
+/*		dtDate.year <= now.year &&
 		dtDate.month <= now.month &&
 		dtDate.day <= now.day &&
 		dtDate.hour <= now.hour &&
-		dtDate.minute <= now.minute);
+		dtDate.minute <= now.minute);*/
 }
 
 void GRADE::Read(std::istream& in)
@@ -31,6 +32,7 @@ void GRADE::Read(std::istream& in)
 	in >> nID >>
 		nStudentID >>
 		nSubjectID >>
+		value >>
 		dtDate.year >>
 		dtDate.month >>
 		dtDate.day >>
@@ -43,6 +45,7 @@ std::ostream& operator<<(std::ostream& out, const GRADE& obj)
 	out << obj.nID << ' ' <<
 		obj.nStudentID << ' ' <<
 		obj.nSubjectID << ' ' <<
+		obj.value << ' ' <<
 		obj.dtDate.year << ' ' <<
 		obj.dtDate.month << ' ' <<
 		obj.dtDate.day << ' ' <<
