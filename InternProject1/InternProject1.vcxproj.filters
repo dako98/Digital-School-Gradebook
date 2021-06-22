@@ -138,6 +138,18 @@
     <ClInclude Include="CombinedSubjectDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="StudentAverageDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ExcellentStudentsDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FailsDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BirthdayersDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="InternProject1.cpp">
@@ -254,6 +266,18 @@
     <ClCompile Include="CombinedSubjectDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="StudentAverageDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ExcellentStudentsDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FailsDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BirthdayersDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="InternProject1.rc">
@@ -263,6 +287,9 @@
   <ItemGroup>
     <None Include="res\InternProject1.rc2">
       <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Storage.c++">
+      <Filter>Source Files</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

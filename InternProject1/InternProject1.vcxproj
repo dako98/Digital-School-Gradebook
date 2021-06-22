@@ -188,6 +188,7 @@
     <ClInclude Include="AddSubjectDlg.h" />
     <ClInclude Include="AllStudentsDlg.h" />
     <ClInclude Include="AllSubjectsDlg.h" />
+    <ClInclude Include="BirthdayersDlg.h" />
     <ClInclude Include="CGrade.h" />
     <ClInclude Include="CombinedGradeDlg.h" />
     <ClInclude Include="CombinedStudentDlg.h" />
@@ -200,6 +201,8 @@
     <ClInclude Include="EditGradeDlg.h" />
     <ClInclude Include="EditStudentDlg.h" />
     <ClInclude Include="EditSubjectDlg.h" />
+    <ClInclude Include="ExcellentStudentsDlg.h" />
+    <ClInclude Include="FailsDlg.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Grade.h" />
     <ClInclude Include="Gradebook.h" />
@@ -216,6 +219,7 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Storage.h" />
     <ClInclude Include="Student.h" />
+    <ClInclude Include="StudentAverageDlg.h" />
     <ClInclude Include="StudentStore.h" />
     <ClInclude Include="Subject.h" />
     <ClInclude Include="SubjectStore.h" />
@@ -231,6 +235,7 @@
     <ClCompile Include="AddSubjectDlg.cpp" />
     <ClCompile Include="AllStudentsDlg.cpp" />
     <ClCompile Include="AllSubjectsDlg.cpp" />
+    <ClCompile Include="BirthdayersDlg.cpp" />
     <ClCompile Include="CGrade.cpp" />
     <ClCompile Include="CombinedGradeDlg.cpp" />
     <ClCompile Include="CombinedStudentDlg.cpp" />
@@ -243,6 +248,8 @@
     <ClCompile Include="EditGradeDlg.cpp" />
     <ClCompile Include="EditStudentDlg.cpp" />
     <ClCompile Include="EditSubjectDlg.cpp" />
+    <ClCompile Include="ExcellentStudentsDlg.cpp" />
+    <ClCompile Include="FailsDlg.cpp" />
     <ClCompile Include="Grade.cpp" />
     <ClCompile Include="Gradebook.cpp" />
     <ClCompile Include="GradeStore.cpp" />
@@ -262,6 +269,7 @@
     <ClCompile Include="RemoveSubjectDlg.cpp" />
     <ClCompile Include="Storage.cpp" />
     <ClCompile Include="Student.cpp" />
+    <ClCompile Include="StudentAverageDlg.cpp" />
     <ClCompile Include="StudentStore.cpp" />
     <ClCompile Include="Subject.cpp" />
     <ClCompile Include="SubjectStore.cpp" />
@@ -275,6 +283,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="res\InternProject1.rc2" />
+    <None Include="Storage.c++" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\InternProject1.ico" />
