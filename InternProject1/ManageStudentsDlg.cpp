@@ -12,6 +12,9 @@
 #include "RemoveStudentDlg.h"
 
 #include "CombinedStudentDlg.h"
+#include "StudentAverageDlg.h"
+#include "ExcellentStudentsDlg.h"
+#include "BirthdayersDlg.h"
 #include "Utility.h"
 
 
@@ -41,6 +44,9 @@ BEGIN_MESSAGE_MAP(ManageStudentsDlg, CDialog)
 	ON_BN_CLICKED(IDC_ALL_STUDENTS, &ManageStudentsDlg::OnBnClickedAllStudents)
 	ON_BN_CLICKED(IDC_BUTTON3, &ManageStudentsDlg::OnBnClickedButton3)
 	ON_BN_CLICKED(IDC_BUTTON4, &ManageStudentsDlg::OnBnClickedButton4)
+	ON_BN_CLICKED(IDC_BUTTON6, &ManageStudentsDlg::OnBnClickedButtonAverage)
+	ON_BN_CLICKED(IDC_BUTTON5, &ManageStudentsDlg::OnBnClickedButtonExcellents)
+	ON_BN_CLICKED(IDC_BUTTON1, &ManageStudentsDlg::OnBnClickedButtonBirthdayers)
 END_MESSAGE_MAP()
 
 
@@ -81,4 +87,28 @@ void ManageStudentsDlg::OnBnClickedButton4()
 //	RemoveStudentDlg dlg;
 	CombinedStudentDlg dlg(eDialogMode_Remove, STUDENT());
 //	dlg.DoModal();
+}
+
+
+void ManageStudentsDlg::OnBnClickedButtonAverage()
+{
+	// TODO: Add your control notification handler code here
+	StudentAverageDlg dlg;
+	dlg.DoModal();
+}
+
+
+void ManageStudentsDlg::OnBnClickedButtonExcellents()
+{
+	// TODO: Add your control notification handler code here
+	ExcellentStudentsDlg dlg;
+	dlg.DoModal();
+}
+
+
+void ManageStudentsDlg::OnBnClickedButtonBirthdayers()
+{
+	// TODO: Add your control notification handler code here
+	BirthdayersDlg dlg;
+	dlg.DoModal();
 }
