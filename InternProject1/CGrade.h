@@ -6,7 +6,7 @@
 
 struct GRADE
 {
-	static enum GRADES
+	enum GRADES
 	{
 		INVALID,
 
@@ -27,7 +27,7 @@ struct GRADE
 	DBTIMESTAMP dtDate;
 	int value;
 
-	BOOL Validate() const;
+	virtual BOOL Validate() const;
 
 	friend std::ostream& operator<<(std::ostream& out, const GRADE& obj);
 	friend std::istream& operator>>(std::istream& in, GRADE& obj);
