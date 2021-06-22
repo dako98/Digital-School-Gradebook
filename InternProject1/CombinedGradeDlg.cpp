@@ -19,7 +19,7 @@ CombinedGradeDlg::CombinedGradeDlg(DialogMode eMode, const GRADE& data)
 	: CDialog(IDD_GRADES_COMBINED, nullptr)
 	, m_eDialogMode(eMode)
 	, gradeIDVal(0)
-	, store(teachersPath)
+	, store(gradesPath)
 	, tmp(data)
 {
 }
@@ -105,13 +105,20 @@ BOOL CombinedGradeDlg::OnInitDialog()
 		break;
 
 	case DialogMode::eDialogMode_Add:
+		studentDropdown.EnableWindow(TRUE);
+		subjectDropdown.EnableWindow(TRUE);
+		gradeDropdown.EnableWindow(TRUE);
+		gradeDate.EnableWindow(TRUE);
+
 		UpdateData(FALSE);
+
+		break;
 
 	case DialogMode::eDialogMode_Edit:
 
-		studentDropdown.EnableWindow(TRUE);
+		studentDropdown.EnableWindow(FALSE);
 		subjectDropdown.EnableWindow(TRUE);
-		gradeDropdown.EnableWindow(FALSE);
+		gradeDropdown.EnableWindow(TRUE);
 		gradeDate.EnableWindow(TRUE);
 		break;
 
