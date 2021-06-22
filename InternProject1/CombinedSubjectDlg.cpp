@@ -158,10 +158,22 @@ void CombinedSubjectDlg::OnBnClickedOk()
 			isOK = store.Edit(su);
 			break;
 		case DialogMode::eDialogMode_Remove:
-
+		{
 			isOK = store.Delete(su.nID);
 
+			Storage<GRADE> gradeStore(gradesPath);
+			std::vector<GRADE> allGrades;
 
+			gradeStore.LoadAll(allGrades);
+
+			for (const auto& grade : allGrades)
+			{
+				if (grade.nSubjectID == su.nID)
+				{
+					gradeStore.Delete(grade.nID);
+				}
+			}
+		}
 			break;
 
 		case DialogMode::eDialogMode_View:
