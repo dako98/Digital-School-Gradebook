@@ -24,45 +24,55 @@ CombinedGradeDlg::CombinedGradeDlg(DialogMode eMode, const GRADE& data)
 {
 }
 
-void CombinedGradeDlg::PrintAllStudents()
+BOOL CombinedGradeDlg::PrintAllStudents()
 {
+	BOOL isOK;
+
 	std::vector<STUDENT> allStudents;
-	//= StudentStore::GetInstance()->GetAllStudents();
 	Storage<STUDENT> st(studentsPath);
-	st.LoadAll(allStudents);
+	isOK = st.LoadAll(allStudents);
 
-	CString currentRow;
-
-	for (const auto& student : allStudents)
+	if (isOK)
 	{
-		currentRow.Format(_T("%d %s %s"), 
-			student.nID, 
-			CString{ student.szFirstName },
-			CString{ student.szLastName });
+		CString currentRow;
 
-		int index = studentDropdown.AddString(currentRow);
-		studentDropdown.SetItemData(index, student.nID);
+		for (const auto& student : allStudents)
+		{
+			currentRow.Format(_T("%d %s %s"),
+				student.nID,
+				CString{ student.szFirstName },
+				CString{ student.szLastName });
+
+			int index = studentDropdown.AddString(currentRow);
+			studentDropdown.SetItemData(index, student.nID);
+		}
 	}
+	return isOK;
 }
 
-void CombinedGradeDlg::PrintAllSubjects()
+BOOL CombinedGradeDlg::PrintAllSubjects()
 {
+	BOOL isOK;
+
 	std::vector<SUBJECT> allStudents;
-	//= StudentStore::GetInstance()->GetAllStudents();
 	Storage<SUBJECT> st(subjectsPath);
-	st.LoadAll(allStudents);
+	isOK = st.LoadAll(allStudents);
 
-	CString currentRow;
-
-	for (const auto& student : allStudents)
+	if (isOK)
 	{
-		currentRow.Format(_T("%d %s"), 
-			student.nID, 
-			CString{ student.szName });
+		CString currentRow;
 
-		int index = subjectDropdown.AddString(currentRow);
-		subjectDropdown.SetItemData(index, student.nID);
+		for (const auto& student : allStudents)
+		{
+			currentRow.Format(_T("%d %s"),
+				student.nID,
+				CString{ student.szName });
+
+			int index = subjectDropdown.AddString(currentRow);
+			subjectDropdown.SetItemData(index, student.nID);
+		}
 	}
+	return isOK;
 }
 
 BOOL CombinedGradeDlg::OnInitDialog()
@@ -70,33 +80,41 @@ BOOL CombinedGradeDlg::OnInitDialog()
 	if (!CDialog::OnInitDialog())
 		return FALSE;
 
+	BOOL isOK;
 
 	gradeIDVal = tmp.nID;
 
 	// Load all students
-	PrintAllStudents();
+	isOK = PrintAllStudents();
 
-	// Select student
-	studentDropdown.SetCurSel(GetIndexByData(tmp.nStudentID, studentDropdown));
-
-	// Load all subjects
-	PrintAllSubjects();
-
-	// Select subject
-	subjectDropdown.SetCurSel(GetIndexByData(tmp.nSubjectID, subjectDropdown));
-
-	// Load all grade values
-	for (size_t i = GRADE::GRADES::INVALID + 1; i < GRADE::GRADES::COUNT; i++)
+	if (isOK)
 	{
-		int index = gradeDropdown.AddString(MapGradeName(i));
-		gradeDropdown.SetItemData(index, i);
+		// Select student
+		studentDropdown.SetCurSel(GetIndexByData(tmp.nStudentID, studentDropdown));
+
+		// Load all subjects
+		isOK = PrintAllSubjects();
 	}
 
-	// Select grade value
-	gradeDropdown.SetCurSel(GetIndexByData(tmp.value, gradeDropdown));
+	if (isOK)
+	{
+		// Select subject
+		subjectDropdown.SetCurSel(GetIndexByData(tmp.nSubjectID, subjectDropdown));
 
-	// Select date
-	gradeDateVal = tmp.dtDate;
+
+		// Load all grade values
+		for (size_t i = GRADE::GRADES::INVALID + 1; i < GRADE::GRADES::COUNT; i++)
+		{
+			int index = gradeDropdown.AddString(MapGradeName(i));
+			gradeDropdown.SetItemData(index, i);
+		}
+
+		// Select grade value
+		gradeDropdown.SetCurSel(GetIndexByData(tmp.value, gradeDropdown));
+
+		// Select date
+		gradeDateVal = tmp.dtDate;
+	}
 
 	UpdateData(FALSE);
 
@@ -129,13 +147,11 @@ BOOL CombinedGradeDlg::OnInitDialog()
 		gradeDate.EnableWindow(TRUE);
 		break;
 
-	case DialogMode::eDialogMode_None:
-
 	default:
 		throw std::exception{ "Invalid window state." };
 		break;
 	}
-	return 0;
+	return isOK;
 }
 
 CombinedGradeDlg::~CombinedGradeDlg()
@@ -193,8 +209,6 @@ void CombinedGradeDlg::OnBnClickedOk()
 		isOK = store.Delete(st.nID);
 		break;
 
-	case DialogMode::eDialogMode_View:
-	case DialogMode::eDialogMode_None:
 	default:
 
 		break;

@@ -23,8 +23,8 @@ public:
 #endif
 
 private:
-	void PrintAllStudents();
-	void PrintAllSubjects();
+	BOOL PrintAllStudents();
+	BOOL PrintAllSubjects();
 
 	DialogMode m_eDialogMode;
 	Storage<GRADE> store;
