@@ -7,6 +7,9 @@
 #include "afxdialogex.h"
 
 #include "AllSubjectsDlg.h"
+#include "CombinedSubjectDlg.h"
+#include "Storage.h"
+#include "CGrade.h"
 
 
 // ManageSubjectsDlg dialog
@@ -32,8 +35,6 @@ void ManageSubjectsDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(ManageSubjectsDlg, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON1, &ManageSubjectsDlg::OnBnClickedButton1)
 	ON_BN_CLICKED(IDC_BUTTON2, &ManageSubjectsDlg::OnBnClickedButton2)
-	ON_BN_CLICKED(IDC_BUTTON3, &ManageSubjectsDlg::OnBnClickedButton3)
-	ON_BN_CLICKED(IDC_BUTTON4, &ManageSubjectsDlg::OnBnClickedButton4)
 END_MESSAGE_MAP()
 
 
@@ -50,23 +51,20 @@ void ManageSubjectsDlg::OnBnClickedButton1()
 
 void ManageSubjectsDlg::OnBnClickedButton2()
 {
-	// TODO: Add your control notification handler code here
-//	AddSubjectDlg dlg;
-//	dlg.DoModal();
+	SUBJECT tmp;
+	Storage<SUBJECT> store(subjectsPath);
+	BOOL isOK = TRUE;
+
+	//	tmp.nID = store.LastID() + 1;
+	isOK = store.NextID(tmp.nID);
+
+	if (!isOK)
+	{
+		int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
+		return;
+	}
+
+	CombinedSubjectDlg dlg(eDialogMode_Add, tmp);
+	dlg.DoModal();
 }
 
-
-void ManageSubjectsDlg::OnBnClickedButton3()
-{
-	// TODO: Add your control notification handler code here
-//	EditSubjectDlg dlg;
-//	dlg.DoModal();
-}
-
-
-void ManageSubjectsDlg::OnBnClickedButton4()
-{
-	// TODO: Add your control notification handler code here
-//	RemoveSubjectDlg dlg;
-//	dlg.DoModal();
-}
