@@ -207,8 +207,6 @@
     <ClInclude Include="ManageSubjectsDlg.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Person.h" />
-    <ClInclude Include="RemoveStudentDlg.h" />
-    <ClInclude Include="RemoveSubjectDlg.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Storage.h" />
     <ClInclude Include="Student.h" />
@@ -251,8 +249,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Person.cpp" />
-    <ClCompile Include="RemoveStudentDlg.cpp" />
-    <ClCompile Include="RemoveSubjectDlg.cpp" />
     <ClCompile Include="Storage.cpp" />
     <ClCompile Include="Student.cpp" />
     <ClCompile Include="StudentAverageDlg.cpp" />
