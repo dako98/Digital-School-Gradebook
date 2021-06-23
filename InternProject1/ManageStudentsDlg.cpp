@@ -6,17 +6,16 @@
 #include "ManageStudentsDlg.h"
 #include "afxdialogex.h"
 
-#include "AddStudentDlg.h"
-#include "EditStudentDlg.h"
-#include "AllStudentsDlg.h"
-#include "RemoveStudentDlg.h"
+#include "Utility.h"
+#include "Storage.h"
+#include "CStudent.h"
 
+#include "AllStudentsDlg.h"
 #include "CombinedStudentDlg.h"
 #include "StudentAverageDlg.h"
 #include "ExcellentStudentsDlg.h"
 #include "BirthdayersDlg.h"
 #include "FailsDlg.h"
-#include "Utility.h"
 
 
 // ManageStudentsDlg dialog
@@ -41,10 +40,7 @@ void ManageStudentsDlg::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(ManageStudentsDlg, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON2, &ManageStudentsDlg::OnBnClickedButton2)
-//	ON_BN_CLICKED(IDC_BUTTON3, &ManageStudentsDlg::OnBnClickedButton3)
 	ON_BN_CLICKED(IDC_ALL_STUDENTS, &ManageStudentsDlg::OnBnClickedAllStudents)
-	ON_BN_CLICKED(IDC_BUTTON3, &ManageStudentsDlg::OnBnClickedButton3)
-	ON_BN_CLICKED(IDC_BUTTON4, &ManageStudentsDlg::OnBnClickedButton4)
 	ON_BN_CLICKED(IDC_BUTTON6, &ManageStudentsDlg::OnBnClickedButtonAverage)
 	ON_BN_CLICKED(IDC_BUTTON5, &ManageStudentsDlg::OnBnClickedButtonExcellents)
 	ON_BN_CLICKED(IDC_BUTTON1, &ManageStudentsDlg::OnBnClickedButtonBirthdayers)
@@ -59,19 +55,18 @@ void ManageStudentsDlg::OnBnClickedButton2()
 {
 	// TODO: Add your control notification handler code here
 	//AddStudentDlg dlg;
-	CombinedStudentDlg dlg(eDialogMode_Add, STUDENT());
+	//CombinedStudentDlg dlg(eDialogMode_Add, STUDENT());
+
+	STUDENT tmp;
+	Storage<STUDENT> store(studentsPath);
+
+	tmp.nID = store.LastID() + 1;
+	
+	CombinedStudentDlg dlg(eDialogMode_Add, tmp);
+	dlg.DoModal();
+
 //	dlg.DoModal();
 }
-
-
-void ManageStudentsDlg::OnBnClickedButton3()
-{
-	// TODO: Add your control notification handler code here
-//	EditStudentDlg dlg;
-	CombinedStudentDlg dlg(eDialogMode_Edit, STUDENT());
-//	dlg.DoModal();
-}
-
 
 void ManageStudentsDlg::OnBnClickedAllStudents()
 {
@@ -81,16 +76,6 @@ void ManageStudentsDlg::OnBnClickedAllStudents()
 //	CombinedStudentDlg dlg(eDialogMode_View);
 	dlg.DoModal();
 }
-
-
-void ManageStudentsDlg::OnBnClickedButton4()
-{
-	// TODO: Add your control notification handler code here
-//	RemoveStudentDlg dlg;
-	CombinedStudentDlg dlg(eDialogMode_Remove, STUDENT());
-//	dlg.DoModal();
-}
-
 
 void ManageStudentsDlg::OnBnClickedButtonAverage()
 {

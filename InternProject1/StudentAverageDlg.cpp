@@ -27,89 +27,110 @@ StudentAverageDlg::StudentAverageDlg(CWnd* pParent /*=nullptr*/)
 
 }
 
-void StudentAverageDlg::PrintAllStudents()
+BOOL StudentAverageDlg::PrintAllStudents()
 {
+	BOOL isOK;
+
 	std::vector<STUDENT> allStudents;
 	Storage<STUDENT> st(studentsPath);
-	st.LoadAll(allStudents);
+	isOK = st.LoadAll(allStudents);
 
 	CString currentRow;
 
-	for (const auto& student : allStudents)
+	if (isOK)
 	{
-		currentRow.Format(_T("%d %s %s"),
-			student.nID,
-			CString{ student.szFirstName },
-			CString{ student.szLastName });
+		for (const auto& student : allStudents)
+		{
+			currentRow.Format(_T("%d %s %s"),
+				student.nID,
+				CString{ student.szFirstName },
+				CString{ student.szLastName });
 
-		int index = studentDropList.AddString(currentRow);
-		studentDropList.SetItemData(index, student.nID);
+			int index = studentDropList.AddString(currentRow);
+			studentDropList.SetItemData(index, student.nID);
+		}
 	}
+	return isOK;
 }
 
-void StudentAverageDlg::PrintAllSubjects()
+BOOL StudentAverageDlg::PrintAllSubjects()
 {
+	BOOL isOK;
 	std::vector<SUBJECT> allSubjects;
 	Storage<SUBJECT> st(subjectsPath);
-	st.LoadAll(allSubjects);
+	isOK = st.LoadAll(allSubjects);
 
 	CString currentRow;
-
-	for (const auto& subject : allSubjects)
+	if (isOK)
 	{
-		currentRow.Format(_T("%d %s"),
-			subject.nID,
-			CString{ subject.szName });
+		for (const auto& subject : allSubjects)
+		{
+			currentRow.Format(_T("%d %s"),
+				subject.nID,
+				CString{ subject.szName });
 
-		int index = subjectDropList.AddString(currentRow);
-		subjectDropList.SetItemData(index, subject.nID);
+			int index = subjectDropList.AddString(currentRow);
+			subjectDropList.SetItemData(index, subject.nID);
+		}
 	}
+	return isOK;
 }
 
 
-void StudentAverageDlg::UpdateAverage()
+BOOL StudentAverageDlg::UpdateAverage()
 {
 	int index = studentDropList.GetCurSel();
 	int studentID = -1;
 	int subjectID = -1;
+	BOOL isOK = TRUE;
 
 	if (index != CB_ERR)
 	{
 		std::vector<GRADE> grades;
 		Storage<GRADE> gradeStore(gradesPath);
-		gradeStore.LoadAll(grades);
+		isOK = gradeStore.LoadAll(grades);
 		std::vector<GRADE> studentGrades;
 
-		studentID = studentDropList.GetItemData(index);
-
-		index = subjectDropList.GetCurSel();
-
-		if (index != CB_ERR)
+		if (isOK)
 		{
-			subjectID = subjectDropList.GetItemData(index);
-		}
 
-		int studentSum = 0, studentCount = 0, subjectSum = 0, subjectCount = 0;
+			studentID = studentDropList.GetItemData(index);
 
-		for (const auto& grade : grades)
-		{
-			if (grade.nStudentID == studentID)
+			index = subjectDropList.GetCurSel();
+
+			if (index != CB_ERR)
 			{
-				studentSum += grade.value;
-				studentCount++;
+				subjectID = subjectDropList.GetItemData(index);
+			}
 
-				if (grade.nSubjectID == subjectID)
+			int studentSum = 0, studentCount = 0, subjectSum = 0, subjectCount = 0;
+
+			for (const auto& grade : grades)
+			{
+				if (grade.nStudentID == studentID)
 				{
-					subjectSum += grade.value;
-					subjectCount++;
+					studentSum += grade.value;
+					studentCount++;
+
+					if (grade.nSubjectID == subjectID)
+					{
+						subjectSum += grade.value;
+						subjectCount++;
+					}
 				}
 			}
-		}
 
-		studentAverageVal = GRADE::GRADES::INVALID + 1 + (studentSum / (float)(studentCount > 0 ? studentCount : 1));
-		subjectAverageVal = GRADE::GRADES::INVALID + 1 + (subjectSum / (float)(subjectCount > 0 ? subjectCount : 1));
+			float tmpStVal = (studentSum / (float)(studentCount > 0 ? studentCount : 1));
+			float tmpSuVal = (subjectSum / (float)(subjectCount > 0 ? subjectCount : 1));
+
+			studentAverageVal = (tmpStVal < GRADE::GRADES::INVALID + 1 ? 0 : GRADE::GRADES::INVALID + 1 + tmpStVal);
+			subjectAverageVal = (tmpSuVal < GRADE::GRADES::INVALID + 1 ? 0 : GRADE::GRADES::INVALID + 1 + tmpSuVal);
+		}
 	}
+
 	UpdateData(FALSE);
+
+	return isOK;
 }
 
 BOOL StudentAverageDlg::OnInitDialog()
@@ -117,16 +138,24 @@ BOOL StudentAverageDlg::OnInitDialog()
 	if (!CDialog::OnInitDialog())
 		return FALSE;
 
+	BOOL isOK;
+
 	// Load students
-	PrintAllStudents();
+	isOK = PrintAllStudents();
 
-	// Load subjects
-	PrintAllSubjects();
+	if (isOK)
+	{
+		// Load subjects
+		isOK = PrintAllSubjects();
+	}
 
-	// Update averages
-	UpdateAverage();
+	if (isOK)
+	{
+		// Update averages
+		isOK = UpdateAverage();
+	}
 
-	return TRUE;
+	return isOK;
 }
 
 StudentAverageDlg::~StudentAverageDlg()
@@ -156,13 +185,19 @@ END_MESSAGE_MAP()
 
 void StudentAverageDlg::OnCbnSelchangeCombo1()
 {
-	UpdateAverage();
+	if (!UpdateAverage())
+	{
+		int errorBox = MessageBox((LPCWSTR)L"Error retrieving list.", NULL, MB_OK | MB_ICONWARNING);
+	}
 	// TODO: Add your control notification handler code here
 }
 
 
 void StudentAverageDlg::OnCbnSelchangeCombo2()
 {
-	UpdateAverage();
+	if (!UpdateAverage())
+	{
+		int errorBox = MessageBox((LPCWSTR)L"Error retrieving list.", NULL, MB_OK | MB_ICONWARNING);
+	}
 	// TODO: Add your control notification handler code here
 }

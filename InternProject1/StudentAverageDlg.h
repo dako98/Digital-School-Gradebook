@@ -20,9 +20,9 @@ public:
 #endif
 
 private:
-	void UpdateAverage();
-	void PrintAllStudents();
-	void PrintAllSubjects();
+	BOOL UpdateAverage();
+	BOOL PrintAllStudents();
+	BOOL PrintAllSubjects();
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support

@@ -22,10 +22,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnBnClickedButton2();
-//	afx_msg void OnBnClickedButton3();
 	afx_msg void OnBnClickedAllStudents();
-	afx_msg void OnBnClickedButton3();
-	afx_msg void OnBnClickedButton4();
 	afx_msg void OnBnClickedButtonAverage();
 	afx_msg void OnBnClickedButtonExcellents();
 	afx_msg void OnBnClickedButtonBirthdayers();
