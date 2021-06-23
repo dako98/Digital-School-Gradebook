@@ -198,8 +198,6 @@
     <ClInclude Include="ExcellentStudentsDlg.h" />
     <ClInclude Include="FailsDlg.h" />
     <ClInclude Include="framework.h" />
-    <ClInclude Include="Grade.h" />
-    <ClInclude Include="GradeStore.h" />
     <ClInclude Include="InternProject1.h" />
     <ClInclude Include="InternProject1Dlg.h" />
     <ClInclude Include="ManageGradesDlg.h" />
@@ -235,8 +233,6 @@
     <ClCompile Include="CTeacher.cpp" />
     <ClCompile Include="ExcellentStudentsDlg.cpp" />
     <ClCompile Include="FailsDlg.cpp" />
-    <ClCompile Include="Grade.cpp" />
-    <ClCompile Include="GradeStore.cpp" />
     <ClCompile Include="InternProject1.cpp" />
     <ClCompile Include="InternProject1Dlg.cpp" />
     <ClCompile Include="ManageGradesDlg.cpp" />

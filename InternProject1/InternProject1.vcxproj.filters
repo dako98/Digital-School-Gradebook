@@ -45,13 +45,7 @@
     <ClInclude Include="Teacher.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Grade.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="StudentStore.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GradeStore.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SubjectStore.h">
@@ -146,13 +140,7 @@
     <ClCompile Include="Teacher.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Grade.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="StudentStore.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GradeStore.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SubjectStore.cpp">
