@@ -23,13 +23,13 @@ BOOL Storage<T>::Add(T& recStudent)
 {
 	BOOL isGood = TRUE;
 
-	if (isGood &= recStudent.Validate())
+	if (isGood = recStudent.Validate())
 	{
 		std::ofstream file(path, std::ofstream::app);
 
 		file << recStudent << '\n';
 
-		isGood &= file.good();
+		isGood = file.good();
 		file.close();
 	}
 	return isGood;
@@ -40,48 +40,53 @@ BOOL Storage<T>::Edit(T& recStudent)
 {
 	BOOL isGood = TRUE;
 
-	std::vector<T> students;
-	std::fstream file(path, std::ios::in);
-
-	if (file.good())
+	isGood = recStudent.Validate();
+	
+	if (isGood)
 	{
-		if (isGood = _LoadAll(students, file))
+
+		std::vector<T> students;
+		std::fstream file(path, std::ios::in);
+
+		if (file.good())
 		{
+			if (isGood = _LoadAll(students, file))
+			{
 
-			auto elem = std::find_if(students.begin(), students.end(),
-				[&recStudent](const T& s) {return s.nID == recStudent.nID; });
-			
-			if (elem != students.end())
-			{
-				*elem = recStudent;
-				isGood = TRUE;
-			}
-			else
-			{
-				isGood = FALSE;
-			}
+				auto elem = std::find_if(students.begin(), students.end(),
+					[&recStudent](const T& s) {return s.nID == recStudent.nID; });
 
-			/*
-			int count = students.size();
-			for (size_t i = 0; i < count; i++)
-			{
-				if (isGood && students[i].nID == recStudent.nID)
+				if (elem != students.end())
 				{
-					students[i] = recStudent;
+					*elem = recStudent;
+					isGood = TRUE;
 				}
-			}*/
-			file.close();
+				else
+				{
+					isGood = FALSE;
+				}
 
-			if (isGood)
-			{
-				file.open(path, std::ios::out | std::ios::trunc);
+				/*
+				int count = students.size();
+				for (size_t i = 0; i < count; i++)
+				{
+					if (isGood && students[i].nID == recStudent.nID)
+					{
+						students[i] = recStudent;
+					}
+				}*/
+				file.close();
 
-				isGood = _AddBulk(students, file);
+				if (isGood)
+				{
+					file.open(path, std::ios::out | std::ios::trunc);
+
+					isGood = _AddBulk(students, file);
+				}
 			}
 		}
+		file.close();
 	}
-	file.close();
-
 	return isGood;
 }
 
@@ -92,12 +97,12 @@ BOOL Storage<T>::_AddBulk(const std::vector<T>& allStudents, std::fstream& file)
 
 	for (const T& student : allStudents)
 	{
-		if (isGood &= student.Validate())
+		if (isGood = student.Validate())
 		{
 
 			file << student << '\n';
 
-			isGood &= file.good();
+			isGood = file.good();
 		}
 	}
 
@@ -112,9 +117,9 @@ BOOL Storage<T>::Delete(const int nStudentID)
 	std::vector<T> students;
 	std::fstream file(path, std::ios::in);
 
-	if (isGood &= file.is_open())
+	if (isGood = file.is_open())
 	{
-		if (isGood &= _LoadAll(students, file))
+		if (isGood = _LoadAll(students, file))
 		{
 
 			students.erase(std::remove_if(students.begin(), students.end(),
@@ -124,7 +129,7 @@ BOOL Storage<T>::Delete(const int nStudentID)
 			file.close();
 			file.open(path, std::ios::out | std::ios::trunc);
 
-			isGood &= _AddBulk(students, file);
+			isGood = _AddBulk(students, file);
 		}
 	}
 	file.close();
@@ -142,12 +147,16 @@ BOOL Storage<T>::Load(const int nStudentID, T& recStudent)
 
 	if (file.is_open())
 	{
+		isGood = FALSE;
+
 		while (file.good() && file.peek() != EOF)
 		{
 			file >> tmp;
+			file.ignore(1);
 
 			if (file.good() && tmp.nID == nStudentID)
 			{
+				isGood = TRUE;
 				break;
 			}
 		}
@@ -157,8 +166,8 @@ BOOL Storage<T>::Load(const int nStudentID, T& recStudent)
 		isGood = FALSE;
 	}
 
-	isGood &= file.good();
 	file.close();
+//	isGood &= file.good();
 
 	if (isGood && tmp.Validate())
 	{
@@ -176,6 +185,7 @@ inline int Storage<T>::LastID() const
 	T tmp;
 	while (file >> tmp)
 	{
+		file.ignore(1);
 		lastID = max(lastID, tmp.nID);
 	}
 	file.close();
@@ -186,13 +196,14 @@ inline int Storage<T>::LastID() const
 template<class T>
 inline BOOL Storage<T>::LoadAll(std::vector<T>& out)
 {
+	BOOL isOK;
 	std::fstream file(path, std::ios::in);
 	if (file.is_open())
 	{
-		_LoadAll(out, file);
+		isOK = _LoadAll(out, file);
 	}
 	file.close();
-	return TRUE;
+	return isOK;
 }
 
 template<class T>
