@@ -7,7 +7,6 @@
 #include "afxdialogex.h"
 
 #include <vector>
-#include <unordered_map>
 #include <unordered_set>
 
 #include "Utility.h"
@@ -28,120 +27,138 @@ FailsDlg::FailsDlg(CWnd* pParent /*=nullptr*/)
 
 }
 
-struct studentStr
-{
-	struct subject
-	{
-		int gradeSum = 0;
-		int gradesCount = 0;
-	};
-	std::unordered_map<int, subject> subject;
-};
-
 BOOL FailsDlg::OnInitDialog()
 {
 	if (!CDialog::OnInitDialog())
 		return FALSE;
 
+	BOOL isOK;
+
 	// Load all grades
 	Storage<GRADE> gradeStore(gradesPath);
 	std::vector<GRADE> allGrades;
-	gradeStore.LoadAll(allGrades);
+	isOK = gradeStore.LoadAll(allGrades);
 
-	// Struct[map - studentID] { subject[map - subjectID]{ gradesSum, gradesCount } }
-
-
-	// first -> studentID
-	// second -> subjects structure
-	std::unordered_map<int, studentStr> students;
-
-	// first -> studentID
-	// second -> subjects IDs
-	std::unordered_map<int, std::unordered_set<int>> consecutiveBads;
-
-	for (const auto& grade : allGrades)
+	if (isOK)
 	{
-		auto curr = &students[grade.nStudentID].subject[grade.nSubjectID];
 
-		curr->gradeSum += grade.value;
-		curr->gradesCount++;
+		// first -> studentID
+		// second -> subjects structure
+		std::unordered_map<int, studentStr> students;
 
-		if (grade.value == GRADE::GRADES::F)
+		// first -> studentID
+		// second -> subjects IDs
+		std::unordered_map<int, std::unordered_set<int>> consecutiveBads;
+
+		for (const auto& grade : allGrades)
 		{
-			consecutiveBads[grade.nStudentID].insert(grade.nSubjectID);
-		}
-	}
+			auto curr = &students[grade.nStudentID].subject[grade.nSubjectID];
 
-	// first -> studentID
-	// second -> failed subjects IDs
-	std::unordered_map<int, std::unordered_set<int>> fails;
+			curr->gradeSum += grade.value;
+			curr->gradesCount++;
 
-
-
-	for (const auto& student : students)
-	{
-		for (const auto& subject : student.second.subject)
-		{
-			float average = subject.second.gradeSum / (float)(subject.second.gradesCount > 0 ? subject.second.gradesCount : 1);
-
-			if (average < GRADE::GRADES::D)
+			if (grade.value == GRADE::GRADES::F)
 			{
-				fails[student.first].insert(subject.first);
+				consecutiveBads[grade.nStudentID].insert(grade.nSubjectID);
 			}
 		}
-	}
 
-	Storage<STUDENT> studentStore(studentsPath);
-	Storage<SUBJECT> subjectStore(subjectsPath);
+		// first -> studentID
+		// second -> failed subjects IDs
+		std::unordered_map<int, std::unordered_set<int>> fails;
 
-	CString currentRow;
-
-	// Print fails
-	for (const auto& student : fails)
-	{
-		STUDENT tmpSt;
-		SUBJECT tmpSu;
-		studentStore.Load(student.first, tmpSt);
-
-		for (const auto& subject : student.second)
+		for (const auto& student : students)
 		{
-			subjectStore.Load(subject, tmpSu);
-
-			currentRow.Format(_T("%d %s %s %s"),
-				student.first,
-				CString{ tmpSt.szFirstName },
-				CString{ tmpSt.szLastName },
-				CString{ tmpSu.szName });
-
-			failsList.AddString(currentRow);
-		}
-	}
-
-	// Print bad grades
-	for (const auto& student : consecutiveBads)
-	{
-		STUDENT tmpSt;
-		SUBJECT tmpSu;
-		studentStore.Load(student.first, tmpSt);
-
-		if (student.second.size() >= 3)
-		{
-
-			for (const auto& subject : student.second)
+			for (const auto& subject : student.second.subject)
 			{
-				subjectStore.Load(subject, tmpSu);
+				float average = subject.second.gradeSum / (float)(subject.second.gradesCount > 0 ? subject.second.gradesCount : 1);
 
-				currentRow.Format(_T("%d %s %s %s"),
-					student.first,
-					CString{ tmpSt.szFirstName },
-					CString{ tmpSt.szLastName },
-					CString{ tmpSu.szName });
-
-				badGradesList.AddString(currentRow);
+				if (average < GRADE::GRADES::D)
+				{
+					fails[student.first].insert(subject.first);
+				}
 			}
 		}
+
+		Storage<STUDENT> studentStore(studentsPath);
+		Storage<SUBJECT> subjectStore(subjectsPath);
+
+		CString currentRow;
+
+		// Print fails
+		for (const auto& student : fails)
+		{
+			STUDENT tmpSt;
+			SUBJECT tmpSu;
+			isOK = studentStore.Load(student.first, tmpSt);
+
+			if (isOK)
+			{
+				for (const auto& subject : student.second)
+				{
+					isOK = subjectStore.Load(subject, tmpSu);
+
+					if (!isOK)
+					{
+						break;
+					}
+
+					currentRow.Format(_T("%d %s %s %s"),
+						student.first,
+						CString{ tmpSt.szFirstName },
+						CString{ tmpSt.szLastName },
+						CString{ tmpSu.szName });
+
+					failsList.AddString(currentRow);
+				}
+
+				if (!isOK)
+				{
+					break;
+				}
+			}
+		}
+
+		if (isOK)
+		{
+			// Print bad grades
+			for (const auto& student : consecutiveBads)
+			{
+				STUDENT tmpSt;
+				SUBJECT tmpSu;
+				isOK = studentStore.Load(student.first, tmpSt);
+
+				if (isOK && student.second.size() >= 3)
+				{
+
+					for (const auto& subject : student.second)
+					{
+						isOK = subjectStore.Load(subject, tmpSu);
+
+						if (!isOK)
+						{
+							break;
+						}
+
+						currentRow.Format(_T("%d %s %s %s"),
+							student.first,
+							CString{ tmpSt.szFirstName },
+							CString{ tmpSt.szLastName },
+							CString{ tmpSu.szName });
+
+						badGradesList.AddString(currentRow);
+					}
+
+					if (!isOK)
+					{
+						break;
+					}
+				}
+			}
+		}
+
+		return isOK;
 	}
-	return TRUE;
 }
 
 FailsDlg::~FailsDlg()

@@ -30,42 +30,52 @@ BOOL ExcellentStudentsDlg::OnInitDialog()
 	if (!CDialog::OnInitDialog())
 		return FALSE;
 
+	BOOL isOK;
+
 	// Get all grades
 	Storage<GRADE> gradeStore(gradesPath);
 	std::vector<GRADE> allGrades;
-	gradeStore.LoadAll(allGrades);
+	isOK = gradeStore.LoadAll(allGrades);
 
-	// Filter grades
-	std::unordered_set<int> excellentStudentIDs;
-	for (const auto& grade : allGrades)
+	if (isOK)
 	{
-		if (grade.value == GRADE::GRADES::A)
+		// Filter grades
+		std::unordered_set<int> excellentStudentIDs;
+		for (const auto& grade : allGrades)
 		{
-			excellentStudentIDs.insert(grade.nStudentID);
+			if (grade.value == GRADE::GRADES::A)
+			{
+				excellentStudentIDs.insert(grade.nStudentID);
+			}
+			else
+			{
+				excellentStudentIDs.erase(grade.nStudentID);
+			}
 		}
-		else
+
+		// Print student names
+		CString currentRow;
+		Storage<STUDENT> studentStore(studentsPath);
+		STUDENT tmp;
+
+		for (const auto& studentID : excellentStudentIDs)
 		{
-			excellentStudentIDs.erase(grade.nStudentID);
+			isOK = studentStore.Load(studentID, tmp);
+
+			if (!isOK)
+			{
+				break;
+			}
+
+			currentRow.Format(_T("%d %s %s"),
+				tmp.nID,
+				CString{ tmp.szFirstName },
+				CString{ tmp.szLastName });
+
+			excellentStudentsList.AddString(currentRow);
 		}
 	}
-	// Print student names
-	CString currentRow;
-	Storage<STUDENT> studentStore(studentsPath);
-	STUDENT tmp;
-
-	for (const auto& studentID : excellentStudentIDs)
-	{
-		studentStore.Load(studentID, tmp);
-
-		currentRow.Format(_T("%d %s %s"),
-			tmp.nID,
-			CString{ tmp.szFirstName },
-			CString{ tmp.szLastName });
-
-		excellentStudentsList.AddString(currentRow);
-	}
-
-	return TRUE;
+	return isOK;
 }
 
 ExcellentStudentsDlg::~ExcellentStudentsDlg()

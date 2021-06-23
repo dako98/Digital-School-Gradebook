@@ -18,7 +18,7 @@ public:
 	enum { IDD = IDD_ALL_GRADES };
 #endif
 private:
-	void PrintAllGrades();
+	BOOL PrintAllGrades();
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 

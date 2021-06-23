@@ -29,39 +29,45 @@ AllStudentsDlg::~AllStudentsDlg()
 {
 }
 
-void AllStudentsDlg::PrintAll()
+BOOL AllStudentsDlg::PrintAll()
 {
 	allStudentsList.ResetContent();
 
 	if (studentsRadioBtn.GetCheck() == BST_CHECKED)
 	{
-		PrintAllStudents();
+		return PrintAllStudents();
 	}
 	else
 	{
-		PrintAllTeachers();
+		return PrintAllTeachers();
 	}
 }
 
-void AllStudentsDlg::PrintAllStudents()
+BOOL AllStudentsDlg::PrintAllStudents()
 {
+	BOOL isOK;
+
 	std::vector<STUDENT> allStudents;
 	Storage<STUDENT> st(studentsPath);
-	st.LoadAll(allStudents);
+	isOK = st.LoadAll(allStudents);
 
-	CString currentRow;
-
-	for (const auto& student : allStudents)
+	if (isOK)
 	{
-		currentRow.Format(_T("%d %s %s %s"), 
-			student.nID, 
-			CString{ student.szFirstName },
-			CString{ student.szLastName },
-			COleDateTime(student.dtBirthDate).Format());
+		CString currentRow;
 
-		int index = allStudentsList.AddString(currentRow);
-		allStudentsList.SetItemData(index, student.nID);
+		for (const auto& student : allStudents)
+		{
+			currentRow.Format(_T("%d %s %s %s"),
+				student.nID,
+				CString{ student.szFirstName },
+				CString{ student.szLastName },
+				COleDateTime(student.dtBirthDate).Format());
+
+			int index = allStudentsList.AddString(currentRow);
+			allStudentsList.SetItemData(index, student.nID);
+		}
 	}
+	return isOK;
 }
 
 BOOL AllStudentsDlg::OnInitDialog()
@@ -99,33 +105,51 @@ END_MESSAGE_MAP()
 void AllStudentsDlg::OnBnClickedRadio4()
 {
 	allStudentsList.ResetContent();
-	PrintAll();
-}
+	BOOL isOK = PrintAll();
 
-void AllStudentsDlg::PrintAllTeachers()
-{
-	std::vector<TEACHER> all;
-	Storage<TEACHER> st{ teachersPath };
-	st.LoadAll(all);
-
-	CString currentRow;
-
-	for (const auto& student : all)
+	if (!isOK)
 	{
-		currentRow.Format(_T("%d %s %s"), 
-			student.nID, 
-			CString{ student.szFirstName },
-			CString{ student.szLastName });
-
-		int index = allStudentsList.AddString(currentRow);
-		allStudentsList.SetItemData(index, student.nID);
+		int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
+		return;
 	}
 }
 
 void AllStudentsDlg::OnBnClickedRadio5()
 {
 	allStudentsList.ResetContent();
-	PrintAll();
+	BOOL isOK = PrintAll();
+	
+	if (!isOK)
+	{
+		int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
+		return;
+	}
+}
+
+BOOL AllStudentsDlg::PrintAllTeachers()
+{
+	BOOL isOK;
+
+	std::vector<TEACHER> all;
+	Storage<TEACHER> st{ teachersPath };
+	isOK = st.LoadAll(all);
+
+	if (isOK)
+	{
+		CString currentRow;
+
+		for (const auto& student : all)
+		{
+			currentRow.Format(_T("%d %s %s"),
+				student.nID,
+				CString{ student.szFirstName },
+				CString{ student.szLastName });
+
+			int index = allStudentsList.AddString(currentRow);
+			allStudentsList.SetItemData(index, student.nID);
+		}
+	}
+	return isOK;
 }
 
 
@@ -133,12 +157,20 @@ void AllStudentsDlg::OnBnClickedButtonEdit()
 {
 	if (allStudentsList.GetCurSel() != LB_ERR)
 	{
+		BOOL isOK = TRUE;
+
 		if (studentsRadioBtn.GetCheck() == BST_CHECKED)
 		{
 			STUDENT tmp;
 			Storage<STUDENT> studentStore{ studentsPath };
 
-			studentStore.Load(allStudentsList.GetItemData(allStudentsList.GetCurSel()), tmp);
+			isOK = studentStore.Load(allStudentsList.GetItemData(allStudentsList.GetCurSel()), tmp);
+
+			if (!isOK)
+			{
+				int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
+				return;
+			}
 
 			CombinedStudentDlg dlg{ eDialogMode_Edit, tmp };
 			dlg.DoModal();
@@ -148,7 +180,13 @@ void AllStudentsDlg::OnBnClickedButtonEdit()
 			TEACHER tmp;
 			Storage<TEACHER> store{ teachersPath };
 
-			store.Load(allStudentsList.GetItemData(allStudentsList.GetCurSel()), tmp);
+			isOK = store.Load(allStudentsList.GetItemData(allStudentsList.GetCurSel()), tmp);
+
+			if (!isOK)
+			{
+				int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
+				return;
+			}
 
 			CombinedTeacherDlg dlg{ eDialogMode_Edit, tmp };
 			dlg.DoModal();
@@ -161,28 +199,43 @@ void AllStudentsDlg::OnBnClickedButtonEdit()
 
 void AllStudentsDlg::OnBnClickedButtonAdd()
 {
-		if (studentsRadioBtn.GetCheck() == BST_CHECKED)
+	BOOL isOK = TRUE;
+	if (studentsRadioBtn.GetCheck() == BST_CHECKED)
+	{
+		STUDENT tmp;
+		Storage<STUDENT> store{ studentsPath };
+
+//		tmp.nID = store.LastID() + 1;
+		isOK = store.NextID(tmp.nID);
+
+		if (!isOK)
 		{
-			STUDENT tmp;
-			Storage<STUDENT> store{ studentsPath };
-
-			tmp.nID = store.LastID() + 1;
-
-			CombinedStudentDlg dlg{ eDialogMode_Add, tmp };
-			dlg.DoModal();
-		}
-		else
-		{
-			TEACHER tmp;
-			Storage<TEACHER> store{ teachersPath };
-
-			tmp.nID = store.LastID() + 1;
-
-			CombinedTeacherDlg dlg{ eDialogMode_Add, tmp };
-			dlg.DoModal();
+			int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
+			return;
 		}
 
-		PrintAll();
+		CombinedStudentDlg dlg{ eDialogMode_Add, tmp };
+		dlg.DoModal();
+	}
+	else
+	{
+		TEACHER tmp;
+		Storage<TEACHER> store{ teachersPath };
+
+//		tmp.nID = store.LastID() + 1;
+		isOK = store.NextID(tmp.nID);
+
+		if (!isOK)
+		{
+			int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
+			return;
+		}
+
+		CombinedTeacherDlg dlg{ eDialogMode_Add, tmp };
+		dlg.DoModal();
+	}
+
+	PrintAll();
 }
 
 
@@ -190,12 +243,20 @@ void AllStudentsDlg::OnBnClickedButtonRemove()
 {
 	if (allStudentsList.GetCurSel() != LB_ERR)
 	{
+		BOOL isOK = TRUE;
+
 		if (studentsRadioBtn.GetCheck() == BST_CHECKED)
 		{
 			STUDENT tmp;
 			Storage<STUDENT> studentStore{ studentsPath };
 
-			studentStore.Load(allStudentsList.GetItemData(allStudentsList.GetCurSel()), tmp);
+			isOK = studentStore.Load(allStudentsList.GetItemData(allStudentsList.GetCurSel()), tmp);
+
+			if (!isOK)
+			{
+				int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
+				return;
+			}
 
 			CombinedStudentDlg dlg{ eDialogMode_Remove, tmp };
 			dlg.DoModal();
@@ -205,7 +266,13 @@ void AllStudentsDlg::OnBnClickedButtonRemove()
 			TEACHER tmp;
 			Storage<TEACHER> store(teachersPath);
 
-			store.Load(allStudentsList.GetItemData(allStudentsList.GetCurSel()), tmp);
+			isOK = store.Load(allStudentsList.GetItemData(allStudentsList.GetCurSel()), tmp);
+
+			if (!isOK)
+			{
+				int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
+				return;
+			}
 
 			CombinedTeacherDlg dlg{ eDialogMode_Remove, tmp };
 			dlg.DoModal();

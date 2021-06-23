@@ -29,9 +29,9 @@ public:
 	afx_msg void OnBnClickedRadio4();
 
 private:
-	void PrintAllStudents();
-	void PrintAllTeachers();
-	void PrintAll();
+	BOOL PrintAllStudents();
+	BOOL PrintAllTeachers();
+	BOOL PrintAll();
 
 public:
 	afx_msg void OnBnClickedRadio5();

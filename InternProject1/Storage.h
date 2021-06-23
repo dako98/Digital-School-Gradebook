@@ -25,7 +25,7 @@ public:
     BOOL Delete(const int nID);
     BOOL Load(const int nStudentID, T& recStudent);
 
-	int LastID() const;
+	BOOL NextID(int& id) const;
 	BOOL LoadAll(std::vector<T>& out);
 
 private:

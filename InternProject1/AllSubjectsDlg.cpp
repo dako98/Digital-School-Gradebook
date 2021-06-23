@@ -80,8 +80,16 @@ void AllSubjectsDlg::OnBnClickedButtonAdd()
 {
 	SUBJECT tmp;
 	Storage<SUBJECT> store(subjectsPath);
-	
-	tmp.nID = store.LastID() + 1;
+	BOOL isOK = TRUE;
+
+//	tmp.nID = store.LastID() + 1;
+	isOK = store.NextID(tmp.nID);
+
+	if (!isOK)
+	{
+		int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
+		return;
+	}
 
 	CombinedSubjectDlg dlg(eDialogMode_Add, tmp);
 	dlg.DoModal();
@@ -96,8 +104,15 @@ void AllSubjectsDlg::OnBnClickedButtonEdit()
 	{
 		SUBJECT tmp;
 		Storage<SUBJECT> store(subjectsPath);
+		BOOL isOK = TRUE;
 
-		store.Load(subjectsList.GetItemData(subjectsList.GetCurSel()), tmp);
+		isOK = store.Load(subjectsList.GetItemData(subjectsList.GetCurSel()), tmp);
+
+		if (!isOK)
+		{
+			int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
+			return;
+		}
 
 		CombinedSubjectDlg dlg(eDialogMode_Edit, tmp);
 		dlg.DoModal();
@@ -112,9 +127,16 @@ void AllSubjectsDlg::OnBnClickedButtonRemove()
 	if (subjectsList.GetCurSel() != LB_ERR)
 	{
 		SUBJECT tmp;
-		Storage<SUBJECT> store(studentsPath);
+		Storage<SUBJECT> store(subjectsPath);
+		BOOL isOK = TRUE;
 
-		store.Load(subjectsList.GetItemData(subjectsList.GetCurSel()), tmp);
+		isOK = store.Load(subjectsList.GetItemData(subjectsList.GetCurSel()), tmp);
+
+		if (!isOK)
+		{
+			int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
+			return;
+		}
 
 		CombinedSubjectDlg dlg(eDialogMode_Remove, tmp);
 		dlg.DoModal();

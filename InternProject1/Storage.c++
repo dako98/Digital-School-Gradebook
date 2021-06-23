@@ -169,7 +169,7 @@ BOOL Storage<T>::Load(const int nStudentID, T& recStudent)
 	file.close();
 //	isGood &= file.good();
 
-	if (isGood && tmp.Validate())
+	if (isGood/* && tmp.Validate()*/)
 	{
 		recStudent = tmp;
 	}
@@ -178,30 +178,56 @@ BOOL Storage<T>::Load(const int nStudentID, T& recStudent)
 }
 
 template<class T>
-inline int Storage<T>::LastID() const
+BOOL Storage<T>::NextID(int& id) const
 {
-	std::ifstream file(path);
+	BOOL isGood = TRUE;
+
+	std::ifstream file(path, std::ios::in);
 	int lastID = 0;
 	T tmp;
+
+	while (file.good() && file.peek() != EOF)
+	{
+		file >> tmp;
+		file.ignore(1);
+
+		if (file.good())
+		{
+			lastID = max(lastID, tmp.nID);
+		}
+		else
+		{
+			isGood = FALSE;
+		}
+	}
+
+	if (isGood)
+	{
+		id = lastID + 1;
+	}
+/*
 	while (file >> tmp)
 	{
 		file.ignore(1);
+
 		lastID = max(lastID, tmp.nID);
 	}
 	file.close();
-
-	return lastID;
+	*/
+	return isGood;
 }
 
 template<class T>
-inline BOOL Storage<T>::LoadAll(std::vector<T>& out)
+BOOL Storage<T>::LoadAll(std::vector<T>& out)
 {
 	BOOL isOK;
 	std::fstream file(path, std::ios::in);
+
 	if (file.is_open())
 	{
 		isOK = _LoadAll(out, file);
 	}
+
 	file.close();
 	return isOK;
 }
@@ -222,7 +248,7 @@ BOOL Storage<T>::_LoadAll(std::vector<T>& allStudents, std::fstream& file)
 			file >> tmp;
 			file.ignore(1);
 
-			if (file.good() && tmp.Validate())
+			if (file.good()/* && tmp.Validate()*/)
 			{
 				allStudents.push_back(tmp);
 			}

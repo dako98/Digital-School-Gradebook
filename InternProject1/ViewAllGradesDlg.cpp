@@ -30,7 +30,8 @@ ViewAllGradesDlg::ViewAllGradesDlg(CWnd* pParent /*=nullptr*/)
 
 BOOL ViewAllGradesDlg::OnInitDialog()
 {
-	CDialog::OnInitDialog();
+	if (!CDialog::OnInitDialog())
+		return FALSE;
 
 	PrintAllGrades();
 
@@ -41,9 +42,11 @@ ViewAllGradesDlg::~ViewAllGradesDlg()
 {
 }
 
-void ViewAllGradesDlg::PrintAllGrades()
+BOOL ViewAllGradesDlg::PrintAllGrades()
 {
 	gradesList.ResetContent();
+
+	BOOL isOK;
 
 	std::vector<GRADE> allGrades;
 	std::vector<STUDENT> allStudents;
@@ -53,35 +56,48 @@ void ViewAllGradesDlg::PrintAllGrades()
 	Storage<STUDENT> st(studentsPath);
 	Storage<SUBJECT> su(subjectsPath);
 
-	gr.LoadAll(allGrades);
-	st.LoadAll(allStudents);
-	su.LoadAll(allSubjects);
+	isOK = gr.LoadAll(allGrades);
 
-	std::unordered_map<int, std::pair<CString, CString>> studentNameMap;
-	std::unordered_map<int, CString> subjectNameMap;
+	if (isOK)
+	{
+		isOK = st.LoadAll(allStudents);
 
-	for (const auto& student : allStudents)
-	{
-		studentNameMap[student.nID] = std::make_pair<CString, CString>(CString{ student.szFirstName }, CString{ student.szLastName });
-	}
-	for (const auto& subject : allSubjects)
-	{
-		subjectNameMap[subject.nID] = CString{ subject.szName };
+		if (isOK)
+		{
+			su.LoadAll(allSubjects);
+		}
 	}
 
-	CString currentRow;
-
-	for (const auto& grade : allGrades)
+	if (isOK)
 	{
-		currentRow.Format(_T("%d %s %s %s"),
-			grade.nID,
-			studentNameMap[grade.nStudentID].first,
-			subjectNameMap[grade.nSubjectID],
-			MapGradeName(grade.value));
+		std::unordered_map<int, std::pair<CString, CString>> studentNameMap;
+		std::unordered_map<int, CString> subjectNameMap;
 
-		int index = gradesList.AddString(currentRow);
-		gradesList.SetItemData(index, grade.nID);
+		for (const auto& student : allStudents)
+		{
+			studentNameMap[student.nID] = std::make_pair<CString, CString>(CString{ student.szFirstName }, CString{ student.szLastName });
+		}
+		for (const auto& subject : allSubjects)
+		{
+			subjectNameMap[subject.nID] = CString{ subject.szName };
+		}
+
+		CString currentRow;
+
+		for (const auto& grade : allGrades)
+		{
+			currentRow.Format(_T("%d %s %s %s"),
+				grade.nID,
+				studentNameMap[grade.nStudentID].first,
+				subjectNameMap[grade.nSubjectID],
+				MapGradeName(grade.value));
+
+			int index = gradesList.AddString(currentRow);
+			gradesList.SetItemData(index, grade.nID);
+		}
 	}
+
+	return isOK;
 }
 
 void ViewAllGradesDlg::DoDataExchange(CDataExchange* pDX)
@@ -105,8 +121,16 @@ void ViewAllGradesDlg::OnBnClickedButtonAdd()
 {
 	GRADE tmp;
 	Storage<GRADE> store(gradesPath);
+	BOOL isOK = TRUE;
 
-	tmp.nID = store.LastID() + 1;
+//	tmp.nID = store.LastID() + 1;
+	isOK = store.NextID(tmp.nID);
+
+	if (!isOK)
+	{
+		int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
+		return;
+	}
 
 	CombinedGradeDlg dlg(eDialogMode_Add, tmp);
 	dlg.DoModal();
@@ -119,10 +143,18 @@ void ViewAllGradesDlg::OnBnClickedButtonEdit()
 {
 	if (gradesList.GetCurSel() != LB_ERR)
 	{
+		BOOL isOK;
+
 		GRADE tmp;
 		Storage<GRADE> studentStore(gradesPath);
 
-		studentStore.Load(gradesList.GetItemData(gradesList.GetCurSel()), tmp);
+		isOK = studentStore.Load(gradesList.GetItemData(gradesList.GetCurSel()), tmp);
+
+		if (!isOK)
+		{
+			int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
+			return;
+		}
 
 		CombinedGradeDlg dlg(eDialogMode_Edit, tmp);
 		dlg.DoModal();
@@ -136,10 +168,18 @@ void ViewAllGradesDlg::OnBnClickedButtonRemove()
 {
 	if (gradesList.GetCurSel() != LB_ERR)
 	{
+		BOOL isOK;
+
 		GRADE tmp;
 		Storage<GRADE> studentStore(gradesPath);
 
-		studentStore.Load(gradesList.GetItemData(gradesList.GetCurSel()), tmp);
+		isOK = studentStore.Load(gradesList.GetItemData(gradesList.GetCurSel()), tmp);
+
+		if (!isOK)
+		{
+			int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
+			return;
+		}
 
 		CombinedGradeDlg dlg(eDialogMode_Remove, tmp);
 		dlg.DoModal();

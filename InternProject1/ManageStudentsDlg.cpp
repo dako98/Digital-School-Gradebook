@@ -55,9 +55,17 @@ void ManageStudentsDlg::OnBnClickedButton2()
 {
 	STUDENT tmp;
 	Storage<STUDENT> store{ studentsPath };
+	BOOL isOK = TRUE;
 
-	tmp.nID = store.LastID() + 1;
+//	tmp.nID = store.LastID() + 1;
+	isOK = store.NextID(tmp.nID);
 	
+	if (!isOK)
+	{
+		int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
+		return;
+	}
+
 	CombinedStudentDlg dlg{ eDialogMode_Add, tmp };
 	dlg.DoModal();
 }
