@@ -204,17 +204,12 @@
     <ClInclude Include="ManageStudentsDlg.h" />
     <ClInclude Include="ManageSubjectsDlg.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="Person.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Storage.h" />
-    <ClInclude Include="Student.h" />
     <ClInclude Include="StudentAverageDlg.h" />
-    <ClInclude Include="StudentStore.h" />
     <ClInclude Include="Subject.h" />
     <ClInclude Include="SubjectStore.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="Teacher.h" />
-    <ClInclude Include="TeacherStore.h" />
     <ClInclude Include="Utility.h" />
     <ClInclude Include="ViewAllGradesDlg.h" />
   </ItemGroup>
@@ -244,15 +239,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Person.cpp" />
     <ClCompile Include="Storage.cpp" />
-    <ClCompile Include="Student.cpp" />
     <ClCompile Include="StudentAverageDlg.cpp" />
-    <ClCompile Include="StudentStore.cpp" />
     <ClCompile Include="Subject.cpp" />
     <ClCompile Include="SubjectStore.cpp" />
-    <ClCompile Include="Teacher.cpp" />
-    <ClCompile Include="TeacherStore.cpp" />
     <ClCompile Include="Utility.cpp" />
     <ClCompile Include="ViewAllGradesDlg.cpp" />
   </ItemGroup>
