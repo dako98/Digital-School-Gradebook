@@ -205,7 +205,6 @@
     <ClInclude Include="FailsDlg.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Grade.h" />
-    <ClInclude Include="Gradebook.h" />
     <ClInclude Include="GradeStore.h" />
     <ClInclude Include="InternProject1.h" />
     <ClInclude Include="InternProject1Dlg.h" />
@@ -251,7 +250,6 @@
     <ClCompile Include="ExcellentStudentsDlg.cpp" />
     <ClCompile Include="FailsDlg.cpp" />
     <ClCompile Include="Grade.cpp" />
-    <ClCompile Include="Gradebook.cpp" />
     <ClCompile Include="GradeStore.cpp" />
     <ClCompile Include="InternProject1.cpp" />
     <ClCompile Include="InternProject1Dlg.cpp" />
