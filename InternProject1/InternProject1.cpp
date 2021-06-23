@@ -7,11 +7,6 @@
 #include "InternProject1.h"
 #include "InternProject1Dlg.h"
 
-#include "GradeStore.h"
-#include "StudentStore.h"
-#include "SubjectStore.h"
-#include "TeacherStore.h"
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -48,10 +43,6 @@ CInternProject1App theApp;
 
 BOOL CInternProject1App::InitInstance()
 {
-
-	InitialiseStorages();
-
-
 	// InitCommonControlsEx() is required on Windows XP if an application
 	// manifest specifies use of ComCtl32.dll version 6 or later to enable
 	// visual styles.  Otherwise, any window creation will fail.
@@ -115,10 +106,4 @@ BOOL CInternProject1App::InitInstance()
 	// Since the dialog has been closed, return FALSE so that we exit the
 	//  application, rather than start the application's message pump.
 	return FALSE;
-}
-
-void InitialiseStorages()
-{
-//	SubjectStore::GetInstance()->Initialise("Subjects.txt");
-//	StudentStore::GetInstance()->Initialise("Students.txt");
 }

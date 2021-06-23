@@ -8,7 +8,6 @@
 
 #include <vector>
 
-#include "SubjectStore.h"
 #include "Storage.h"
 #include "CSubject.h"
 #include "CombinedSubjectDlg.h"

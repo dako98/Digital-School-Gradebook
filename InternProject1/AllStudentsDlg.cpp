@@ -6,13 +6,8 @@
 #include "AllStudentsDlg.h"
 #include "afxdialogex.h"
 
-#include "StudentStore.h"
-#include "Teacher.h"
-#include "TeacherStore.h"
 #include "CombinedStudentDlg.h"
 #include "CombinedTeacherDlg.h"
-#include "Storage.h"
-#include "CStudent.h"
 
 #include "CStudent.h"
 #include "CTeacher.h"
