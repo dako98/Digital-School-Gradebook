@@ -33,12 +33,6 @@
     <ClInclude Include="pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Subject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SubjectStore.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ManageStudentsDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -111,12 +105,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Subject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SubjectStore.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ManageStudentsDlg.cpp">
