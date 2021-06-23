@@ -15,24 +15,6 @@
 
 // AllSubjectsDlg dialog
 
-/*
-void populateList(CListBox& list, const std::vector<Subject>& src)
-{
-	list.ResetContent();
-	CString currentRow;
-
-	for (const Subject& subject : src)
-	{
-		currentRow.Format(_T("%d %s %s"), subject.GetID(), subject.GetName(), subject.GetRoom());
-
-		list.AddString(currentRow);
-	}
-	if (src.size() > 0)
-	{
-		list.SetCurSel(0);
-	}
-}*/
-
 IMPLEMENT_DYNAMIC(AllSubjectsDlg, CDialog)
 
 AllSubjectsDlg::AllSubjectsDlg(CWnd* pParent /*=nullptr*/)
@@ -57,7 +39,6 @@ void AllSubjectsDlg::PrintAll()
 
 	for (const auto& subject : all)
 	{
-		//		currentRow.Format(_T("%d %s %s"), student.GetNumber(), student.getName(), student.GetBirthday().Format());
 		currentRow.Format(_T("%d %s %s"),
 			subject.nID,
 			CString{ subject.szName },
@@ -106,7 +87,6 @@ void AllSubjectsDlg::OnBnClickedButtonAdd()
 	dlg.DoModal();
 
 	PrintAll();
-	// TODO: Add your control notification handler code here
 }
 
 
@@ -124,7 +104,6 @@ void AllSubjectsDlg::OnBnClickedButtonEdit()
 
 		PrintAll();
 	}
-	// TODO: Add your control notification handler code here
 }
 
 
