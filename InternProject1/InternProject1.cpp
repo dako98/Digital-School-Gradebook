@@ -29,8 +29,6 @@ CInternProject1App::CInternProject1App()
 	// TODO: add construction code here,
 	// Place all significant initialization in InitInstance
 }
-
-void InitialiseStorages();
 // The one and only CInternProject1App object
 
 CInternProject1App theApp;

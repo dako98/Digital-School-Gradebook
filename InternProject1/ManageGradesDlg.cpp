@@ -35,7 +35,6 @@ void ManageGradesDlg::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(ManageGradesDlg, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON1, &ManageGradesDlg::OnBnClickedButton1)
-	ON_BN_CLICKED(IDC_BUTTON3, &ManageGradesDlg::OnBnClickedButton3)
 	ON_BN_CLICKED(IDC_BUTTON2, &ManageGradesDlg::OnBnClickedButton2)
 END_MESSAGE_MAP()
 
@@ -45,7 +44,6 @@ END_MESSAGE_MAP()
 
 void ManageGradesDlg::OnBnClickedButton1()
 {
-	// TODO: Add your control notification handler code here
 	ViewAllGradesDlg dlg;
 	dlg.DoModal();
 }
@@ -56,7 +54,6 @@ void ManageGradesDlg::OnBnClickedButton2()
 	Storage<GRADE> store{ gradesPath };
 	BOOL isOK = TRUE;
 
-//	tmp.nID = store.LastID() + 1;
 	isOK = store.NextID(tmp.nID);
 
 	if (!isOK)
@@ -67,13 +64,6 @@ void ManageGradesDlg::OnBnClickedButton2()
 
 	CombinedGradeDlg dlg{ eDialogMode_Add, tmp };
 	dlg.DoModal();
-}
-
-void ManageGradesDlg::OnBnClickedButton3()
-{
-	// TODO: Add your control notification handler code here
-//	EditGradeDlg dlg;
-//	dlg.DoModal();
 }
 
 

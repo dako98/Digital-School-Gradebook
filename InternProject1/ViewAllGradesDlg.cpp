@@ -125,7 +125,6 @@ void ViewAllGradesDlg::OnBnClickedButtonAdd()
 	Storage<GRADE> store{ gradesPath };
 	BOOL isOK = TRUE;
 
-//	tmp.nID = store.LastID() + 1;
 	isOK = store.NextID(tmp.nID);
 
 	if (!isOK)

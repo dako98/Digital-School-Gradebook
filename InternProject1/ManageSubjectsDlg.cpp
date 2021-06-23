@@ -43,7 +43,6 @@ END_MESSAGE_MAP()
 
 void ManageSubjectsDlg::OnBnClickedButton1()
 {
-	// TODO: Add your control notification handler code here
 	AllSubjectsDlg dlg;
 	dlg.DoModal();
 }

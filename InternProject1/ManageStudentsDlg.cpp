@@ -57,7 +57,6 @@ void ManageStudentsDlg::OnBnClickedButton2()
 	Storage<STUDENT> store{ studentsPath };
 	BOOL isOK = TRUE;
 
-//	tmp.nID = store.LastID() + 1;
 	isOK = store.NextID(tmp.nID);
 	
 	if (!isOK)
@@ -82,13 +81,11 @@ void ManageStudentsDlg::OnBnClickedButtonAverage()
 	dlg.DoModal();
 }
 
-
 void ManageStudentsDlg::OnBnClickedButtonExcellents()
 {
 	ExcellentStudentsDlg dlg;
 	dlg.DoModal();
 }
-
 
 void ManageStudentsDlg::OnBnClickedButtonBirthdayers()
 {
@@ -98,7 +95,6 @@ void ManageStudentsDlg::OnBnClickedButtonBirthdayers()
 	BirthdayersDlg dlg{now};
 	dlg.DoModal();
 }
-
 
 void ManageStudentsDlg::OnBnClickedButtonFails()
 {

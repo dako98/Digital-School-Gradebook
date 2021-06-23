@@ -145,7 +145,7 @@ BOOL Storage<T>::Load(const int nStudentID, T& recStudent)
 			file >> tmp;
 			file.ignore(1);
 
-			if (file.good() && tmp.nID == nStudentID)
+			if (file.good() && tmp.Validate() && tmp.nID == nStudentID)
 			{
 				isGood = TRUE;
 				break;
@@ -158,9 +158,8 @@ BOOL Storage<T>::Load(const int nStudentID, T& recStudent)
 	}
 
 	file.close();
-//	isGood &= file.good();
 
-	if (isGood/* && tmp.Validate()*/)
+	if (isGood)
 	{
 		recStudent = tmp;
 	}
@@ -182,7 +181,7 @@ BOOL Storage<T>::NextID(int& id) const
 		file >> tmp;
 		file.ignore(1);
 
-		if (file.good())
+		if (file.good() && tmp.Validate())
 		{
 			lastID = max(lastID, tmp.nID);
 		}
@@ -233,7 +232,7 @@ BOOL Storage<T>::_LoadAll(std::vector<T>& allStudents, std::fstream& file)
 			file >> tmp;
 			file.ignore(1);
 
-			if (file.good()/* && tmp.Validate()*/)
+			if (file.good() && tmp.Validate())
 			{
 				allStudents.push_back(tmp);
 			}

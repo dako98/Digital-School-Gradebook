@@ -189,7 +189,6 @@ void StudentAverageDlg::OnCbnSelchangeCombo1()
 	{
 		int errorBox = MessageBox((LPCWSTR)L"Error retrieving list.", NULL, MB_OK | MB_ICONWARNING);
 	}
-	// TODO: Add your control notification handler code here
 }
 
 
@@ -199,5 +198,4 @@ void StudentAverageDlg::OnCbnSelchangeCombo2()
 	{
 		int errorBox = MessageBox((LPCWSTR)L"Error retrieving list.", NULL, MB_OK | MB_ICONWARNING);
 	}
-	// TODO: Add your control notification handler code here
 }
