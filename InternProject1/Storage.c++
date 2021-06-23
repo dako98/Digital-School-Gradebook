@@ -220,7 +220,8 @@ BOOL Storage<T>::NextID(int& id) const
 template<class T>
 BOOL Storage<T>::LoadAll(std::vector<T>& out)
 {
-	BOOL isOK;
+	BOOL isOK = FALSE;
+
 	std::fstream file(path, std::ios::in);
 
 	if (file.is_open())
@@ -229,6 +230,7 @@ BOOL Storage<T>::LoadAll(std::vector<T>& out)
 	}
 
 	file.close();
+
 	return isOK;
 }
 
@@ -266,3 +268,4 @@ BOOL Storage<T>::_LoadAll(std::vector<T>& allStudents, std::fstream& file)
 
 	return isGood;
 }
+
