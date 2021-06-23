@@ -6,17 +6,14 @@
 #define IDR_MAINFRAME                   128
 #define IDD_ADDSTUDENT                  129
 #define IDD_MANAGESTUDENTS              132
-#define IDD_EDIT_STUDENT                134
 #define IDD_ALL_STUDENTS                136
 #define IDD_REMOVE_STUDENT_DIALOG       138
 #define IDD_MANAGE_SUBJECTS_DIALOG      140
 #define IDD_ALL_SUBJECTS                144
 #define IDD_ADD_SUBJECT_DIALOG          146
-#define IDD_EDIT_SUBJECT_DIALOG         148
 #define IDD_REMOVE_SUBJECT_DIALOG       150
 #define IDD_MANAGE_GRADES               152
 #define IDD_ADD_GRADE                   154
-#define IDD_EDIT_GRADE                  156
 #define IDD_STUDENT_COMBINED            158
 #define IDD_TEACHER_COMBINED            160
 #define IDD_GRADES_COMBINED             162
@@ -49,7 +46,6 @@
 #define IDC_SLIDER2                     1030
 #define IDC_ADD_GRADE_TXT_GRADE_TEXT    1031
 #define IDC_COMBO3                      1032
-#define IDC_COMBO4                      1033
 #define IDC_EDIT3                       1034
 #define IDC_GRADES_STUDENT_COMBO        1037
 #define IDC_GRADE_DATETIMEPICKER1       1038

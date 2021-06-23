@@ -195,9 +195,6 @@
     <ClInclude Include="CStudent.h" />
     <ClInclude Include="CSubject.h" />
     <ClInclude Include="CTeacher.h" />
-    <ClInclude Include="EditGradeDlg.h" />
-    <ClInclude Include="EditStudentDlg.h" />
-    <ClInclude Include="EditSubjectDlg.h" />
     <ClInclude Include="ExcellentStudentsDlg.h" />
     <ClInclude Include="FailsDlg.h" />
     <ClInclude Include="framework.h" />
@@ -238,9 +235,6 @@
     <ClCompile Include="CStudent.cpp" />
     <ClCompile Include="CSubject.cpp" />
     <ClCompile Include="CTeacher.cpp" />
-    <ClCompile Include="EditGradeDlg.cpp" />
-    <ClCompile Include="EditStudentDlg.cpp" />
-    <ClCompile Include="EditSubjectDlg.cpp" />
     <ClCompile Include="ExcellentStudentsDlg.cpp" />
     <ClCompile Include="FailsDlg.cpp" />
     <ClCompile Include="Grade.cpp" />
