@@ -6,13 +6,12 @@
 #include "ManageGradesDlg.h"
 #include "afxdialogex.h"
 
-#include "AddGradeDlg.h"
-#include "EditGradeDlg.h"
 #include "ViewAllGradesDlg.h"
 
 #include "CombinedGradeDlg.h"
 #include "Utility.h"
-
+#include "Storage.h"
+#include "CGrade.h"
 
 // ManageGradesDlg dialog
 
@@ -53,10 +52,13 @@ void ManageGradesDlg::OnBnClickedButton1()
 
 void ManageGradesDlg::OnBnClickedButton2()
 {
-	// TODO: Add your control notification handler code here
-//	AddGradeDlg dlg;
-//	CombinedGradeDlg dlg(eDialogMode_Add,)
-//	dlg.DoModal();
+	GRADE tmp;
+	Storage<GRADE> store(gradesPath);
+
+	tmp.nID = store.LastID() + 1;
+
+	CombinedGradeDlg dlg(eDialogMode_Add, tmp);
+	dlg.DoModal();
 }
 
 void ManageGradesDlg::OnBnClickedButton3()

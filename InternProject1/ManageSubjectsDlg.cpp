@@ -7,9 +7,6 @@
 #include "afxdialogex.h"
 
 #include "AllSubjectsDlg.h"
-#include "AddSubjectDlg.h"
-#include "EditSubjectDlg.h"
-#include "RemoveSubjectDlg.h"
 
 
 // ManageSubjectsDlg dialog
@@ -54,22 +51,22 @@ void ManageSubjectsDlg::OnBnClickedButton1()
 void ManageSubjectsDlg::OnBnClickedButton2()
 {
 	// TODO: Add your control notification handler code here
-	AddSubjectDlg dlg;
-	dlg.DoModal();
+//	AddSubjectDlg dlg;
+//	dlg.DoModal();
 }
 
 
 void ManageSubjectsDlg::OnBnClickedButton3()
 {
 	// TODO: Add your control notification handler code here
-	EditSubjectDlg dlg;
-	dlg.DoModal();
+//	EditSubjectDlg dlg;
+//	dlg.DoModal();
 }
 
 
 void ManageSubjectsDlg::OnBnClickedButton4()
 {
 	// TODO: Add your control notification handler code here
-	RemoveSubjectDlg dlg;
-	dlg.DoModal();
+//	RemoveSubjectDlg dlg;
+//	dlg.DoModal();
 }
