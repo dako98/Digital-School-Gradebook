@@ -1,5 +1,6 @@
 #pragma once
 
+#include <unordered_map>
 
 // FailsDlg dialog
 
@@ -26,4 +27,17 @@ protected:
 public:
 	CListBox failsList;
 	CListBox badGradesList;
+
+private:
+	
+	// Struct[map - studentID] { subject[map - subjectID]{ gradesSum, gradesCount } }
+	struct studentStr
+	{
+		struct subject
+		{
+			int gradeSum = 0;
+			int gradesCount = 0;
+		};
+		std::unordered_map<int, subject> subject;
+	};
 };
