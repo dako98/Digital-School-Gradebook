@@ -15,12 +15,6 @@
 
 IMPLEMENT_DYNAMIC(BirthdayersDlg, CDialog)
 
-BirthdayersDlg::BirthdayersDlg(CWnd* pParent /*=nullptr*/)
-	: CDialog(IDD_BIRTHDAYERS, pParent)
-{
-
-}
-
 BirthdayersDlg::BirthdayersDlg(const DBTIMESTAMP& date)
 	: CDialog(IDD_BIRTHDAYERS, nullptr)
 	, date(date)

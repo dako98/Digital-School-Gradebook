@@ -54,11 +54,11 @@ END_MESSAGE_MAP()
 void ManageStudentsDlg::OnBnClickedButton2()
 {
 	STUDENT tmp;
-	Storage<STUDENT> store(studentsPath);
+	Storage<STUDENT> store{ studentsPath };
 
 	tmp.nID = store.LastID() + 1;
 	
-	CombinedStudentDlg dlg(eDialogMode_Add, tmp);
+	CombinedStudentDlg dlg{ eDialogMode_Add, tmp };
 	dlg.DoModal();
 }
 
@@ -84,7 +84,10 @@ void ManageStudentsDlg::OnBnClickedButtonExcellents()
 
 void ManageStudentsDlg::OnBnClickedButtonBirthdayers()
 {
-	BirthdayersDlg dlg;
+	DBTIMESTAMP now;
+	COleDateTime::GetCurrentTime().GetAsDBTIMESTAMP(now);
+
+	BirthdayersDlg dlg{now};
 	dlg.DoModal();
 }
 
