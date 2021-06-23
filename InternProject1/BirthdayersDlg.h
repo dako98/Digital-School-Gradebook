@@ -8,7 +8,6 @@ class BirthdayersDlg : public CDialog
 	DECLARE_DYNAMIC(BirthdayersDlg)
 
 public:
-	BirthdayersDlg(CWnd* pParent = nullptr);   // standard constructor
 	BirthdayersDlg(const DBTIMESTAMP& date);
 
 	BOOL OnInitDialog() override;
