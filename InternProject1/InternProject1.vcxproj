@@ -183,9 +183,6 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="AddGradeDlg.h" />
-    <ClInclude Include="AddStudentDlg.h" />
-    <ClInclude Include="AddSubjectDlg.h" />
     <ClInclude Include="AllStudentsDlg.h" />
     <ClInclude Include="AllSubjectsDlg.h" />
     <ClInclude Include="BirthdayersDlg.h" />
@@ -229,9 +226,6 @@
     <ClInclude Include="ViewAllGradesDlg.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AddGradeDlg.cpp" />
-    <ClCompile Include="AddStudentDlg.cpp" />
-    <ClCompile Include="AddSubjectDlg.cpp" />
     <ClCompile Include="AllStudentsDlg.cpp" />
     <ClCompile Include="AllSubjectsDlg.cpp" />
     <ClCompile Include="BirthdayersDlg.cpp" />

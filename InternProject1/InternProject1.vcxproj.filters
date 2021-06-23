@@ -60,9 +60,6 @@
     <ClInclude Include="ManageStudentsDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="AddStudentDlg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="EditStudentDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -78,9 +75,6 @@
     <ClInclude Include="AllSubjectsDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="AddSubjectDlg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TeacherStore.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -91,9 +85,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ManageGradesDlg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AddGradeDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="EditGradeDlg.h">
@@ -185,9 +176,6 @@
     <ClCompile Include="ManageStudentsDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AddStudentDlg.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="EditStudentDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -203,9 +191,6 @@
     <ClCompile Include="AllSubjectsDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AddSubjectDlg.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="TeacherStore.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -216,9 +201,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ManageGradesDlg.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="AddGradeDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="EditGradeDlg.cpp">
