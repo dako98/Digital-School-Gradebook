@@ -27,26 +27,32 @@ AllSubjectsDlg::~AllSubjectsDlg()
 {
 }
 
-void AllSubjectsDlg::PrintAll()
+BOOL AllSubjectsDlg::PrintAll()
 {
 	subjectsList.ResetContent();
 
+	BOOL isOK = TRUE;
+
 	std::vector<SUBJECT> all;
-	Storage<SUBJECT> su(subjectsPath);
-	su.LoadAll(all);
+	Storage<SUBJECT> su{ subjectsPath };
+	isOK = su.LoadAll(all);
 
-	CString currentRow;
-
-	for (const auto& subject : all)
+	if (isOK)
 	{
-		currentRow.Format(_T("%d %s %s"),
-			subject.nID,
-			CString{ subject.szName },
-			CString{ subject.szRoom });
+		CString currentRow;
 
-		int index = subjectsList.AddString(currentRow);
-		subjectsList.SetItemData(index, subject.nID);
+		for (const auto& subject : all)
+		{
+			currentRow.Format(_T("%d %s %s"),
+				subject.nID,
+				CString{ subject.szName },
+				CString{ subject.szRoom });
+
+			int index = subjectsList.AddString(currentRow);
+			subjectsList.SetItemData(index, subject.nID);
+		}
 	}
+	return isOK;
 }
 
 BOOL AllSubjectsDlg::OnInitDialog()
@@ -54,9 +60,11 @@ BOOL AllSubjectsDlg::OnInitDialog()
 	if(!CDialog::OnInitDialog())
 		return FALSE;
 
-	PrintAll();
+	BOOL isOK = TRUE;
 
-	return 0;
+	isOK = PrintAll();
+
+	return isOK;
 }
 
 void AllSubjectsDlg::DoDataExchange(CDataExchange* pDX)
@@ -79,10 +87,9 @@ END_MESSAGE_MAP()
 void AllSubjectsDlg::OnBnClickedButtonAdd()
 {
 	SUBJECT tmp;
-	Storage<SUBJECT> store(subjectsPath);
+	Storage<SUBJECT> store{ subjectsPath };
 	BOOL isOK = TRUE;
 
-//	tmp.nID = store.LastID() + 1;
 	isOK = store.NextID(tmp.nID);
 
 	if (!isOK)
@@ -91,7 +98,7 @@ void AllSubjectsDlg::OnBnClickedButtonAdd()
 		return;
 	}
 
-	CombinedSubjectDlg dlg(eDialogMode_Add, tmp);
+	CombinedSubjectDlg dlg{ eDialogMode_Add, tmp };
 	dlg.DoModal();
 
 	PrintAll();
@@ -103,7 +110,7 @@ void AllSubjectsDlg::OnBnClickedButtonEdit()
 	if (subjectsList.GetCurSel() != LB_ERR)
 	{
 		SUBJECT tmp;
-		Storage<SUBJECT> store(subjectsPath);
+		Storage<SUBJECT> store{ subjectsPath };
 		BOOL isOK = TRUE;
 
 		isOK = store.Load(subjectsList.GetItemData(subjectsList.GetCurSel()), tmp);
@@ -114,7 +121,7 @@ void AllSubjectsDlg::OnBnClickedButtonEdit()
 			return;
 		}
 
-		CombinedSubjectDlg dlg(eDialogMode_Edit, tmp);
+		CombinedSubjectDlg dlg{ eDialogMode_Edit, tmp };
 		dlg.DoModal();
 
 		PrintAll();
@@ -127,7 +134,7 @@ void AllSubjectsDlg::OnBnClickedButtonRemove()
 	if (subjectsList.GetCurSel() != LB_ERR)
 	{
 		SUBJECT tmp;
-		Storage<SUBJECT> store(subjectsPath);
+		Storage<SUBJECT> store{ subjectsPath };
 		BOOL isOK = TRUE;
 
 		isOK = store.Load(subjectsList.GetItemData(subjectsList.GetCurSel()), tmp);
@@ -138,7 +145,7 @@ void AllSubjectsDlg::OnBnClickedButtonRemove()
 			return;
 		}
 
-		CombinedSubjectDlg dlg(eDialogMode_Remove, tmp);
+		CombinedSubjectDlg dlg{ eDialogMode_Remove, tmp };
 		dlg.DoModal();
 
 		PrintAll();

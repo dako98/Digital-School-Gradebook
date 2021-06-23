@@ -52,10 +52,9 @@ void ManageSubjectsDlg::OnBnClickedButton1()
 void ManageSubjectsDlg::OnBnClickedButton2()
 {
 	SUBJECT tmp;
-	Storage<SUBJECT> store(subjectsPath);
+	Storage<SUBJECT> store{ subjectsPath };
 	BOOL isOK = TRUE;
 
-	//	tmp.nID = store.LastID() + 1;
 	isOK = store.NextID(tmp.nID);
 
 	if (!isOK)
@@ -64,7 +63,7 @@ void ManageSubjectsDlg::OnBnClickedButton2()
 		return;
 	}
 
-	CombinedSubjectDlg dlg(eDialogMode_Add, tmp);
+	CombinedSubjectDlg dlg{ eDialogMode_Add, tmp };
 	dlg.DoModal();
 }
 

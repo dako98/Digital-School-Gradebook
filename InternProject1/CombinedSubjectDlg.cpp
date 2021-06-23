@@ -35,14 +35,14 @@ BOOL CombinedSubjectDlg::OnInitDialog()
 
 	if (m_eDialogMode != DialogMode::eDialogMode_Add)
 	{
-		subjectName.SetWindowText(CString(tmp.szName));
-		subjectRoom.SetWindowText(CString(tmp.szRoom));
+		subjectName.SetWindowText(CString{ tmp.szName });
+		subjectRoom.SetWindowText(CString{ tmp.szRoom });
 	}
 
 	BOOL isOK = TRUE;
 
 	std::vector<TEACHER> allTeachers;
-	Storage<TEACHER> te(teachersPath);
+	Storage<TEACHER> te{ teachersPath };
 	isOK = te.LoadAll(allTeachers);
 
 	if (isOK)
@@ -177,7 +177,7 @@ void CombinedSubjectDlg::OnBnClickedOk()
 	{
 		isOK = store.Delete(su.nID);
 
-		Storage<GRADE> gradeStore(gradesPath);
+		Storage<GRADE> gradeStore{ gradesPath };
 		std::vector<GRADE> allGrades;
 
 		isOK = gradeStore.LoadAll(allGrades);

@@ -35,8 +35,8 @@ BOOL CombinedStudentDlg::OnInitDialog()
 	if (m_eDialogMode != DialogMode::eDialogMode_Add)
 	{
 		studentBirthDateVal = student.dtBirthDate;
-		studentFirstName.SetWindowText(CString(student.szFirstName));
-		studentLastName.SetWindowText(CString(student.szLastName));
+		studentFirstName.SetWindowText(CString{ student.szFirstName });
+		studentLastName.SetWindowText(CString{ student.szLastName });
 	}
 	UpdateData(FALSE);
 

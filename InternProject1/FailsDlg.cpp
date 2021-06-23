@@ -35,7 +35,7 @@ BOOL FailsDlg::OnInitDialog()
 	BOOL isOK;
 
 	// Load all grades
-	Storage<GRADE> gradeStore(gradesPath);
+	Storage<GRADE> gradeStore{ gradesPath };
 	std::vector<GRADE> allGrades;
 	isOK = gradeStore.LoadAll(allGrades);
 
@@ -80,8 +80,8 @@ BOOL FailsDlg::OnInitDialog()
 			}
 		}
 
-		Storage<STUDENT> studentStore(studentsPath);
-		Storage<SUBJECT> subjectStore(subjectsPath);
+		Storage<STUDENT> studentStore{ studentsPath };
+		Storage<SUBJECT> subjectStore{ subjectsPath };
 
 		CString currentRow;
 

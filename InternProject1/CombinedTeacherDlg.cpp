@@ -33,8 +33,8 @@ BOOL CombinedTeacherDlg::OnInitDialog()
 
 	if (m_eDialogMode != DialogMode::eDialogMode_Add)
 	{
-		teacherFirstName.SetWindowText(CString(tmp.szFirstName));
-		teacherLastName.SetWindowText(CString(tmp.szLastName));
+		teacherFirstName.SetWindowText(CString{ tmp.szFirstName });
+		teacherLastName.SetWindowText(CString{ tmp.szLastName });
 	}
 	UpdateData(FALSE);
 

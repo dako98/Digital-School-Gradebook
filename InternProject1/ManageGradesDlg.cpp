@@ -53,7 +53,7 @@ void ManageGradesDlg::OnBnClickedButton1()
 void ManageGradesDlg::OnBnClickedButton2()
 {
 	GRADE tmp;
-	Storage<GRADE> store(gradesPath);
+	Storage<GRADE> store{ gradesPath };
 	BOOL isOK = TRUE;
 
 //	tmp.nID = store.LastID() + 1;
@@ -65,7 +65,7 @@ void ManageGradesDlg::OnBnClickedButton2()
 		return;
 	}
 
-	CombinedGradeDlg dlg(eDialogMode_Add, tmp);
+	CombinedGradeDlg dlg{ eDialogMode_Add, tmp };
 	dlg.DoModal();
 }
 

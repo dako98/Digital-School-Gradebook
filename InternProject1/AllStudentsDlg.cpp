@@ -48,7 +48,7 @@ BOOL AllStudentsDlg::PrintAllStudents()
 	BOOL isOK;
 
 	std::vector<STUDENT> allStudents;
-	Storage<STUDENT> st(studentsPath);
+	Storage<STUDENT> st{ studentsPath };
 	isOK = st.LoadAll(allStudents);
 
 	if (isOK)
@@ -61,7 +61,7 @@ BOOL AllStudentsDlg::PrintAllStudents()
 				student.nID,
 				CString{ student.szFirstName },
 				CString{ student.szLastName },
-				COleDateTime(student.dtBirthDate).Format());
+				COleDateTime{ student.dtBirthDate }.Format());
 
 			int index = allStudentsList.AddString(currentRow);
 			allStudentsList.SetItemData(index, student.nID);
@@ -76,9 +76,11 @@ BOOL AllStudentsDlg::OnInitDialog()
 
 	studentsRadioBtn.SetCheck(true);
 
-	PrintAll();
+	BOOL isOK = TRUE;
 
-	return 0;
+	isOK = PrintAll();
+
+	return isOK;
 }
 
 void AllStudentsDlg::DoDataExchange(CDataExchange* pDX)
@@ -205,7 +207,6 @@ void AllStudentsDlg::OnBnClickedButtonAdd()
 		STUDENT tmp;
 		Storage<STUDENT> store{ studentsPath };
 
-//		tmp.nID = store.LastID() + 1;
 		isOK = store.NextID(tmp.nID);
 
 		if (!isOK)
@@ -222,7 +223,6 @@ void AllStudentsDlg::OnBnClickedButtonAdd()
 		TEACHER tmp;
 		Storage<TEACHER> store{ teachersPath };
 
-//		tmp.nID = store.LastID() + 1;
 		isOK = store.NextID(tmp.nID);
 
 		if (!isOK)

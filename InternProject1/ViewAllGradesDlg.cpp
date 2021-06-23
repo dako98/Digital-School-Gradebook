@@ -33,9 +33,11 @@ BOOL ViewAllGradesDlg::OnInitDialog()
 	if (!CDialog::OnInitDialog())
 		return FALSE;
 
-	PrintAllGrades();
+	BOOL isOK = TRUE;
 
-	return 0;
+	isOK = PrintAllGrades();
+
+	return isOK;
 }
 
 ViewAllGradesDlg::~ViewAllGradesDlg()
@@ -52,9 +54,9 @@ BOOL ViewAllGradesDlg::PrintAllGrades()
 	std::vector<STUDENT> allStudents;
 	std::vector<SUBJECT> allSubjects;
 
-	Storage<GRADE> gr(gradesPath);
-	Storage<STUDENT> st(studentsPath);
-	Storage<SUBJECT> su(subjectsPath);
+	Storage<GRADE> gr{ gradesPath };
+	Storage<STUDENT> st{ studentsPath };
+	Storage<SUBJECT> su{ subjectsPath };
 
 	isOK = gr.LoadAll(allGrades);
 
@@ -120,7 +122,7 @@ END_MESSAGE_MAP()
 void ViewAllGradesDlg::OnBnClickedButtonAdd()
 {
 	GRADE tmp;
-	Storage<GRADE> store(gradesPath);
+	Storage<GRADE> store{ gradesPath };
 	BOOL isOK = TRUE;
 
 //	tmp.nID = store.LastID() + 1;
@@ -132,7 +134,7 @@ void ViewAllGradesDlg::OnBnClickedButtonAdd()
 		return;
 	}
 
-	CombinedGradeDlg dlg(eDialogMode_Add, tmp);
+	CombinedGradeDlg dlg{ eDialogMode_Add, tmp };
 	dlg.DoModal();
 
 	PrintAllGrades();
@@ -146,7 +148,7 @@ void ViewAllGradesDlg::OnBnClickedButtonEdit()
 		BOOL isOK;
 
 		GRADE tmp;
-		Storage<GRADE> studentStore(gradesPath);
+		Storage<GRADE> studentStore{ gradesPath };
 
 		isOK = studentStore.Load(gradesList.GetItemData(gradesList.GetCurSel()), tmp);
 
@@ -156,7 +158,7 @@ void ViewAllGradesDlg::OnBnClickedButtonEdit()
 			return;
 		}
 
-		CombinedGradeDlg dlg(eDialogMode_Edit, tmp);
+		CombinedGradeDlg dlg{ eDialogMode_Edit, tmp };
 		dlg.DoModal();
 
 		PrintAllGrades();
@@ -171,7 +173,7 @@ void ViewAllGradesDlg::OnBnClickedButtonRemove()
 		BOOL isOK;
 
 		GRADE tmp;
-		Storage<GRADE> studentStore(gradesPath);
+		Storage<GRADE> studentStore{ gradesPath };
 
 		isOK = studentStore.Load(gradesList.GetItemData(gradesList.GetCurSel()), tmp);
 
@@ -181,7 +183,7 @@ void ViewAllGradesDlg::OnBnClickedButtonRemove()
 			return;
 		}
 
-		CombinedGradeDlg dlg(eDialogMode_Remove, tmp);
+		CombinedGradeDlg dlg{ eDialogMode_Remove, tmp };
 		dlg.DoModal();
 
 		PrintAllGrades();

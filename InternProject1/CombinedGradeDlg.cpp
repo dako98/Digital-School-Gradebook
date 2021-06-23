@@ -29,7 +29,7 @@ BOOL CombinedGradeDlg::PrintAllStudents()
 	BOOL isOK;
 
 	std::vector<STUDENT> allStudents;
-	Storage<STUDENT> st(studentsPath);
+	Storage<STUDENT> st{ studentsPath };
 	isOK = st.LoadAll(allStudents);
 
 	if (isOK)
@@ -55,7 +55,7 @@ BOOL CombinedGradeDlg::PrintAllSubjects()
 	BOOL isOK;
 
 	std::vector<SUBJECT> allStudents;
-	Storage<SUBJECT> st(subjectsPath);
+	Storage<SUBJECT> st{ subjectsPath };
 	isOK = st.LoadAll(allStudents);
 
 	if (isOK)
@@ -130,6 +130,7 @@ BOOL CombinedGradeDlg::OnInitDialog()
 		break;
 
 	case DialogMode::eDialogMode_Add:
+
 		studentDropdown.EnableWindow(TRUE);
 		subjectDropdown.EnableWindow(TRUE);
 		gradeDropdown.EnableWindow(TRUE);

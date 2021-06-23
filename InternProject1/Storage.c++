@@ -3,7 +3,7 @@ template<class T>
 Storage<T>::Storage(const std::string& path)
 	:path(path)
 {
-	std::fstream file(path, std::ios::in | std::ios::out);
+	std::fstream file{ path, std::ios::in | std::ios::out };
 
 	if (!file.is_open())
 	{
@@ -25,7 +25,7 @@ BOOL Storage<T>::Add(T& recStudent)
 
 	if (isGood = recStudent.Validate())
 	{
-		std::ofstream file(path, std::ofstream::app);
+		std::ofstream file{ path, std::ofstream::app };
 
 		file << recStudent << '\n';
 
@@ -46,7 +46,7 @@ BOOL Storage<T>::Edit(T& recStudent)
 	{
 
 		std::vector<T> students;
-		std::fstream file(path, std::ios::in);
+		std::fstream file{ path, std::ios::in };
 
 		if (file.good())
 		{
@@ -66,15 +66,6 @@ BOOL Storage<T>::Edit(T& recStudent)
 					isGood = FALSE;
 				}
 
-				/*
-				int count = students.size();
-				for (size_t i = 0; i < count; i++)
-				{
-					if (isGood && students[i].nID == recStudent.nID)
-					{
-						students[i] = recStudent;
-					}
-				}*/
 				file.close();
 
 				if (isGood)
@@ -115,7 +106,7 @@ BOOL Storage<T>::Delete(const int nStudentID)
 	BOOL isGood = TRUE;
 
 	std::vector<T> students;
-	std::fstream file(path, std::ios::in);
+	std::fstream file{ path, std::ios::in };
 
 	if (isGood = file.is_open())
 	{
@@ -143,7 +134,7 @@ BOOL Storage<T>::Load(const int nStudentID, T& recStudent)
 	BOOL isGood = TRUE;
 	T tmp;
 
-	std::ifstream file(path);
+	std::ifstream file{ path, std::ios::in };
 
 	if (file.is_open())
 	{
@@ -182,7 +173,7 @@ BOOL Storage<T>::NextID(int& id) const
 {
 	BOOL isGood = TRUE;
 
-	std::ifstream file(path, std::ios::in);
+	std::ifstream file{ path, std::ios::in };
 	int lastID = 0;
 	T tmp;
 
@@ -205,15 +196,7 @@ BOOL Storage<T>::NextID(int& id) const
 	{
 		id = lastID + 1;
 	}
-/*
-	while (file >> tmp)
-	{
-		file.ignore(1);
 
-		lastID = max(lastID, tmp.nID);
-	}
-	file.close();
-	*/
 	return isGood;
 }
 
@@ -222,7 +205,7 @@ BOOL Storage<T>::LoadAll(std::vector<T>& out)
 {
 	BOOL isOK = FALSE;
 
-	std::fstream file(path, std::ios::in);
+	std::fstream file{ path, std::ios::in };
 
 	if (file.is_open())
 	{

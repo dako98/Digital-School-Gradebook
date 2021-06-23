@@ -28,5 +28,5 @@ public:
 	afx_msg void OnBnClickedButtonEdit();
 	afx_msg void OnBnClickedButtonRemove();
 private:
-	void PrintAll();
+	BOOL PrintAll();
 };

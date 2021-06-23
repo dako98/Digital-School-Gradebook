@@ -16,7 +16,7 @@ BOOL GRADE::Validate() const
 		nStudentID > 0 &&
 		nSubjectID > 0 &&
 		value > GRADE::GRADES::INVALID && value < GRADE::GRADES::COUNT&&
-		COleDateTime(dtDate) <= COleDateTime::GetCurrentTime());
+		COleDateTime{ dtDate } <= COleDateTime::GetCurrentTime());
 }
 
 void GRADE::Read(std::istream& in)

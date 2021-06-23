@@ -27,34 +27,39 @@ BOOL BirthdayersDlg::OnInitDialog()
 	if (!CDialog::OnInitDialog())
 		return FALSE;
 
-	std::vector<STUDENT> allStudents;
-	Storage<STUDENT> studentStore(studentsPath);
-	studentStore.LoadAll(allStudents);
-	DBTIMESTAMP now;
-	COleDateTime::GetCurrentTime().GetAsDBTIMESTAMP(now);
-	std::vector<STUDENT> birthdayers;
+	BOOL isOK = TRUE;
 
-	for (const auto& student : allStudents)
+	std::vector<STUDENT> allStudents;
+	Storage<STUDENT> studentStore{ studentsPath };
+	isOK = studentStore.LoadAll(allStudents);
+
+	if (isOK)
 	{
-		if (student.dtBirthDate.day == now.day &&
-			student.dtBirthDate.month == now.month)
+		DBTIMESTAMP now;
+		COleDateTime::GetCurrentTime().GetAsDBTIMESTAMP(now);
+		std::vector<STUDENT> birthdayers;
+
+		for (const auto& student : allStudents)
 		{
-			birthdayers.push_back(student);
+			if (student.dtBirthDate.day == now.day &&
+				student.dtBirthDate.month == now.month)
+			{
+				birthdayers.push_back(student);
+			}
+		}
+
+		CString currentRow;
+		for (const auto& student : birthdayers)
+		{
+			currentRow.Format(_T("%d %s %s"),
+				student.nID,
+				CString{ student.szFirstName },
+				CString{ student.szLastName });
+
+			birthdayersList.AddString(currentRow);
 		}
 	}
-
-	CString currentRow;
-	for (const auto& student : birthdayers)
-	{
-		currentRow.Format(_T("%d %s %s"),
-			student.nID,
-			CString{ student.szFirstName },
-			CString{ student.szLastName });
-
-		birthdayersList.AddString(currentRow);
-	}
-
-	return TRUE;
+	return isOK;
 }
 
 BirthdayersDlg::~BirthdayersDlg()

@@ -10,7 +10,7 @@ TEACHER::TEACHER()
 
 BOOL TEACHER::Validate() const
 {
-	return (PERSON::Validate());
+	return PERSON::Validate();
 }
 
 
