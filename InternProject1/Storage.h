@@ -36,5 +36,4 @@ private:
     const std::string path;
 };
 
-
 #include "Storage.c++"
