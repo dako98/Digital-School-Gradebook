@@ -11,7 +11,6 @@ class CombinedTeacherDlg : public CDialog
 	DECLARE_DYNAMIC(CombinedTeacherDlg)
 
 public:
-	CombinedTeacherDlg(CWnd* pParent = nullptr);   // standard constructor
 	CombinedTeacherDlg(DialogMode eMode, const TEACHER& data);
 
 	BOOL OnInitDialog() override;

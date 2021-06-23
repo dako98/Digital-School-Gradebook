@@ -30,7 +30,13 @@ BOOL CombinedSubjectDlg::OnInitDialog()
 	if (!CDialog::OnInitDialog())
 		return FALSE;
 
-	// FIXME: No data filled in for remove.
+	subjectIDVal = tmp.nID;
+
+	if (m_eDialogMode != DialogMode::eDialogMode_Add)
+	{
+		subjectName.SetWindowText(CString(tmp.szName));
+		subjectRoom.SetWindowText(CString(tmp.szRoom));
+	}
 
 	BOOL isOK = TRUE;
 
@@ -53,12 +59,9 @@ BOOL CombinedSubjectDlg::OnInitDialog()
 			teacherDropdown.SetItemData(index, teacher.nID);
 		}
 
-		subjectIDVal = tmp.nID;
-		subjectName.SetWindowText(CString(tmp.szName));
-		subjectRoom.SetWindowText(CString(tmp.szRoom));
 		teacherDropdown.SetCurSel(GetIndexByData(tmp.nTeacherID, teacherDropdown));
-		UpdateData(FALSE);
 	}
+	UpdateData(FALSE);
 
 	switch (m_eDialogMode)
 	{
@@ -67,18 +70,17 @@ BOOL CombinedSubjectDlg::OnInitDialog()
 		subjectID.EnableWindow(FALSE);
 		subjectName.EnableWindow(FALSE);
 		subjectRoom.EnableWindow(FALSE);
+		teacherDropdown.EnableWindow(FALSE);
 
 		break;
 
 	case DialogMode::eDialogMode_Add:
-
-		UpdateData(FALSE);
-
 	case DialogMode::eDialogMode_Edit:
 
 		subjectID.EnableWindow(FALSE);
 		subjectName.EnableWindow(TRUE);
 		subjectRoom.EnableWindow(TRUE);
+		teacherDropdown.EnableWindow(TRUE);
 		break;
 
 
@@ -124,52 +126,63 @@ void CombinedSubjectDlg::OnBnClickedOk()
 
 	su.nID = subjectIDVal;
 
-	subjectName.GetWindowText(buff);
-
-	if (teacherDropdown.GetCurSel() != CB_ERR)
+	if (m_eDialogMode != DialogMode::eDialogMode_Remove)
 	{
-		su.nTeacherID = teacherDropdown.GetItemData(teacherDropdown.GetCurSel());
+		// Read data from window.
+		subjectName.GetWindowText(buff);
 
-		if (buff.GetLength() <= SUBJECT::MAX_NAME_SIZE)
+		if (teacherDropdown.GetCurSel() != CB_ERR)
 		{
-			strcpy_s(su.szName, SUBJECT::MAX_NAME_SIZE, CT2A(buff));
+			su.nTeacherID = teacherDropdown.GetItemData(teacherDropdown.GetCurSel());
+
+			if (buff.GetLength() <= SUBJECT::MAX_NAME_SIZE)
+			{
+				strcpy_s(su.szName, SUBJECT::MAX_NAME_SIZE, CT2A(buff));
+			}
+			else
+			{
+				strcpy_s(su.szName, SUBJECT::MAX_NAME_SIZE, "");
+			}
+
+			subjectRoom.GetWindowTextW(buff);
+
+			if (buff.GetLength() <= SUBJECT::MAX_NAME_SIZE)
+			{
+				strcpy_s(su.szRoom, SUBJECT::MAX_NAME_SIZE, CT2A(buff));
+			}
+			else
+			{
+				strcpy_s(su.szRoom, SUBJECT::MAX_NAME_SIZE, "");
+			}
 		}
 		else
 		{
-			strcpy_s(su.szName, SUBJECT::MAX_NAME_SIZE, "");
+			isOK = FALSE;
 		}
+	}
 
-		subjectRoom.GetWindowTextW(buff);
 
-		if (buff.GetLength() <= SUBJECT::MAX_NAME_SIZE)
+	switch (m_eDialogMode)
+	{
+	case DialogMode::eDialogMode_Add:
+
+		isOK = store.Add(su);
+		break;
+	case DialogMode::eDialogMode_Edit:
+
+		isOK = store.Edit(su);
+		break;
+	case DialogMode::eDialogMode_Remove:
+	{
+		isOK = store.Delete(su.nID);
+
+		Storage<GRADE> gradeStore(gradesPath);
+		std::vector<GRADE> allGrades;
+
+		isOK = gradeStore.LoadAll(allGrades);
+
+		if (isOK)
 		{
-			strcpy_s(su.szRoom, SUBJECT::MAX_NAME_SIZE, CT2A(buff));
-		}
-		else
-		{
-			strcpy_s(su.szRoom, SUBJECT::MAX_NAME_SIZE, "");
-		}
-
-
-		switch (m_eDialogMode)
-		{
-		case DialogMode::eDialogMode_Add:
-
-			isOK = store.Add(su);
-			break;
-		case DialogMode::eDialogMode_Edit:
-
-			isOK = store.Edit(su);
-			break;
-		case DialogMode::eDialogMode_Remove:
-		{
-			isOK = store.Delete(su.nID);
-
-			Storage<GRADE> gradeStore(gradesPath);
-			std::vector<GRADE> allGrades;
-
-			gradeStore.LoadAll(allGrades);
-
 			for (const auto& grade : allGrades)
 			{
 				if (grade.nSubjectID == su.nID)
@@ -183,18 +196,14 @@ void CombinedSubjectDlg::OnBnClickedOk()
 				}
 			}
 		}
-			break;
-
-		default:
-			throw std::exception{ "Invalid window state." };
-			break;
-		}
 	}
-	else
-	{
-		isOK = FALSE;
-	}
+	break;
 
+	default:
+		throw std::exception{ "Invalid window state." };
+		break;
+	}
+	
 	if (!isOK)
 	{
 		int errorBox = MessageBox((LPCWSTR)L"Error! Check your input.", NULL, MB_OK | MB_ICONWARNING);

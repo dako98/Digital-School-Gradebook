@@ -60,8 +60,8 @@ void PERSON::Read(std::istream& in)
 }
 
 PERSON::PERSON()
+	:nID(-1)
 {
-	nID = -1;
 	szFirstName[0] = '\0';
 	szLastName[0] = '\0';
 }

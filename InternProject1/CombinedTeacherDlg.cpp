@@ -30,8 +30,12 @@ BOOL CombinedTeacherDlg::OnInitDialog()
 		return FALSE;
 
 	teacherNumberVal = tmp.nID;
-	teacherFirstName.SetWindowText(CString(tmp.szFirstName));
-	teacherLastName.SetWindowText(CString(tmp.szLastName));
+
+	if (m_eDialogMode != DialogMode::eDialogMode_Add)
+	{
+		teacherFirstName.SetWindowText(CString(tmp.szFirstName));
+		teacherLastName.SetWindowText(CString(tmp.szLastName));
+	}
 	UpdateData(FALSE);
 
 	switch (m_eDialogMode)
@@ -45,9 +49,6 @@ BOOL CombinedTeacherDlg::OnInitDialog()
 		break;
 
 	case DialogMode::eDialogMode_Add:
-
-		UpdateData(FALSE);
-
 	case DialogMode::eDialogMode_Edit:
 
 		teacherFirstName.EnableWindow(TRUE);
@@ -96,28 +97,30 @@ void CombinedTeacherDlg::OnBnClickedOk()
 
 	st.nID = teacherNumberVal;
 
-	teacherFirstName.GetWindowText(buff);
-
-	if (buff.GetLength() <= TEACHER::MAX_NAME_SIZE)
+	if (m_eDialogMode != DialogMode::eDialogMode_Remove)
 	{
-		strcpy_s(st.szFirstName, TEACHER::MAX_NAME_SIZE, CT2A(buff));
-	}
-	else
-	{
-		strcpy_s(st.szFirstName, TEACHER::MAX_NAME_SIZE, "");
-	}
+		teacherFirstName.GetWindowText(buff);
 
-	teacherLastName.GetWindowTextW(buff);
+		if (buff.GetLength() <= TEACHER::MAX_NAME_SIZE)
+		{
+			strcpy_s(st.szFirstName, TEACHER::MAX_NAME_SIZE, CT2A(buff));
+		}
+		else
+		{
+			strcpy_s(st.szFirstName, TEACHER::MAX_NAME_SIZE, "");
+		}
 
-	if (buff.GetLength() <= TEACHER::MAX_NAME_SIZE)
-	{
-		strcpy_s(st.szLastName, TEACHER::MAX_NAME_SIZE, CT2A(buff));
-	}
-	else
-	{
-		strcpy_s(st.szLastName, TEACHER::MAX_NAME_SIZE, "");
-	}
+		teacherLastName.GetWindowTextW(buff);
 
+		if (buff.GetLength() <= TEACHER::MAX_NAME_SIZE)
+		{
+			strcpy_s(st.szLastName, TEACHER::MAX_NAME_SIZE, CT2A(buff));
+		}
+		else
+		{
+			strcpy_s(st.szLastName, TEACHER::MAX_NAME_SIZE, "");
+		}
+	}
 
 	switch (m_eDialogMode)
 	{
@@ -136,10 +139,8 @@ void CombinedTeacherDlg::OnBnClickedOk()
 
 		break;
 
-	case DialogMode::eDialogMode_View:
-	case DialogMode::eDialogMode_None:
 	default:
-
+		throw std::exception{ "Invalid window state." };
 		break;
 	}
 

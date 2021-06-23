@@ -31,9 +31,13 @@ BOOL CombinedStudentDlg::OnInitDialog()
 		return FALSE;
 
 	studentNumberVal = student.nID;
-	studentBirthDateVal = student.dtBirthDate;
-	studentFirstName.SetWindowText(CString(student.szFirstName));
-	studentLastName.SetWindowText(CString(student.szLastName));
+
+	if (m_eDialogMode != DialogMode::eDialogMode_Add)
+	{
+		studentBirthDateVal = student.dtBirthDate;
+		studentFirstName.SetWindowText(CString(student.szFirstName));
+		studentLastName.SetWindowText(CString(student.szLastName));
+	}
 	UpdateData(FALSE);
 
 	switch (m_eDialogMode)
@@ -98,7 +102,7 @@ void CombinedStudentDlg::OnBnClickedOk()
 
 	st.nID = studentNumberVal;
 
-	if (m_eDialogMode != DialogMode::eDialogMode_Add)
+	if (m_eDialogMode != DialogMode::eDialogMode_Remove)
 	{
 		studentFirstName.GetWindowTextW(buff);
 
@@ -165,7 +169,7 @@ void CombinedStudentDlg::OnBnClickedOk()
 			}
 		}
 	}
-		break;
+	break;
 	
 	default:
 		throw std::exception{ "Invalid window state." };

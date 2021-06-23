@@ -19,9 +19,9 @@ std::istream& operator>>(std::istream& in, SUBJECT& obj)
 }
 
 SUBJECT::SUBJECT()
+    :nID(-1)
+    ,nTeacherID(-1)
 {
-    nID = -1;
-    nTeacherID = -1;
     szName[0] = '\0';
     szRoom[0] = '\0';
 }
@@ -72,8 +72,6 @@ void SUBJECT::Read(std::istream& in)
             {
                 in.setstate(std::ios_base::failbit);
             }
-
         }
-
     }
 }
