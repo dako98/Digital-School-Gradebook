@@ -98,7 +98,6 @@ END_MESSAGE_MAP()
 
 void AllStudentsDlg::OnBnClickedRadio4()
 {
-	// TODO: Add your control notification handler code here
 	allStudentsList.ResetContent();
 	PrintAll();
 }
@@ -106,8 +105,7 @@ void AllStudentsDlg::OnBnClickedRadio4()
 void AllStudentsDlg::PrintAllTeachers()
 {
 	std::vector<TEACHER> all;
-	//= StudentStore::GetInstance()->GetAllStudents();
-	Storage<TEACHER> st(teachersPath);
+	Storage<TEACHER> st{ teachersPath };
 	st.LoadAll(all);
 
 	CString currentRow;
@@ -126,7 +124,6 @@ void AllStudentsDlg::PrintAllTeachers()
 
 void AllStudentsDlg::OnBnClickedRadio5()
 {
-	// TODO: Add your control notification handler code here
 	allStudentsList.ResetContent();
 	PrintAll();
 }
@@ -139,27 +136,26 @@ void AllStudentsDlg::OnBnClickedButtonEdit()
 		if (studentsRadioBtn.GetCheck() == BST_CHECKED)
 		{
 			STUDENT tmp;
-			Storage<STUDENT> studentStore(studentsPath);
+			Storage<STUDENT> studentStore{ studentsPath };
 
 			studentStore.Load(allStudentsList.GetItemData(allStudentsList.GetCurSel()), tmp);
 
-			CombinedStudentDlg dlg(eDialogMode_Edit, tmp);
+			CombinedStudentDlg dlg{ eDialogMode_Edit, tmp };
 			dlg.DoModal();
 		}
 		else
 		{
 			TEACHER tmp;
-			Storage<TEACHER> store(teachersPath);
+			Storage<TEACHER> store{ teachersPath };
 
 			store.Load(allStudentsList.GetItemData(allStudentsList.GetCurSel()), tmp);
 
-			CombinedTeacherDlg dlg(eDialogMode_Edit, tmp);
+			CombinedTeacherDlg dlg{ eDialogMode_Edit, tmp };
 			dlg.DoModal();
 		}
 
 		PrintAll();
 	}
-	// TODO: Add your control notification handler code here
 }
 
 
@@ -168,26 +164,25 @@ void AllStudentsDlg::OnBnClickedButtonAdd()
 		if (studentsRadioBtn.GetCheck() == BST_CHECKED)
 		{
 			STUDENT tmp;
-			Storage<STUDENT> store(studentsPath);
+			Storage<STUDENT> store{ studentsPath };
 
 			tmp.nID = store.LastID() + 1;
 
-			CombinedStudentDlg dlg(eDialogMode_Add, tmp);
+			CombinedStudentDlg dlg{ eDialogMode_Add, tmp };
 			dlg.DoModal();
 		}
 		else
 		{
 			TEACHER tmp;
-			Storage<TEACHER> store(teachersPath);
+			Storage<TEACHER> store{ teachersPath };
 
 			tmp.nID = store.LastID() + 1;
 
-			CombinedTeacherDlg dlg(eDialogMode_Add, tmp);
+			CombinedTeacherDlg dlg{ eDialogMode_Add, tmp };
 			dlg.DoModal();
 		}
 
 		PrintAll();
-	// TODO: Add your control notification handler code here
 }
 
 
@@ -198,11 +193,11 @@ void AllStudentsDlg::OnBnClickedButtonRemove()
 		if (studentsRadioBtn.GetCheck() == BST_CHECKED)
 		{
 			STUDENT tmp;
-			Storage<STUDENT> studentStore(studentsPath);
+			Storage<STUDENT> studentStore{ studentsPath };
 
 			studentStore.Load(allStudentsList.GetItemData(allStudentsList.GetCurSel()), tmp);
 
-			CombinedStudentDlg dlg(eDialogMode_Remove, tmp);
+			CombinedStudentDlg dlg{ eDialogMode_Remove, tmp };
 			dlg.DoModal();
 		}
 		else
@@ -212,10 +207,9 @@ void AllStudentsDlg::OnBnClickedButtonRemove()
 
 			store.Load(allStudentsList.GetItemData(allStudentsList.GetCurSel()), tmp);
 
-			CombinedTeacherDlg dlg(eDialogMode_Remove, tmp);
+			CombinedTeacherDlg dlg{ eDialogMode_Remove, tmp };
 			dlg.DoModal();
 		}
 		PrintAll();
-		// TODO: Add your control notification handler code here
 	}
 }
