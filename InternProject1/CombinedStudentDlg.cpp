@@ -10,23 +10,10 @@
 #include "CGrade.h"
 #include "Storage.h"
 
-// FIXME: Make it work from the Utility file
-
 
 // CombinedStudentDlg dialog
 
 IMPLEMENT_DYNAMIC(CombinedStudentDlg, CDialog)
-
-CombinedStudentDlg::CombinedStudentDlg(CWnd* pParent /*=nullptr*/)
-	: CDialog(IDD_STUDENT_COMBINED, pParent)
-	, m_eDialogMode(eDialogMode_None)
-	, studentNumberVal(0)
-	, studentBirthDateVal(COleDateTime::GetCurrentTime())
-	, studentStore(studentsPath)
-
-{
-
-}
 
 CombinedStudentDlg::CombinedStudentDlg(DialogMode eDialogMode,const STUDENT& student)
 	: CDialog(IDD_STUDENT_COMBINED, nullptr)
@@ -51,7 +38,6 @@ BOOL CombinedStudentDlg::OnInitDialog()
 
 	switch (m_eDialogMode)
 	{
-//	case DialogMode::eDialogMode_View:
 	case DialogMode::eDialogMode_Remove:
 
 		studentBirthDate.EnableWindow(FALSE);
@@ -62,8 +48,6 @@ BOOL CombinedStudentDlg::OnInitDialog()
 		break;
 
 	case DialogMode::eDialogMode_Add:
-		UpdateData(FALSE);
-
 	case DialogMode::eDialogMode_Edit:
 
 		studentBirthDate.EnableWindow(TRUE);
@@ -71,8 +55,6 @@ BOOL CombinedStudentDlg::OnInitDialog()
 		studentLastName.EnableWindow(TRUE);
 		studentNumber.EnableWindow(FALSE);
 		break;
-	
-	case DialogMode::eDialogMode_None:
 
 	default:
 		throw std::exception{ "Invalid window state." };
@@ -147,33 +129,39 @@ void CombinedStudentDlg::OnBnClickedOk()
 
 		isOK = studentStore.Add(st);
 		break;
+
 	case DialogMode::eDialogMode_Edit:
 
 		isOK = studentStore.Edit(st);
 		break;
+
 	case DialogMode::eDialogMode_Remove:
 	{
 		isOK = studentStore.Delete(st.nID);
 
-		Storage<GRADE> gradeStore(gradesPath);
-		std::vector<GRADE> allGrades;
-
-		gradeStore.LoadAll(allGrades);
-
-		for (const auto& grade : allGrades)
+		if (isOK)
 		{
-			if (grade.nStudentID == st.nID)
+			Storage<GRADE> gradeStore(gradesPath);
+			std::vector<GRADE> allGrades;
+
+			isOK = gradeStore.LoadAll(allGrades);
+
+			if (isOK)
 			{
-				gradeStore.Delete(grade.nID);
+				for (const auto& grade : allGrades)
+				{
+					if (grade.nStudentID == st.nID)
+					{
+						gradeStore.Delete(grade.nID);
+					}
+				}
 			}
 		}
 	}
 		break;
 	
-	case DialogMode::eDialogMode_View:
-	case DialogMode::eDialogMode_None:
 	default:
-
+		throw std::exception{ "Invalid window state." };
 		break;
 	}
 	
