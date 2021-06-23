@@ -41,15 +41,20 @@ BOOL ExcellentStudentsDlg::OnInitDialog()
 	{
 		// Filter grades
 		std::unordered_set<int> excellentStudentIDs;
+		std::unordered_set<int> nonexcellentStudentIDs;
 		for (const auto& grade : allGrades)
 		{
 			if (grade.value == GRADE::GRADES::A)
 			{
-				excellentStudentIDs.insert(grade.nStudentID);
+				if (nonexcellentStudentIDs.find(grade.nStudentID) == nonexcellentStudentIDs.end())
+				{
+					excellentStudentIDs.insert(grade.nStudentID);
+				}
 			}
 			else
 			{
 				excellentStudentIDs.erase(grade.nStudentID);
+				nonexcellentStudentIDs.insert(grade.nStudentID);
 			}
 		}
 
