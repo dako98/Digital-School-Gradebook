@@ -98,30 +98,32 @@ void CombinedStudentDlg::OnBnClickedOk()
 
 	st.nID = studentNumberVal;
 
-	studentFirstName.GetWindowTextW(buff);
-
-	if (buff.GetLength() <= STUDENT::MAX_NAME_SIZE)
+	if (m_eDialogMode != DialogMode::eDialogMode_Add)
 	{
-		strcpy_s(st.szFirstName, STUDENT::MAX_NAME_SIZE, CT2A(buff));
-	}
-	else
-	{
-		strcpy_s(st.szFirstName, STUDENT::MAX_NAME_SIZE, "");
-	}
+		studentFirstName.GetWindowTextW(buff);
 
-	studentLastName.GetWindowTextW(buff);
+		if (buff.GetLength() <= STUDENT::MAX_NAME_SIZE)
+		{
+			strcpy_s(st.szFirstName, STUDENT::MAX_NAME_SIZE, CT2A(buff));
+		}
+		else
+		{
+			strcpy_s(st.szFirstName, STUDENT::MAX_NAME_SIZE, "");
+		}
 
-	if (buff.GetLength() <= STUDENT::MAX_NAME_SIZE)
-	{
-		strcpy_s(st.szLastName, STUDENT::MAX_NAME_SIZE, CT2A(buff));
+		studentLastName.GetWindowTextW(buff);
+
+		if (buff.GetLength() <= STUDENT::MAX_NAME_SIZE)
+		{
+			strcpy_s(st.szLastName, STUDENT::MAX_NAME_SIZE, CT2A(buff));
+		}
+		else
+		{
+			strcpy_s(st.szLastName, STUDENT::MAX_NAME_SIZE, "");
+		}
+
+		studentBirthDateVal.GetAsDBTIMESTAMP(st.dtBirthDate);
 	}
-	else
-	{
-		strcpy_s(st.szLastName, STUDENT::MAX_NAME_SIZE, "");
-	}
-
-	studentBirthDateVal.GetAsDBTIMESTAMP(st.dtBirthDate);
-
 
 	switch (m_eDialogMode)
 	{
@@ -152,7 +154,12 @@ void CombinedStudentDlg::OnBnClickedOk()
 				{
 					if (grade.nStudentID == st.nID)
 					{
-						gradeStore.Delete(grade.nID);
+						isOK = gradeStore.Delete(grade.nID);
+
+						if (!isOK)
+						{
+							break;
+						}
 					}
 				}
 			}

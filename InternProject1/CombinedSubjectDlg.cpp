@@ -8,8 +8,6 @@
 
 #include "Utility.h"
 
-#include <unordered_map>
-
 #include "Storage.h"
 #include "CTeacher.h"
 #include "CSubject.h"
@@ -32,32 +30,38 @@ BOOL CombinedSubjectDlg::OnInitDialog()
 	if (!CDialog::OnInitDialog())
 		return FALSE;
 
+	// FIXME: No data filled in for remove.
+
+	BOOL isOK = TRUE;
+
 	std::vector<TEACHER> allTeachers;
 	Storage<TEACHER> te(teachersPath);
-	te.LoadAll(allTeachers);
+	isOK = te.LoadAll(allTeachers);
 
-	CString currentRow;
-
-	for (const auto& teacher : allTeachers)
+	if (isOK)
 	{
-		currentRow.Format(_T("%d %s %s"),
-			teacher.nID,
-			CString{ teacher.szFirstName },
-			CString{ teacher.szLastName });
+		CString currentRow;
 
-		int index = teacherDropdown.AddString(currentRow);
-		teacherDropdown.SetItemData(index, teacher.nID);
+		for (const auto& teacher : allTeachers)
+		{
+			currentRow.Format(_T("%d %s %s"),
+				teacher.nID,
+				CString{ teacher.szFirstName },
+				CString{ teacher.szLastName });
+
+			int index = teacherDropdown.AddString(currentRow);
+			teacherDropdown.SetItemData(index, teacher.nID);
+		}
+
+		subjectIDVal = tmp.nID;
+		subjectName.SetWindowText(CString(tmp.szName));
+		subjectRoom.SetWindowText(CString(tmp.szRoom));
+		teacherDropdown.SetCurSel(GetIndexByData(tmp.nTeacherID, teacherDropdown));
+		UpdateData(FALSE);
 	}
-
-	subjectIDVal = tmp.nID;
-	subjectName.SetWindowText(CString(tmp.szName));
-	subjectRoom.SetWindowText(CString(tmp.szRoom));
-	teacherDropdown.SetCurSel(GetIndexByData(tmp.nTeacherID, teacherDropdown));
-	UpdateData(FALSE);
 
 	switch (m_eDialogMode)
 	{
-		//	case DialogMode::eDialogMode_View:
 	case DialogMode::eDialogMode_Remove:
 
 		subjectID.EnableWindow(FALSE);
@@ -77,13 +81,13 @@ BOOL CombinedSubjectDlg::OnInitDialog()
 		subjectRoom.EnableWindow(TRUE);
 		break;
 
-	case DialogMode::eDialogMode_None:
 
 	default:
 		throw std::exception{ "Invalid window state." };
 		break;
 	}
-	return 0;
+
+	return isOK;
 }
 
 CombinedSubjectDlg::~CombinedSubjectDlg()
@@ -170,16 +174,19 @@ void CombinedSubjectDlg::OnBnClickedOk()
 			{
 				if (grade.nSubjectID == su.nID)
 				{
-					gradeStore.Delete(grade.nID);
+					isOK = gradeStore.Delete(grade.nID);
+
+					if (!isOK)
+					{
+						break;
+					}
 				}
 			}
 		}
 			break;
 
-		case DialogMode::eDialogMode_View:
-		case DialogMode::eDialogMode_None:
 		default:
-
+			throw std::exception{ "Invalid window state." };
 			break;
 		}
 	}
