@@ -156,9 +156,9 @@ BOOL FailsDlg::OnInitDialog()
 				}
 			}
 		}
-
-		return isOK;
 	}
+
+	return isOK;
 }
 
 FailsDlg::~FailsDlg()
