@@ -11,6 +11,7 @@
 #include "Storage.h"
 #include "CTeacher.h"
 #include "CSubject.h"
+#include "CGrade.h"
 
 // CombinedSubjectDlg dialog
 
