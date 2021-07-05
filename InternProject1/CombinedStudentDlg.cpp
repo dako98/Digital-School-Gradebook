@@ -143,7 +143,7 @@ void CombinedStudentDlg::OnBnClickedOk()
 
 	case DialogMode::eDialogMode_Remove:
 	{
-		isOK = studentStore.Delete(st.nID);
+/*		isOK = studentStore.Delete(st.nID);
 
 		if (isOK)
 		{
@@ -167,7 +167,9 @@ void CombinedStudentDlg::OnBnClickedOk()
 					}
 				}
 			}
-		}
+		}*/
+		isOK = studentStore.Delete(st.nID);
+
 	}
 	break;
 	

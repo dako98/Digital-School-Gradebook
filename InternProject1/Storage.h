@@ -513,7 +513,6 @@ private:
 };
 
 
-// FIXME: Rework how rooms are represented.
 template<>
 class Storage<SUBJECT>
 {
