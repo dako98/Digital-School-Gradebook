@@ -195,6 +195,7 @@
     <ClInclude Include="CStudent.h" />
     <ClInclude Include="CSubject.h" />
     <ClInclude Include="CTeacher.h" />
+    <ClInclude Include="DBConnector.h" />
     <ClInclude Include="ExcellentStudentsDlg.h" />
     <ClInclude Include="FailsDlg.h" />
     <ClInclude Include="framework.h" />
@@ -224,6 +225,7 @@
     <ClCompile Include="CStudent.cpp" />
     <ClCompile Include="CSubject.cpp" />
     <ClCompile Include="CTeacher.cpp" />
+    <ClCompile Include="DBConnector.cpp" />
     <ClCompile Include="ExcellentStudentsDlg.cpp" />
     <ClCompile Include="FailsDlg.cpp" />
     <ClCompile Include="InternProject1.cpp" />
