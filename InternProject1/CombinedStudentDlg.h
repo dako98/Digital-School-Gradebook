@@ -25,6 +25,9 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 private:
+
+	BOOL LoadAllClasses();
+
 	DialogMode m_eDialogMode;
 	Storage<STUDENT> studentStore;
 	STUDENT student;
@@ -38,4 +41,5 @@ public:
 	afx_msg void OnBnClickedOk();
 	int studentNumberVal;
 	COleDateTime studentBirthDateVal;
+	CComboBox classList;
 };

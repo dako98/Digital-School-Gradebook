@@ -1,10 +1,7 @@
 #pragma once
 
 #include "afxdb.h"
-
-#include "CStudent.h"
-
-
+#include <tuple>
 
 class StudentSet : public CRecordset
 {
@@ -25,11 +22,14 @@ public:
     TIMESTAMP_STRUCT* m_rgBirthday;
     long* m_rgBirthdayLengths;
 
+    int* m_rgClassID;
+    long* m_rgClassIDLengths;
+
+
     StudentSet(CDatabase* pDB);
 
     void DoBulkFieldExchange(CFieldExchange* pFX) override;
 };
-
 class StudentSetWrapper
 {
 public:
@@ -50,8 +50,6 @@ private:
 
 };
 
-
-
 class TeacherSet : public CRecordset
 {
 public:
@@ -69,7 +67,6 @@ public:
 
     void DoBulkFieldExchange(CFieldExchange* pFX) override;
 };
-
 class TeacherSetWrapper
 {
 public:
@@ -88,7 +85,6 @@ private:
 
     TeacherSet* blk;
 };
-
 
 class GradeSet : public CRecordset
 {
@@ -114,7 +110,6 @@ public:
 
     void DoBulkFieldExchange(CFieldExchange* pFX) override;
 };
-
 class GradeSetWrapper
 {
 public:
@@ -133,8 +128,6 @@ private:
 
     GradeSet* blk;
 };
-
-
 
 class SubjectSet : public CRecordset
 {
@@ -157,7 +150,6 @@ public:
 
     void DoBulkFieldExchange(CFieldExchange* pFX) override;
 };
-
 class SubjectSetWrapper
 {
 public:
@@ -175,4 +167,40 @@ public:
 private:
 
     SubjectSet* blk;
+};
+
+class ClassesSet : public CRecordset
+{
+public:
+
+    int* m_rgID;
+    long* m_rgIDLengths;
+
+    LPSTR m_rgName;
+    long* m_rgNameLengths;
+
+    int* m_rgTeacherID;
+    long* m_rgTeacherIDLengths;
+
+    ClassesSet(CDatabase* pDB);
+
+    void DoBulkFieldExchange(CFieldExchange* pFX) override;
+};
+class ClassesSetWrapper
+{
+public:
+
+    ClassesSetWrapper(ClassesSet* sSet);
+
+    BOOL Add(STUDENT& recStudent);
+    BOOL Edit(STUDENT& recStudent);
+    BOOL Delete(const int nID);
+    BOOL Load(const int nStudentID, std::tuple<int, CString, int>& recStudent);
+    
+    BOOL NextID(int& id) const;
+    BOOL LoadAll(std::vector<std::tuple<int, CString, int> >& out);
+
+private:
+
+    ClassesSet* blk;
 };

@@ -19,7 +19,10 @@ StudentSet::StudentSet(CDatabase* pDB)
     m_rgBirthday            = NULL;
     m_rgBirthdayLengths     = NULL;
 
-    m_nFields               = 5;
+    m_rgClassID             = NULL;
+    m_rgClassIDLengths      = NULL;
+
+    m_nFields               = 6;
 }
 void StudentSet::DoBulkFieldExchange(CFieldExchange* pFX)
 {
@@ -30,6 +33,8 @@ void StudentSet::DoBulkFieldExchange(CFieldExchange* pFX)
     RFX_Text_Bulk   (pFX, _T("[FirstName]"),        &m_rgFirstName, &m_rgFirstNameLengths,  20);
     RFX_Text_Bulk   (pFX, _T("[LastName]"),         &m_rgLastName,  &m_rgLastNameLengths,   20);
     RFX_Date_Bulk   (pFX, _T("[Birthday]"),         &m_rgBirthday,  &m_rgBirthdayLengths);
+    RFX_Int_Bulk    (pFX, _T("[ClassID]"),          &m_rgClassID,   &m_rgClassIDLengths);
+
 }
 
 //FIXME: Add number field from database.
@@ -72,6 +77,7 @@ BOOL StudentSetWrapper::Load(const int nStudentID, STUDENT& recStudent)
         tmp.dtBirthDate.minute  =   (blk->m_rgBirthday)->minute;
         tmp.dtBirthDate.second  =   (blk->m_rgBirthday)->second;
 
+        tmp.classID             =   *(blk->m_rgClassID);
         recStudent = tmp;
     }
 
@@ -614,6 +620,155 @@ BOOL SubjectSetWrapper::LoadAll(std::vector<SUBJECT>& out)
             tmp.nTeacherID = *(blk->m_rgTeacherID + nPosInRowset);
 
             strcpy_s(tmp.szRoom, tmp.MAX_NAME_SIZE, blk->m_rgRoomName + nPosInRowset * 20);
+
+            out.push_back(tmp);
+        }
+    }
+
+    blk->Close();
+
+    return isOK;
+}
+
+
+ClassesSet::ClassesSet(CDatabase* pDB)
+    : CRecordset(pDB)
+{
+
+
+
+    m_rgID = NULL;
+    m_rgIDLengths = NULL;
+
+    m_rgName = NULL;
+    m_rgNameLengths = NULL;
+
+    m_rgTeacherID = NULL;
+    m_rgTeacherIDLengths = NULL;
+
+
+    m_nFields = 3;
+}
+void ClassesSet::DoBulkFieldExchange(CFieldExchange* pFX)
+{
+    pFX->SetFieldType(CFieldExchange::outputColumn);
+
+    RFX_Int_Bulk(pFX, _T("[ID]"), &m_rgID, &m_rgIDLengths);
+    RFX_Text_Bulk(pFX, _T("[Name]"), &m_rgName, &m_rgNameLengths, 5);
+    RFX_Int_Bulk(pFX, _T("[ClassTeacherID]"), &m_rgTeacherID, &m_rgTeacherIDLengths);
+
+}
+
+ClassesSetWrapper::ClassesSetWrapper(ClassesSet* pDB)
+    :blk(&*pDB)
+{
+}
+BOOL ClassesSetWrapper::Load(const int nStudentID, std::tuple<int, CString, int>& recStudent)
+{
+    BOOL isOK = TRUE;
+    std::tuple<int, CString, int> tmp;
+
+    CString sSQL;
+    sSQL.Format(_T("SELECT * FROM [Classes] WHERE [ID] = %d"), nStudentID);
+
+    try
+    {
+        blk->Open(AFX_DB_USE_DEFAULT_TYPE, sSQL, CRecordset::useMultiRowFetch);
+    }
+    catch (const std::exception&)
+    {
+        isOK = FALSE;
+    }
+
+    if (isOK)
+    {
+        CString csComboString;
+        std::get<0>(tmp) = *(blk->m_rgID);
+        std::get<1>(tmp) = CString{ blk->m_rgName};
+        std::get<2>(tmp) = *(blk->m_rgTeacherID);
+
+        /*
+        tmp.nID = *(blk->m_rgID);
+
+        strcpy_s(tmp.szName, tmp.MAX_NAME_SIZE, blk->m_rgName);
+
+        tmp.nTeacherID = *(blk->m_rgTeacherID);
+
+        strcpy_s(tmp.szRoom, tmp.MAX_NAME_SIZE, blk->m_rgRoomName);
+        */
+        recStudent = tmp;
+    }
+
+    blk->Close();
+
+    return isOK;
+}
+BOOL ClassesSetWrapper::NextID(int& id) const
+{
+    BOOL isOK = TRUE;
+    GRADE tmp;
+
+    CString sSQL;
+    sSQL.Format(_T("SELECT TOP 1 * FROM [Classes] ORDER BY [ID] DESC"));
+
+    try
+    {
+        blk->Open(AFX_DB_USE_DEFAULT_TYPE, sSQL, CRecordset::useMultiRowFetch);
+    }
+    catch (const std::exception&)
+    {
+        isOK = FALSE;
+    }
+
+    if (isOK)
+    {
+        CString csComboString;
+
+        tmp.nID = *(blk->m_rgID);
+
+        id = tmp.nID + 1;
+    }
+
+    blk->Close();
+
+    return isOK;
+}
+BOOL ClassesSetWrapper::LoadAll(std::vector<std::tuple<int, CString, int>>& out)
+{
+    out.clear();
+    BOOL isOK = TRUE;
+    std::tuple<int, CString, int> tmp;
+    CString sSQL;
+    sSQL.Format(_T("SELECT * FROM [Classes]"));
+
+    try
+    {
+        blk->Open(AFX_DB_USE_DEFAULT_TYPE, sSQL, CRecordset::useMultiRowFetch);
+    }
+    catch (const std::exception&)
+    {
+        isOK = FALSE;
+    }
+
+    if (isOK)
+    {
+
+        int rowsFetched = blk->GetRowsFetched();
+
+        for (int nPosInRowset = 0; nPosInRowset < rowsFetched; nPosInRowset++)
+        {
+
+            CString csComboString;
+
+            std::get<0>(tmp) = *(blk->m_rgID + nPosInRowset);
+            std::get<1>(tmp) = CString{ blk->m_rgName + nPosInRowset * 5 };
+            std::get<2>(tmp) = *(blk->m_rgTeacherID + nPosInRowset);
+
+
+//            strcpy_s(std::get<1>(tmp), std::get<1>(tmp), blk->m_rgName + nPosInRowset * 5);
+
+
+//            strcpy_s(tmp.szRoom, tmp.MAX_NAME_SIZE, blk->m_rgRoomName + nPosInRowset * 20);
 
             out.push_back(tmp);
         }

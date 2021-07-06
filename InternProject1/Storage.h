@@ -72,11 +72,12 @@ public:
             CDatabase db;
             db.OpenEx(connectionString, CDatabase::openReadOnly | CDatabase::noOdbcDialog);
             CString sSQL;
-            sSQL.Format(_T("INSERT INTO [Students]([NumberInClass],[FirstName],[LastName],[Birthday]) VALUES (%d,'%s','%s','%d-%d-%d')"),
+            sSQL.Format(_T("INSERT INTO [Students]([NumberInClass],[FirstName],[LastName],[Birthday], [ClassID]) VALUES (%d,'%s','%s','%d-%d-%d', %d)"),
                 recStudent.nID, 
                 CString{ recStudent.szFirstName },
                 CString{ recStudent.szLastName },
-                recStudent.dtBirthDate.year, recStudent.dtBirthDate.month, recStudent.dtBirthDate.day);
+                recStudent.dtBirthDate.year, recStudent.dtBirthDate.month, recStudent.dtBirthDate.day),
+                recStudent.classID;
             db.ExecuteSQL(sSQL);
             db.Close();
         }
@@ -94,11 +95,12 @@ public:
             CDatabase db;
             db.OpenEx(connectionString, CDatabase::openReadOnly | CDatabase::noOdbcDialog);
             CString sSQL;
-            sSQL.Format(_T("UPDATE [Students] SET [NumberInClass] = %d, [FirstName] = '%s',[LastName] = '%s',[Birthday] = '%d-%d-%d' WHERE [ID] = %d"),
+            sSQL.Format(_T("UPDATE [Students] SET [NumberInClass] = %d, [FirstName] = '%s',[LastName] = '%s',[Birthday] = '%d-%d-%d', [ClassID] = %d WHERE [ID] = %d"),
                 recStudent.nID,
                 CString{ recStudent.szFirstName },
                 CString{ recStudent.szLastName },
                 recStudent.dtBirthDate.year, recStudent.dtBirthDate.month, recStudent.dtBirthDate.day, 
+                recStudent.classID,
                 recStudent.nID);
             db.ExecuteSQL(sSQL);
             db.Close();

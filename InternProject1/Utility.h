@@ -9,6 +9,8 @@ static const char* const subjectsPath	=	"Driver={ODBC Driver 17 for SQL Server};
 //static const char* const gradesPath	=	"Grades.txt";
 static const char* const gradesPath		=	"Driver={ODBC Driver 17 for SQL Server}; Server=(localdb)\\MSSQLLocalDB; Database=Test1;";
 
+static const char* const classesPath	=	"Driver={ODBC Driver 17 for SQL Server}; Server=(localdb)\\MSSQLLocalDB; Database=Test1;";
+
 enum DialogMode
 {
 	eDialogMode_None = 0,

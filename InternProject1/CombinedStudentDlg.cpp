@@ -30,6 +30,9 @@ BOOL CombinedStudentDlg::OnInitDialog()
 	if(!CDialog::OnInitDialog())
 		return FALSE;
 
+	//TODO: Fill list with classes.
+	LoadAllClasses();
+
 	studentNumberVal = student.nID;
 
 	if (m_eDialogMode != DialogMode::eDialogMode_Add)
@@ -37,6 +40,7 @@ BOOL CombinedStudentDlg::OnInitDialog()
 		studentBirthDateVal = student.dtBirthDate;
 		studentFirstName.SetWindowText(CString{ student.szFirstName });
 		studentLastName.SetWindowText(CString{ student.szLastName });
+
 	}
 	UpdateData(FALSE);
 
@@ -48,6 +52,7 @@ BOOL CombinedStudentDlg::OnInitDialog()
 		studentFirstName.EnableWindow(FALSE);
 		studentLastName.EnableWindow(FALSE);
 		studentNumber.EnableWindow(FALSE);
+		classList.EnableWindow(FALSE);
 
 		break;
 
@@ -58,6 +63,8 @@ BOOL CombinedStudentDlg::OnInitDialog()
 		studentFirstName.EnableWindow(TRUE);
 		studentLastName.EnableWindow(TRUE);
 		studentNumber.EnableWindow(FALSE);
+		classList.EnableWindow(TRUE);
+
 		break;
 
 	default:
@@ -81,6 +88,43 @@ void CombinedStudentDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_DATETIMEPICKER1, studentBirthDate);
 	DDX_Text(pDX, IDC_EDIT1, studentNumberVal);
 	DDX_DateTimeCtrl(pDX, IDC_DATETIMEPICKER1, studentBirthDateVal);
+	DDX_Control(pDX, IDC_COMBO_CLASSES, classList);
+}
+
+BOOL CombinedStudentDlg::LoadAllClasses()
+{
+	std::vector<std::tuple<int, CString, int>> classes;
+	BOOL isOK = TRUE;
+
+	CDatabase db;
+	db.OpenEx(CString{ classesPath }, CDatabase::openReadOnly | CDatabase::noOdbcDialog);
+	ClassesSet sSet(&db);
+
+	ClassesSetWrapper st(&sSet);
+
+	isOK = st.LoadAll(classes);
+
+
+	if (isOK)
+	{
+		CString currentRow;
+
+		for (const auto& cClass : classes)
+		{
+			currentRow.Format(_T("%d %s"),
+				std::get<0>(cClass),
+				std::get<1>(cClass));
+
+			int index = classList.AddString(currentRow);
+			classList.SetItemData(index, std::get<0>(cClass));
+		}
+
+		classList.SetCurSel(GetIndexByData(student.classID, classList));
+	}
+	UpdateData(FALSE);
+
+
+	return isOK;
 }
 
 
@@ -101,6 +145,7 @@ void CombinedStudentDlg::OnBnClickedOk()
 	CString buff;
 
 	st.nID = studentNumberVal;
+	st.classID = classList.GetItemData(classList.GetCurSel());
 
 	if (m_eDialogMode != DialogMode::eDialogMode_Remove)
 	{
@@ -142,36 +187,9 @@ void CombinedStudentDlg::OnBnClickedOk()
 		break;
 
 	case DialogMode::eDialogMode_Remove:
-	{
-/*		isOK = studentStore.Delete(st.nID);
-
-		if (isOK)
-		{
-			Storage<GRADE> gradeStore(gradesPath);
-			std::vector<GRADE> allGrades;
-
-			isOK = gradeStore.LoadAll(allGrades);
-
-			if (isOK)
-			{
-				for (const auto& grade : allGrades)
-				{
-					if (grade.nStudentID == st.nID)
-					{
-						isOK = gradeStore.Delete(grade.nID);
-
-						if (!isOK)
-						{
-							break;
-						}
-					}
-				}
-			}
-		}*/
+	
 		isOK = studentStore.Delete(st.nID);
-
-	}
-	break;
+		break;
 	
 	default:
 		throw std::exception{ "Invalid window state." };

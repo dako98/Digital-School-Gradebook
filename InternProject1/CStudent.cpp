@@ -8,13 +8,15 @@
 STUDENT::STUDENT()
 	:PERSON()
 	, dtBirthDate()
+	, classID(-1)
 {
 }
 
 BOOL STUDENT::Validate() const
 {
 	return (PERSON::Validate() &&
-		dtBirthDate.year <= COleDateTime::GetCurrentTime().GetYear());
+		dtBirthDate.year <= COleDateTime::GetCurrentTime().GetYear()) &&
+		classID >= 0;
 }
 
 void STUDENT::Read(std::istream& in)
@@ -24,7 +26,8 @@ void STUDENT::Read(std::istream& in)
 	if (in.good())
 	{
 		// Birth date
-		in >> dtBirthDate.year >> dtBirthDate.month >> dtBirthDate.day;
+		in >> dtBirthDate.year >> dtBirthDate.month >> dtBirthDate.day >>
+			classID;
 	}
 
 }
@@ -32,7 +35,8 @@ void STUDENT::Read(std::istream& in)
 std::ostream& operator<<(std::ostream& out, const STUDENT& obj)
 {
 	out << (PERSON)obj << ' ' <<
-		obj.dtBirthDate.year << ' ' << obj.dtBirthDate.month << ' ' << obj.dtBirthDate.day;
+		obj.dtBirthDate.year << ' ' << obj.dtBirthDate.month << ' ' << obj.dtBirthDate.day << ' ' <<
+		obj.classID;
 
 	return out;
 }
