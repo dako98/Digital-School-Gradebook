@@ -123,6 +123,7 @@ BOOL CombinedStudentDlg::LoadAllClasses()
 	}
 	UpdateData(FALSE);
 
+	db.Close();
 
 	return isOK;
 }

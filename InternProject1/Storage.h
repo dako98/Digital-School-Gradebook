@@ -135,6 +135,8 @@ public:
         StudentSetWrapper st(&sSet);
 
         isGood = st.Load(nStudentID, recStudent);
+        db.Close();
+
         return isGood;
     }
 
@@ -150,6 +152,8 @@ public:
         StudentSetWrapper st(&sSet);
 
         isGood = st.NextID(id);
+        db.Close();
+
         return isGood;
     }
     BOOL LoadAll(std::vector<STUDENT>& out)
@@ -166,7 +170,6 @@ public:
 private:
     BOOL _LoadAll(std::vector<STUDENT>& allStudents, std::fstream& file)
     {
-        //FIXME: Copy code here.
         BOOL isGood = TRUE;
         STUDENT tmp;
 
@@ -177,6 +180,9 @@ private:
         StudentSetWrapper st(&sSet);
 
         isGood = st.LoadAll(allStudents);
+
+        db.Close();
+
         return isGood;
     }
     BOOL _AddBulk(const std::vector<STUDENT>& allStudents, std::fstream& file)
@@ -285,6 +291,8 @@ public:
         TeacherSetWrapper st(&sSet);
 
         isGood = st.Load(nStudentID, recStudent);
+        db.Close();
+
         return isGood;
     }
 
@@ -300,6 +308,8 @@ public:
         TeacherSetWrapper st(&sSet);
 
         isGood = st.NextID(id);
+        db.Close();
+
         return isGood;
     }
     BOOL LoadAll(std::vector<TEACHER>& out)
@@ -316,7 +326,6 @@ public:
 private:
     BOOL _LoadAll(std::vector<TEACHER>& allStudents, std::fstream& file)
     {
-        //FIXME: Copy code here.
         BOOL isGood = TRUE;
         TEACHER tmp;
 
@@ -327,6 +336,8 @@ private:
         TeacherSetWrapper st(&sSet);
 
         isGood = st.LoadAll(allStudents);
+        db.Close();
+
         return isGood;
     }
     BOOL _AddBulk(const std::vector<TEACHER>& allStudents, std::fstream& file)
@@ -449,6 +460,8 @@ public:
         GradeSetWrapper st(&sSet);
 
         isGood = st.Load(nStudentID, recStudent);
+        db.Close();
+
         return isGood;
     }
 
@@ -464,6 +477,8 @@ public:
         GradeSetWrapper st(&sSet);
 
         isGood = st.NextID(id);
+        db.Close();
+
         return isGood;
     }
     BOOL LoadAll(std::vector<GRADE>& out)
@@ -480,7 +495,6 @@ public:
 private:
     BOOL _LoadAll(std::vector<GRADE>& allStudents, std::fstream& file)
     {
-        //FIXME: Copy code here.
         BOOL isGood = TRUE;
         GRADE tmp;
 
@@ -491,6 +505,8 @@ private:
         GradeSetWrapper st(&sSet);
 
         isGood = st.LoadAll(allStudents);
+        db.Close();
+
         return isGood;
     }
     BOOL _AddBulk(const std::vector<GRADE>& allStudents, std::fstream& file)
@@ -601,6 +617,8 @@ public:
         SubjectSetWrapper st(&sSet);
 
         isGood = st.Load(nStudentID, recStudent);
+        db.Close();
+
         return isGood;
     }
 
@@ -616,6 +634,8 @@ public:
         SubjectSetWrapper st(&sSet);
 
         isGood = st.NextID(id);
+        db.Close();
+
         return isGood;
     }
     BOOL LoadAll(std::vector<SUBJECT>& out)
@@ -643,6 +663,8 @@ private:
         SubjectSetWrapper st(&sSet);
 
         isGood = st.LoadAll(allStudents);
+        db.Close();
+
         return isGood;
     }
     BOOL _AddBulk(const std::vector<SUBJECT>& allStudents, std::fstream& file)
