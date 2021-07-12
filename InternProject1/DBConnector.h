@@ -3,6 +3,11 @@
 #include "afxdb.h"
 #include <tuple>
 
+#include "CStudent.h"
+#include "CTeacher.h"
+#include "CGrade.h"
+#include "CSubject.h"
+
 class StudentSet : public CRecordset
 {
 public:
