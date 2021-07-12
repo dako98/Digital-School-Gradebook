@@ -4,25 +4,29 @@
 StudentSet::StudentSet(CDatabase* pDB)
     : CRecordset(pDB)
 {
-    m_rgID                  = NULL;
-    m_rgIDLengths           = NULL;
+    constexpr int cntBefore = __COUNTER__;
 
-    m_rgNumber              = NULL;
-    m_rgNumberLengths       = NULL;
+    m_rgID                  = NULL; __COUNTER__;
+    m_rgIDLengths           = NULL; __COUNTER__;
 
-    m_rgFirstName           = NULL;
-    m_rgFirstNameLengths    = NULL;
+    m_rgNumber              = NULL; __COUNTER__;
+    m_rgNumberLengths       = NULL; __COUNTER__;
 
-    m_rgLastName            = NULL;
-    m_rgLastNameLengths     = NULL;
+    m_rgFirstName           = NULL; __COUNTER__;
+    m_rgFirstNameLengths    = NULL; __COUNTER__;
 
-    m_rgBirthday            = NULL;
-    m_rgBirthdayLengths     = NULL;
+    m_rgLastName            = NULL; __COUNTER__;
+    m_rgLastNameLengths     = NULL; __COUNTER__;
 
-    m_rgClassID             = NULL;
-    m_rgClassIDLengths      = NULL;
+    m_rgBirthday            = NULL; __COUNTER__;
+    m_rgBirthdayLengths     = NULL; __COUNTER__;
 
-    m_nFields               = 6;
+    m_rgClassID             = NULL; __COUNTER__;
+    m_rgClassIDLengths      = NULL; __COUNTER__;
+
+    constexpr int count = (__COUNTER__ - cntBefore - 1) / 2;
+
+    m_nFields               = count;
 }
 void StudentSet::DoBulkFieldExchange(CFieldExchange* pFX)
 {
@@ -183,17 +187,20 @@ BOOL StudentSetWrapper::LoadAll(std::vector<STUDENT>& out)
 TeacherSet::TeacherSet(CDatabase* pDB)
     : CRecordset(pDB)
 {
-    m_rgID = NULL;
-    m_rgIDLengths = NULL;
+    constexpr int cntBefore = __COUNTER__;
 
-    m_rgFirstName = NULL;
-    m_rgFirstNameLengths = NULL;
+    m_rgID                  = NULL; __COUNTER__;
+    m_rgIDLengths           = NULL; __COUNTER__;
 
-    m_rgLastName = NULL;
-    m_rgLastNameLengths = NULL;
+    m_rgFirstName           = NULL; __COUNTER__;
+    m_rgFirstNameLengths    = NULL; __COUNTER__;
 
+    m_rgLastName            = NULL; __COUNTER__;
+    m_rgLastNameLengths     = NULL; __COUNTER__;
 
-    m_nFields = 3;
+    constexpr int count = (__COUNTER__ - cntBefore - 1) / 2;
+
+    m_nFields               = count;
 }
 void TeacherSet::DoBulkFieldExchange(CFieldExchange* pFX)
 {
@@ -326,22 +333,28 @@ BOOL TeacherSetWrapper::LoadAll(std::vector<TEACHER>& out)
 GradeSet::GradeSet(CDatabase* pDB)
     : CRecordset(pDB)
 {
-    m_rgID                  = NULL;
-    m_rgIDLengths           = NULL;
+    constexpr int cntBefore = __COUNTER__;
 
-    m_rgStudentID           = NULL;
-    m_rgStudentIDLengths    = NULL;
 
-    m_rgSubjectID           = NULL;
-    m_rgSubjectIDLengths    = NULL;
+    m_rgID                  = NULL; __COUNTER__;
+    m_rgIDLengths           = NULL; __COUNTER__;
 
-    m_rgValue               = NULL;
-    m_rgValueLengths        = NULL;
+    m_rgStudentID           = NULL; __COUNTER__;
+    m_rgStudentIDLengths    = NULL; __COUNTER__;
 
-    m_rgDate                = NULL;
-    m_rgDateLengths         = NULL;
+    m_rgSubjectID           = NULL; __COUNTER__;
+    m_rgSubjectIDLengths    = NULL; __COUNTER__;
 
-    m_nFields = 5;
+    m_rgValue               = NULL; __COUNTER__;
+    m_rgValueLengths        = NULL; __COUNTER__;
+
+    m_rgDate                = NULL; __COUNTER__;
+    m_rgDateLengths         = NULL; __COUNTER__;
+
+
+    constexpr int count = (__COUNTER__ - cntBefore - 1) / 2;
+
+    m_nFields               = count;
 }
 void GradeSet::DoBulkFieldExchange(CFieldExchange* pFX)
 {
@@ -486,22 +499,24 @@ SubjectSet::SubjectSet(CDatabase* pDB)
     : CRecordset(pDB)
 {
 
+    constexpr int cntBefore = __COUNTER__;
 
 
-    m_rgID                = NULL;
-    m_rgIDLengths         = NULL;
+    m_rgID                  = NULL; __COUNTER__;
+    m_rgIDLengths           = NULL; __COUNTER__;
 
-    m_rgName              = NULL;
-    m_rgNameLengths       = NULL;
+    m_rgName                = NULL; __COUNTER__;
+    m_rgNameLengths         = NULL; __COUNTER__;
 
-    m_rgTeacherID         = NULL;
-    m_rgTeacherIDLengths  = NULL;
+    m_rgTeacherID           = NULL; __COUNTER__;
+    m_rgTeacherIDLengths    = NULL; __COUNTER__;
 
-    m_rgRoomName          = NULL;
-    m_rgRoomNameLengths   = NULL;
+    m_rgRoomName            = NULL; __COUNTER__;
+    m_rgRoomNameLengths     = NULL; __COUNTER__;
 
+    constexpr int count = (__COUNTER__ - cntBefore - 1) / 2;
 
-    m_nFields = 4;
+    m_nFields               = count;
 }
 void SubjectSet::DoBulkFieldExchange(CFieldExchange* pFX)
 {
@@ -634,20 +649,22 @@ BOOL SubjectSetWrapper::LoadAll(std::vector<SUBJECT>& out)
 ClassesSet::ClassesSet(CDatabase* pDB)
     : CRecordset(pDB)
 {
+    constexpr int cntBefore = __COUNTER__;
 
 
 
-    m_rgID = NULL;
-    m_rgIDLengths = NULL;
+    m_rgID                  = NULL; __COUNTER__;
+    m_rgIDLengths           = NULL; __COUNTER__;
 
-    m_rgName = NULL;
-    m_rgNameLengths = NULL;
+    m_rgName                = NULL; __COUNTER__;
+    m_rgNameLengths         = NULL; __COUNTER__;
 
-    m_rgTeacherID = NULL;
-    m_rgTeacherIDLengths = NULL;
+    m_rgTeacherID           = NULL; __COUNTER__;
+    m_rgTeacherIDLengths    = NULL; __COUNTER__;
 
+    constexpr int count = (__COUNTER__ - cntBefore - 1) / 2;
 
-    m_nFields = 3;
+    m_nFields               = count;
 }
 void ClassesSet::DoBulkFieldExchange(CFieldExchange* pFX)
 {
