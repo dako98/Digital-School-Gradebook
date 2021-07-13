@@ -99,6 +99,12 @@
     <ClInclude Include="DBConnector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CSchedule.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ScheduleDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="InternProject1.cpp">
@@ -174,6 +180,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DBConnector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CSchedule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ScheduleDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

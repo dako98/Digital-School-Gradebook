@@ -34,4 +34,5 @@ public:
 	afx_msg void OnBnClickedManagestudents();
 	afx_msg void OnBnClickedButton6();
 	afx_msg void OnBnClickedButton7();
+	afx_msg void OnBnClickedButton1();
 };

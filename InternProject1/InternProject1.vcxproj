@@ -192,6 +192,7 @@
     <ClInclude Include="CombinedSubjectDlg.h" />
     <ClInclude Include="CombinedTeacherDlg.h" />
     <ClInclude Include="CPerson.h" />
+    <ClInclude Include="CSchedule.h" />
     <ClInclude Include="CStudent.h" />
     <ClInclude Include="CSubject.h" />
     <ClInclude Include="CTeacher.h" />
@@ -206,6 +207,7 @@
     <ClInclude Include="ManageSubjectsDlg.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="ScheduleDlg.h" />
     <ClInclude Include="Storage.h" />
     <ClInclude Include="StudentAverageDlg.h" />
     <ClInclude Include="targetver.h" />
@@ -222,6 +224,7 @@
     <ClCompile Include="CombinedSubjectDlg.cpp" />
     <ClCompile Include="CombinedTeacherDlg.cpp" />
     <ClCompile Include="CPerson.cpp" />
+    <ClCompile Include="CSchedule.cpp" />
     <ClCompile Include="CStudent.cpp" />
     <ClCompile Include="CSubject.cpp" />
     <ClCompile Include="CTeacher.cpp" />
@@ -239,6 +242,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="ScheduleDlg.cpp" />
     <ClCompile Include="Storage.cpp" />
     <ClCompile Include="StudentAverageDlg.cpp" />
     <ClCompile Include="Utility.cpp" />

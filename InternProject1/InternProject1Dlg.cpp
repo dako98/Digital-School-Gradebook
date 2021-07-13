@@ -11,6 +11,7 @@
 #include "ManageStudentsDlg.h"
 #include "ManageSubjectsDlg.h"
 #include "ManageGradesDlg.h"
+#include "ScheduleDlg.h"
 
 
 #ifdef _DEBUG
@@ -39,6 +40,7 @@ BEGIN_MESSAGE_MAP(CInternProject1Dlg, CDialogEx)
 	ON_BN_CLICKED(IDC_MANAGESTUDENTS, &CInternProject1Dlg::OnBnClickedManagestudents)
 	ON_BN_CLICKED(IDC_BUTTON6, &CInternProject1Dlg::OnBnClickedButton6)
 	ON_BN_CLICKED(IDC_BUTTON7, &CInternProject1Dlg::OnBnClickedButton7)
+	ON_BN_CLICKED(IDC_BUTTON1, &CInternProject1Dlg::OnBnClickedButton1)
 END_MESSAGE_MAP()
 
 
@@ -116,5 +118,13 @@ void CInternProject1Dlg::OnBnClickedButton7()
 {
 	// TODO: Add your control notification handler code here
 	ManageGradesDlg dlg;
+	dlg.DoModal();
+}
+
+
+void CInternProject1Dlg::OnBnClickedButton1()
+{
+	// TODO: Add your control notification handler code here
+	ScheduleDlg dlg;
 	dlg.DoModal();
 }

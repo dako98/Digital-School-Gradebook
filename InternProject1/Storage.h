@@ -5,10 +5,6 @@
 #include <fstream>
 #include <vector>
 
-#include "CStudent.h"
-#include "CTeacher.h"
-#include "CGrade.h"
-#include "CSubject.h"
 
 /**
 * Requires:
@@ -40,10 +36,15 @@ private:
 private:
     const std::string path;
 };
-
+#include "Storage.c++"
 
 #include "afxdb.h"
 #include "DBConnector.h"
+#include "CStudent.h"
+#include "CTeacher.h"
+#include "CGrade.h"
+#include "CSubject.h"
+#include "CSchedule.h"
 
 template<>
 class Storage<STUDENT>
@@ -60,8 +61,7 @@ public:
     virtual ~Storage()
     {}
 
-
-    //FIXME: Rework for use with database.
+    // TODO: Disambiguate StudentID and NumberInClass.
 
     BOOL Add(STUDENT& recStudent)
     {
@@ -206,7 +206,6 @@ private:
     const CString connectionString;
 };
 
-
 template<>
 class Storage<TEACHER>
 {
@@ -222,8 +221,6 @@ public:
     virtual ~Storage()
     {}
 
-
-    //FIXME: Rework for use with database.
 
     BOOL Add(TEACHER& recStudent)
     {
@@ -361,7 +358,6 @@ private:
     const CString connectionString;
 };
 
-
 template<>
 class Storage<GRADE>
 {
@@ -377,8 +373,6 @@ public:
     virtual ~Storage()
     {}
 
-
-    //FIXME: Rework for use with database.
 
     BOOL Add(GRADE& recStudent)
     {
@@ -530,7 +524,6 @@ private:
     const CString connectionString;
 };
 
-
 template<>
 class Storage<SUBJECT>
 {
@@ -546,8 +539,6 @@ public:
     virtual ~Storage()
     {}
 
-
-    //FIXME: Rework for use with database.
 
     BOOL Add(SUBJECT& recStudent)
     {
@@ -688,8 +679,197 @@ private:
     const CString connectionString;
 };
 
+template<>
+class Storage<CSchedule>
+{
+    // FIXME: This should be for each subject in the day, not for the whole week.
+    // CSchedule should only be a thing at the client in order to organise the data.
+
+public:
+    Storage(const std::string& path)
+        :connectionString(path.c_str())
+    {
+        CDatabase db;
+
+        db.OpenEx(connectionString, CDatabase::openReadOnly | CDatabase::noOdbcDialog);
+        db.Close();
+    }
+    virtual ~Storage()
+    {}
+
+    BOOL Add(CSchedule& recStudent)
+    {
+        BOOL isGood = TRUE;
+/*
+        if (isGood)
+        {
+            CDatabase db;
+            db.OpenEx(connectionString, CDatabase::openReadOnly | CDatabase::noOdbcDialog);
+            CString sSQL;
+
+            int size = recStudent.days.size();
+            for (int dayOfWeek = 0; dayOfWeek < size; dayOfWeek++)
+            {
+                for (auto _class : recStudent.days[dayOfWeek].classes)
+                {
+                    sSQL.Format(_T("INSERT INTO [Schedule]([Begin],[Duration],[ClassID],[DayOfWeek]) VALUES ('%d:%d:00','%d:%d:00', %d, %d)"),
+                        _class.begin.hour,
+                        _class.begin.minute,
+                        _class.duration.hour,
+                        _class.duration.minute,
+                        _class.nSubjectID,
+                        dayOfWeek);
+                }
+            }
+            db.ExecuteSQL(sSQL);
+            db.Close();
+        }
+        return isGood;
+        */
+        ASSERT(FALSE && "Can not create a whole schedule. You can only add scheduled classes.");
+        return FALSE;
+    }
+    BOOL Edit(CSchedule& recStudent)
+    {
+        BOOL isGood = TRUE;
+
+        if (isGood)
+        {
+            CDatabase db;
+            db.OpenEx(connectionString, CDatabase::openReadOnly | CDatabase::noOdbcDialog);
+            CString sSQL;
+
+            int size = recStudent.days.size();
+            for (int dayOfWeek = 0; dayOfWeek < size; dayOfWeek++)
+            {
+                for (auto _class : recStudent.days[dayOfWeek].classes)
+                {
+
+                    sSQL.Format(_T("UPDATE [Schedule] SET [Begin] = '%d:%d:00', [Duration] = '%d:%d:00', [SubjectID] = %d, [DayOfWeek] = %d WHERE [ID] = %d"),
+                        _class.begin.hour,
+                        _class.begin.minute,
+                        _class.duration.hour,
+                        _class.duration.minute,
+                        _class.nSubjectID,
+                        dayOfWeek,
+                        _class.nID);
+
+                    db.ExecuteSQL(sSQL);
+                    db.Close();
+                }
+            }
+        }
+        return isGood;
+    }
+    BOOL Delete(const int nStudentID)
+    {
+        BOOL isGood = TRUE;
+/*
+        if (isGood)
+        {
+            CDatabase db;
+            db.OpenEx(connectionString, CDatabase::openReadOnly | CDatabase::noOdbcDialog);
+            CString sSQL;
+            sSQL.Format(_T("DELETE [Subjects] WHERE [ID] = %d"), nStudentID);
+            db.ExecuteSQL(sSQL);
+            db.Close();
+        }
+        return isGood;
+        */
+        ASSERT(FALSE && "Can not delete a whole schedule. You can only delete scheduled classes.");
+        return FALSE;
+    }
+    BOOL Load(const int classID, CSchedule& recStudent)
+    {
+        BOOL isGood = TRUE;
+        CSchedule result;
+        ScheduleClass sc;
+        result.classID = classID;
+
+        CDatabase db;
+        db.OpenEx(connectionString, CDatabase::openReadOnly | CDatabase::noOdbcDialog);
+        ScheduleClassSet sSet(&db);
 
 
+        CString sSQL;
+        sSQL.Format(_T("SELECT * FROM [Schedule] WHERE [ClassID] = %d"), classID);
+        sSet.Open(AFX_DB_USE_DEFAULT_TYPE, sSQL, CRecordset::useMultiRowFetch);
 
 
-#include "Storage.c++"
+        while (!sSet.IsEOF())
+        {
+            int rowsFetched = sSet.GetRowsFetched();
+
+            for (int nPosInRowset = 0; nPosInRowset < rowsFetched; nPosInRowset++)
+            {
+
+                sc.nID              =   *(sSet.m_rgID + nPosInRowset);
+                sc.nSubjectID       =   *(sSet.m_rgSubjectID + nPosInRowset);
+                sc.begin.hour       =   (sSet.m_rgBeginTime + nPosInRowset)->hour;
+                sc.begin.minute     =   (sSet.m_rgBeginTime + nPosInRowset)->minute;
+                sc.begin.second     =   (sSet.m_rgBeginTime + nPosInRowset)->second;
+                sc.duration.hour    =   (sSet.m_rgDuration + nPosInRowset)->hour;
+                sc.duration.minute  =   (sSet.m_rgDuration + nPosInRowset)->minute;
+                sc.duration.second  =   (sSet.m_rgDuration + nPosInRowset)->second;
+
+                int dayOfWeek = *(sSet.m_rgDayOfWeek + nPosInRowset);
+
+                ASSERT(dayOfWeek < 7);
+
+//                result.days[dayOfWeek].classes.push_back(sc);
+                result.days[dayOfWeek].classes.insert(sc);
+            }
+            sSet.MoveNext();
+        }
+
+        sSet.Close();
+        db.Close();
+
+        recStudent = result;
+
+        return isGood;
+    }
+    
+
+    BOOL NextID(int& id) const
+    {
+        BOOL isGood = TRUE;
+/*
+        SUBJECT tmp;
+
+        CDatabase db;
+        db.OpenEx(connectionString, CDatabase::openReadOnly | CDatabase::noOdbcDialog);
+        SubjectSet sSet(&db);
+
+        SubjectSetWrapper st(&sSet);
+
+        isGood = st.NextID(id);
+        db.Close();
+
+        return isGood;
+        */
+        ASSERT(FALSE && "Can not get an ID for a whole schedule. You can only get ID for scheduled classes.");
+        return FALSE;
+    }
+    BOOL LoadAll(std::vector<CSchedule>& out)
+    {
+        BOOL isOK = FALSE;
+        /*
+        std::fstream file;
+
+        isOK = _LoadAll(out, file);
+
+        return isOK;
+        */
+        ASSERT(FALSE && "Can not load all schedule. You can only load one schedule.");
+        return FALSE;
+    }
+
+private:
+    const CString connectionString;
+
+    struct ExtendedClassInfo
+    {
+
+    };
+};
