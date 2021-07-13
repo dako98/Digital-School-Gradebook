@@ -1,8 +1,6 @@
 #include "pch.h"
 #include "Utility.h"
-
-#include <vector>
-
+#include <algorithm>
 #include "CGrade.h"
 
 int GetIndexByData(const int target, const CComboBox& comboBox)
@@ -28,19 +26,15 @@ CString MapGradeName(const int value)
 
 	switch (value)
 	{
-	case GRADE::GRADES::A:		name = "Excellent";
-		break;
-	case GRADE::GRADES::B:		name = "Very good";
-		break;
-	case GRADE::GRADES::C:		name = "Good";
-		break;
-	case GRADE::GRADES::D:		name = "Average";
-		break;
-	case GRADE::GRADES::F:		name = "Bad";
-		break;
+	case GRADE::GRADES::A:	name = "Excellent";	break;
+	case GRADE::GRADES::B:	name = "Very good";	break;
+	case GRADE::GRADES::C:	name = "Good";		break;
+	case GRADE::GRADES::D:	name = "Average";	break;
+	case GRADE::GRADES::F:	name = "Bad";		break;
 
 	default:
 		name = "";
+		ASSERT(false && "Invalid grade.");
 		break;
 	}
 
