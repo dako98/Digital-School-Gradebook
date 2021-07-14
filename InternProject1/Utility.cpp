@@ -2,8 +2,9 @@
 #include "Utility.h"
 #include <algorithm>
 #include "CGrade.h"
+#include <limits>
 
-int GetIndexByData(const int target, const CComboBox& comboBox)
+inline int GetIndexByData(const int target, const CComboBox& comboBox)
 {
 	int result = CB_ERR;
 	int length = comboBox.GetCount();
@@ -40,3 +41,39 @@ CString MapGradeName(const int value)
 
 	return name;
 }
+
+inline unsigned short DigitsCount(INT32 x)
+{
+    /**
+    * Source: https://stackoverflow.com/questions/1489830/efficient-way-to-determine-number-of-digits-in-an-integer
+    */
+ 
+    if (x == INT32_MAX) return 10 + 1;
+    if (x < 0) return DigitsCount(-x) + 1;
+
+    if (x >= 10000) {
+        if (x >= 10000000) {
+            if (x >= 100000000) {
+                if (x >= 1000000000)
+                    return 10;
+                return 9;
+            }
+            return 8;
+        }
+        if (x >= 100000) {
+            if (x >= 1000000)
+                return 7;
+            return 6;
+        }
+        return 5;
+    }
+    if (x >= 100) {
+        if (x >= 1000)
+            return 4;
+        return 3;
+    }
+    if (x >= 10)
+        return 2;
+    return 1;
+}
+
