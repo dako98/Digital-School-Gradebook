@@ -32,7 +32,6 @@ BOOL ScheduleClassSetWrapper::Load(const int nStudentID, std::vector<ScheduleCla
 
         for (int nPosInRowset = 0; nPosInRowset < rowsFetched; nPosInRowset++)
         {
-
             tmp.nID             =   *(blk->m_rgID + nPosInRowset);
             tmp.nSubjectID      =   *(blk->m_rgSubjectID + nPosInRowset);
             tmp.begin.hour      =   (blk->m_rgBeginTime + nPosInRowset)->hour;
@@ -56,7 +55,7 @@ BOOL ScheduleClassSetWrapper::NextID(int& id) const
     GRADE tmp;
 
     CString sSQL;
-    sSQL.Format(_T("SELECT TOP 1 * FROM [—цхедуле] ORDER BY [ID] DESC"));
+    sSQL.Format(_T("SELECT TOP 1 * FROM [Schedule] ORDER BY [ID] DESC"));
 
     try
     {
