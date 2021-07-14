@@ -2,11 +2,13 @@
 
 #include "afxdb.h"
 #include <tuple>
+#include <unordered_map>
 
 #include "CStudent.h"
 #include "CTeacher.h"
 #include "CGrade.h"
 #include "CSubject.h"
+#include "CClass.h"
 
 class StudentSet : public CRecordset
 {
@@ -197,15 +199,39 @@ public:
 
     ClassesSetWrapper(ClassesSet* sSet);
 
-    BOOL Add(STUDENT& recStudent);
-    BOOL Edit(STUDENT& recStudent);
+    BOOL Add(CClass& recStudent);
+    BOOL Edit(CClass& recStudent);
     BOOL Delete(const int nID);
-    BOOL Load(const int nStudentID, std::tuple<int, CString, int>& recStudent);
+    BOOL Load(const int nStudentID, CClass& recStudent);
     
     BOOL NextID(int& id) const;
-    BOOL LoadAll(std::vector<std::tuple<int, CString, int> >& out);
+    BOOL LoadAll(std::vector<CClass>& out);
 
 private:
 
     ClassesSet* blk;
 };
+
+
+class IDtoNameSet : public CRecordset
+{
+public:
+
+    int* m_rgID;
+    long* m_rgIDLengths;
+
+    LPSTR m_rgName;
+    long* m_rgNameLengths;
+
+    IDtoNameSet(CDatabase* pDB);
+
+    void DoBulkFieldExchange(CFieldExchange* pFX) override;
+};
+
+BOOL IDtoNameMapper(
+    const CString& connectionString,
+    const CString& table,
+    const CString& idField,
+    const CString& nameField,
+    const std::vector<int>& id,
+    std::unordered_map<int, CString>& name);

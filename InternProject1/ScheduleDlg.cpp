@@ -26,35 +26,24 @@ ScheduleDlg::~ScheduleDlg()
 {
 }
 
-BOOL ScheduleDlg::OnInitDialog()
+BOOL ScheduleDlg::PrintSchedule()
 {
-	if (!CDialog::OnInitDialog())
-		return FALSE;
-
 	BOOL isOK = TRUE;
 
 	Storage<CSchedule> scheduleStore(databaseConnectionString);
 	CSchedule schedule;
-	isOK = scheduleStore.Load(1, schedule);
+	isOK = scheduleStore.Load(classSelectDropList.GetItemData(classSelectDropList.GetCurSel()), schedule);
 
 	ListView_SetExtendedListViewStyle(ScheduleListControl, LVS_EX_GRIDLINES);
 
-/*	ScheduleListControl.InsertColumn(
-		0,              // Rank/order of item 
-		_T("Day 1"),          // Caption for this header 
-		LVCFMT_LEFT,    // Relative position of items under header 
-		100);           // Width of items under header
+	/*	ScheduleListControl.InsertColumn(
+			0,              // Rank/order of item
+			_T("Day 1"),          // Caption for this header
+			LVCFMT_LEFT,    // Relative position of items under header
+			100);           // Width of items under header
+*/
 
-	ScheduleListControl.InsertColumn(1, _T("Day 2"), LVCFMT_CENTER, 80);
-	ScheduleListControl.InsertColumn(2, _T("Day 3"), LVCFMT_CENTER, 80);
-	ScheduleListControl.InsertColumn(3, _T("Day 4"), LVCFMT_CENTER, 80);
-	ScheduleListControl.InsertColumn(4, _T("Day 5"), LVCFMT_CENTER, 80);
-	ScheduleListControl.InsertColumn(5, _T("Day 6"), LVCFMT_CENTER, 80);
-	ScheduleListControl.InsertColumn(6, _T("Day 7"), LVCFMT_CENTER, 80);*/
-//	ScheduleListControl.InsertColumn(2, _T("Duration"), LVCFMT_LEFT, 100);
-//	ScheduleListControl.InsertColumn(3, _T("Name"), LVCFMT_LEFT, 80);
-	
-	ScheduleListControl.SetColumnWidth(0, 120);
+	ScheduleListControl.SetColumnWidth(0, 200);
 	ScheduleListControl.SetColumnWidth(1, 200);
 	ScheduleListControl.SetColumnWidth(2, 200);
 	ScheduleListControl.SetColumnWidth(3, 200);
@@ -62,7 +51,6 @@ BOOL ScheduleDlg::OnInitDialog()
 	ScheduleListControl.SetColumnWidth(5, 200);
 	ScheduleListControl.SetColumnWidth(6, 200);
 
-//	int nItem;
 	CString text;
 
 	unsigned int maxRows = 0;
@@ -70,10 +58,10 @@ BOOL ScheduleDlg::OnInitDialog()
 	unsigned int currentDay = 0;
 	for (const auto& day : schedule.days)
 	{
-		maxRows = ( (maxRows < day.classes.size()) ? day.classes.size() : maxRows);
+		maxRows = ((maxRows < day.classes.size()) ? day.classes.size() : maxRows);
 		text.Format(_T("Day %d"), currentDay + 1);
 
-		ScheduleListControl.InsertColumn(currentDay+1,text, LVCFMT_CENTER, 80);
+		ScheduleListControl.InsertColumn(currentDay + 1, text, LVCFMT_CENTER, 80);
 		currentDay++;
 	}
 
@@ -83,17 +71,71 @@ BOOL ScheduleDlg::OnInitDialog()
 		ScheduleListControl.InsertItem(0, text);
 	}
 
-	for (size_t col = 0; col < days; col++)
+	std::set<int> uniqueIDs;
+
+	for (const auto& day : schedule.days)
 	{
-		int row = 0;
-		for (const auto& _class : schedule.days[col].classes)
+		for (const auto& _class : day.classes)
 		{
-			text.Format(_T("%d"), _class.nSubjectID);
-			ScheduleListControl.SetItemText(row, col, text);
-			row++;
+			uniqueIDs.insert(_class.nSubjectID);
 		}
 	}
 
+	std::vector<int> ids(uniqueIDs.begin(), uniqueIDs.end());
+	std::unordered_map<int, CString> subjectNames;
+
+	isOK = IDtoNameMapper(CString{ databaseConnectionString }, CString{ "Subjects" }, CString{ "ID" }, CString{ "Name" }, ids, subjectNames);
+
+	if (isOK)
+	{
+		for (size_t col = 0; col < days; col++)
+		{
+			int row = 0;
+			for (const auto& _class : schedule.days[col].classes)
+			{
+				text.Format(_T("%s"), subjectNames[_class.nSubjectID]);
+				ScheduleListControl.SetItemText(row, col, text);
+				row++;
+			}
+		}
+	}
+	return isOK;
+}
+
+BOOL ScheduleDlg::OnInitDialog()
+{
+	if (!CDialog::OnInitDialog())
+		return FALSE;
+
+	BOOL isOK = TRUE;
+
+	Storage<CClass> classStorage(databaseConnectionString);
+	std::vector<CClass> allClasses;
+
+	isOK = classStorage.LoadAll(allClasses);
+
+	if (isOK)
+	{
+		CString currentRow;
+
+		for (const auto& cClass : allClasses)
+		{
+			currentRow.Format(_T("%d %s"),
+				cClass.ID,
+				cClass.name);
+
+			int index = classSelectDropList.AddString(currentRow);
+			classSelectDropList.SetItemData(index, cClass.ID);
+		}
+
+		classSelectDropList.SetCurSel(CB_ERR);
+
+		if (classSelectDropList.GetCurSel() != CB_ERR)
+		{
+			isOK = PrintSchedule();
+		}
+
+	}
 	return isOK;
 }
 
@@ -101,11 +143,36 @@ void ScheduleDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LIST1, ScheduleListControl);
+	DDX_Control(pDX, IDC_COMBO1, classSelectDropList);
 }
 
 
 BEGIN_MESSAGE_MAP(ScheduleDlg, CDialog)
+	ON_CBN_SELCHANGE(IDC_COMBO1, &ScheduleDlg::OnCbnSelchangeCombo1)
 END_MESSAGE_MAP()
 
 
 // ScheduleDlg message handlers
+
+
+void ScheduleDlg::OnCbnSelchangeCombo1()
+{
+	// TODO: Add your control notification handler code here
+	int nCount = ScheduleListControl.GetItemCount();
+
+	// Delete all of the items from the list view control.
+	for (int i = 0; i < nCount; i++)
+	{
+		ScheduleListControl.DeleteItem(0);
+	}
+
+	int nColumnCount = ScheduleListControl.GetHeaderCtrl()->GetItemCount();
+
+	// Delete all of the columns.
+	for (int i = 0; i < nColumnCount; i++)
+	{
+		ScheduleListControl.DeleteColumn(0);
+	}
+
+	PrintSchedule();
+}

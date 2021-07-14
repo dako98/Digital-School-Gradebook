@@ -18,10 +18,18 @@ public:
 	enum { IDD = IDD_SCHEDULE };
 #endif
 
+
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 	DECLARE_MESSAGE_MAP()
 public:
 	CListCtrl ScheduleListControl;
+	CComboBox classSelectDropList;
+
+
+private:
+	BOOL PrintSchedule();
+public:
+	afx_msg void OnCbnSelchangeCombo1();
 };

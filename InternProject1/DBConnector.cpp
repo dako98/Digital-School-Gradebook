@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "DBConnector.h"
 
+#include "Utility.h"
+
 StudentSet::StudentSet(CDatabase* pDB)
     : CRecordset(pDB)
 {
@@ -680,10 +682,10 @@ ClassesSetWrapper::ClassesSetWrapper(ClassesSet* pDB)
     :blk(&*pDB)
 {
 }
-BOOL ClassesSetWrapper::Load(const int nStudentID, std::tuple<int, CString, int>& recStudent)
+BOOL ClassesSetWrapper::Load(const int nStudentID, CClass& recStudent)
 {
     BOOL isOK = TRUE;
-    std::tuple<int, CString, int> tmp;
+    CClass tmp;
 
     CString sSQL;
     sSQL.Format(_T("SELECT * FROM [Classes] WHERE [ID] = %d"), nStudentID);
@@ -700,9 +702,9 @@ BOOL ClassesSetWrapper::Load(const int nStudentID, std::tuple<int, CString, int>
     if (isOK)
     {
         CString csComboString;
-        std::get<0>(tmp) = *(blk->m_rgID);
-        std::get<1>(tmp) = CString{ blk->m_rgName};
-        std::get<2>(tmp) = *(blk->m_rgTeacherID);
+        tmp.ID          =   *(blk->m_rgID);
+        tmp.name        =   CString{ blk->m_rgName};
+        tmp.teacherID   =   *(blk->m_rgTeacherID);
 
         /*
         tmp.nID = *(blk->m_rgID);
@@ -750,11 +752,11 @@ BOOL ClassesSetWrapper::NextID(int& id) const
 
     return isOK;
 }
-BOOL ClassesSetWrapper::LoadAll(std::vector<std::tuple<int, CString, int>>& out)
+BOOL ClassesSetWrapper::LoadAll(std::vector<CClass>& out)
 {
     out.clear();
     BOOL isOK = TRUE;
-    std::tuple<int, CString, int> tmp;
+    CClass tmp;
     CString sSQL;
     sSQL.Format(_T("SELECT * FROM [Classes]"));
 
@@ -777,21 +779,123 @@ BOOL ClassesSetWrapper::LoadAll(std::vector<std::tuple<int, CString, int>>& out)
 
             CString csComboString;
 
-            std::get<0>(tmp) = *(blk->m_rgID + nPosInRowset);
-            std::get<1>(tmp) = CString{ blk->m_rgName + nPosInRowset * 5 };
-            std::get<2>(tmp) = *(blk->m_rgTeacherID + nPosInRowset);
-
-
-//            strcpy_s(std::get<1>(tmp), std::get<1>(tmp), blk->m_rgName + nPosInRowset * 5);
-
-
-//            strcpy_s(tmp.szRoom, tmp.MAX_NAME_SIZE, blk->m_rgRoomName + nPosInRowset * 20);
+            tmp.ID          =   *(blk->m_rgID + nPosInRowset);
+            tmp.name        =   CString{ blk->m_rgName + nPosInRowset * 5 };
+            tmp.teacherID   =   *(blk->m_rgTeacherID + nPosInRowset);
 
             out.push_back(tmp);
         }
     }
 
     blk->Close();
+
+    return isOK;
+}
+
+IDtoNameSet::IDtoNameSet(CDatabase* pDB)
+    : CRecordset(pDB)
+{
+    constexpr int cntBefore = __COUNTER__;
+
+
+
+    m_rgID                  = NULL; __COUNTER__;
+    m_rgIDLengths           = NULL; __COUNTER__;
+
+    m_rgName                = NULL; __COUNTER__;
+    m_rgNameLengths         = NULL; __COUNTER__;
+
+    constexpr int count = (__COUNTER__ - cntBefore - 1) / 2;
+
+    m_nFields               = count;
+}
+void IDtoNameSet::DoBulkFieldExchange(CFieldExchange* pFX)
+{
+    pFX->SetFieldType(CFieldExchange::outputColumn);
+
+    RFX_Int_Bulk(pFX, _T("[ID]"), &m_rgID, &m_rgIDLengths);
+    RFX_Text_Bulk(pFX, _T("[Name]"), &m_rgName, &m_rgNameLengths, 256);
+}
+
+
+BOOL IDtoNameMapper(const CString& connectionString,
+    const CString& table,
+    const CString& idField,
+    const CString& nameField,
+    const std::vector<int>& ids,
+    std::unordered_map<int, CString>& map)
+{
+    unsigned int idsCount = ids.size();
+
+    BOOL isOK = idsCount > 0;
+
+    if (isOK)
+    {
+        CDatabase db;
+        try
+        {
+            db.OpenEx(connectionString, CDatabase::openReadOnly | CDatabase::noOdbcDialog);
+        }
+        catch (const std::exception& e)
+        {
+            isOK = FALSE;
+        }
+
+        if (isOK)
+        {
+            CString sSQL;
+            sSQL.Format(_T("SELECT [%s], [%s] FROM [%s] WHERE [%s] IN ("), idField, nameField, table, idField);
+            unsigned int len = 0;
+            for (int id : ids)
+            {
+                len += DigitsCount(id);
+                len += sizeof(",") - 1;
+            }
+            len += 1;   // For '\0'
+
+            sSQL.Preallocate(len);
+
+            for (size_t i = 0; i < idsCount - 1; i++)
+            {
+                sSQL.AppendFormat(_T("%d,"), ids[i]);
+            }
+            sSQL.AppendFormat(_T("%d)"), ids[idsCount - 1]);
+
+            // Begin reading all records
+            IDtoNameSet blk(&db);
+
+            try
+            {
+                blk.Open(AFX_DB_USE_DEFAULT_TYPE, sSQL, CRecordset::useMultiRowFetch);
+            }
+            catch (const std::exception&)
+            {
+                isOK = FALSE;
+            }
+
+            if (isOK)
+            {
+
+                int rowsFetched = blk.GetRowsFetched();
+                while (!blk.IsEOF())
+                {
+                    for (int nPosInRowset = 0; nPosInRowset < rowsFetched; nPosInRowset++)
+                    {
+                        int id = *(blk.m_rgID + nPosInRowset);
+                        CString name = CString{ blk.m_rgName + nPosInRowset * 256 };
+
+                        map[id] = name;
+                    }
+                    blk.MoveNext();
+                }
+            }// !Getting fields
+
+            blk.Close();
+            db.Close();
+
+        }// !Creating SQL querry
+    }// !IDs length > 0
+
 
     return isOK;
 }

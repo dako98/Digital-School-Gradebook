@@ -93,6 +93,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -186,6 +187,7 @@
     <ClInclude Include="AllStudentsDlg.h" />
     <ClInclude Include="AllSubjectsDlg.h" />
     <ClInclude Include="BirthdayersDlg.h" />
+    <ClInclude Include="CClass.h" />
     <ClInclude Include="CGrade.h" />
     <ClInclude Include="CombinedGradeDlg.h" />
     <ClInclude Include="CombinedStudentDlg.h" />
@@ -218,6 +220,7 @@
     <ClCompile Include="AllStudentsDlg.cpp" />
     <ClCompile Include="AllSubjectsDlg.cpp" />
     <ClCompile Include="BirthdayersDlg.cpp" />
+    <ClCompile Include="CClass.cpp" />
     <ClCompile Include="CGrade.cpp" />
     <ClCompile Include="CombinedGradeDlg.cpp" />
     <ClCompile Include="CombinedStudentDlg.cpp" />
