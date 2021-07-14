@@ -867,9 +867,199 @@ public:
 
 private:
     const CString connectionString;
+};
 
-    struct ExtendedClassInfo
+template<>
+class Storage<CClass>
+{
+public:
+    Storage(const std::string& path)
+        :connectionString(path.c_str())
     {
+        CDatabase db;
 
-    };
+        db.OpenEx(connectionString, CDatabase::openReadOnly | CDatabase::noOdbcDialog);
+        db.Close();
+    }
+    virtual ~Storage()
+    {}
+
+    BOOL Add(CClass& recStudent)
+    {
+        BOOL isGood = TRUE;
+
+        isGood = recStudent.Validate();
+
+        if (isGood)
+        {
+            CDatabase db;
+            db.OpenEx(connectionString, CDatabase::openReadOnly | CDatabase::noOdbcDialog);
+            CString sSQL;
+
+            sSQL.Format(_T("INSERT INTO [Classes]([Name],[ClassTeacherID]) VALUES ('%s',%d)"),
+                recStudent.name,
+                recStudent.teacherID);
+
+            db.ExecuteSQL(sSQL);
+            db.Close();
+        }
+        return isGood;
+    }
+    BOOL Edit(CClass& recStudent)
+    {
+        BOOL isGood = TRUE;
+
+        isGood = recStudent.Validate();
+
+        if (isGood)
+        {
+            CDatabase db;
+            db.OpenEx(connectionString, CDatabase::openReadOnly | CDatabase::noOdbcDialog);
+            CString sSQL;
+
+            sSQL.Format(_T("UPDATE [Classes] SET [Name] = '%s', [ClassTeacherID] = %d WHERE [ID] = %d"),
+                recStudent.name,
+                recStudent.teacherID,
+                recStudent.ID);
+
+            db.ExecuteSQL(sSQL);
+            db.Close();
+        }
+        return isGood;
+    }
+    BOOL Delete(const int nStudentID)
+    {
+        BOOL isGood = TRUE;
+
+        if (isGood)
+        {
+            CDatabase db;
+            db.OpenEx(connectionString, CDatabase::openReadOnly | CDatabase::noOdbcDialog);
+            CString sSQL;
+            sSQL.Format(_T("DELETE [Classes] WHERE [ID] = %d"), nStudentID);
+            db.ExecuteSQL(sSQL);
+            db.Close();
+        }
+        return isGood;
+    }
+    BOOL Load(const int classID, CClass& recStudent)
+    {
+        BOOL isGood = TRUE;
+        CClass result;
+
+        CDatabase db;
+        db.OpenEx(connectionString, CDatabase::openReadOnly | CDatabase::noOdbcDialog);
+        ClassesSet cSet(&db);
+
+
+        CString sSQL;
+        sSQL.Format(_T("SELECT * FROM [Classes] WHERE [ID] = %d"), classID);
+        cSet.Open(AFX_DB_USE_DEFAULT_TYPE, sSQL, CRecordset::useMultiRowFetch);
+
+        ASSERT(cSet.GetRowsFetched() == 1);
+
+        result.ID = *(cSet.m_rgID);
+        result.name = *(cSet.m_rgName);
+        result.teacherID = *(cSet.m_rgTeacherID);
+
+
+        cSet.Close();
+        db.Close();
+
+        recStudent = result;
+
+        return isGood;
+    }
+
+
+    BOOL NextID(int& id) const
+    {
+        BOOL isGood = TRUE;
+
+        CClass tmp;
+
+        CDatabase db;
+        db.OpenEx(connectionString, CDatabase::openReadOnly | CDatabase::noOdbcDialog);
+        ClassesSet cSet(&db);
+
+        CString sSQL;
+        sSQL.Format(_T("SELECT TOP 1 * FROM [Classes] ORDER BY [ID] DESC"));
+
+        try
+        {
+            cSet.Open(AFX_DB_USE_DEFAULT_TYPE, sSQL, CRecordset::useMultiRowFetch);
+        }
+        catch (const std::exception&)
+        {
+            isGood = FALSE;
+        }
+
+        if (isGood)
+        {
+            CString csComboString;
+
+            tmp.ID = *(cSet.m_rgID);
+
+            id = tmp.ID + 1;
+        }
+
+        cSet.Close();
+
+
+        return isGood;
+
+    }
+    BOOL LoadAll(std::vector<CClass>& out)
+    {
+        BOOL isOK = TRUE;
+
+        CDatabase db;
+        try
+        {
+            db.OpenEx(connectionString, CDatabase::openReadOnly | CDatabase::noOdbcDialog);
+        }
+        catch (const std::exception& e)
+        {
+            isOK = FALSE;
+        }
+        if (isOK)
+        {
+            ClassesSet cSet(&db);
+            CClass tmp;
+
+            CString sSQL;
+            sSQL.Format(_T("SELECT * FROM [Classes]"));
+            try
+            {
+                cSet.Open(AFX_DB_USE_DEFAULT_TYPE, sSQL, CRecordset::useMultiRowFetch);
+            }
+            catch (const std::exception&)
+            {
+                isOK = FALSE;
+            }
+
+            if (isOK)
+            {
+                int rowsFetched = cSet.GetRowsFetched();
+                while (!cSet.IsEOF())
+                {
+                    for (int nPosInRowset = 0; nPosInRowset < rowsFetched; nPosInRowset++)
+                    {
+                        tmp.ID = *(cSet.m_rgID + nPosInRowset);
+                        tmp.name = CString{ cSet.m_rgName + nPosInRowset * 5 };
+                        tmp.teacherID = *(cSet.m_rgTeacherID + nPosInRowset);
+
+                        out.push_back(tmp);
+                    }
+                    cSet.MoveNext();
+                }
+            }// !Getting fields
+            cSet.Close();
+            db.Close();
+        }
+        return isOK;
+    }
+
+private:
+    const CString connectionString;
 };

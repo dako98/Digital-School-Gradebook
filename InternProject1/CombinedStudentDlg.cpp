@@ -93,7 +93,7 @@ void CombinedStudentDlg::DoDataExchange(CDataExchange* pDX)
 
 BOOL CombinedStudentDlg::LoadAllClasses()
 {
-	std::vector<std::tuple<int, CString, int>> classes;
+	std::vector<CClass> classes;
 	BOOL isOK = TRUE;
 
 	CDatabase db;
@@ -112,11 +112,11 @@ BOOL CombinedStudentDlg::LoadAllClasses()
 		for (const auto& cClass : classes)
 		{
 			currentRow.Format(_T("%d %s"),
-				std::get<0>(cClass),
-				std::get<1>(cClass));
+				cClass.ID,
+				cClass.name);
 
 			int index = classList.AddString(currentRow);
-			classList.SetItemData(index, std::get<0>(cClass));
+			classList.SetItemData(index, cClass.ID);
 		}
 
 		classList.SetCurSel(GetIndexByData(student.classID, classList));
