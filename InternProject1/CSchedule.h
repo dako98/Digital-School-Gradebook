@@ -34,12 +34,7 @@ private:
     };
 public:
 
-//	std::vector<ScheduleClass> classes;
-
-
-//    auto cmp;
     std::set<ScheduleClass, cmp> classes;
-
 };
 
 struct CSchedule
@@ -102,45 +97,3 @@ private:
 
     ScheduleClassSet* blk;
 };
-
-/*
-class CScheduleSet
-{
-public:
-
-    CScheduleSet(CDatabase* sSet);
-
-    BOOL Add(ScheduleClass& recStudent);
-    BOOL Edit(ScheduleClass& recStudent);
-    BOOL Delete(const int nID);
-    BOOL Load(const int nStudentID, std::vector<ScheduleClass>& recStudent);
-
-    BOOL NextID(int& id) const;
-    BOOL LoadAll(std::vector<ScheduleClass>& out);
-
-private:
-
-    CScheduleSet* blk;
-};
-*/
-/*
-class CScheduleSetWrapper
-{
-public:
-
-    CScheduleSetWrapper(CScheduleSet* sSet);
-
-    BOOL Add(CSchedule& recStudent);
-    BOOL Edit(CSchedule& recStudent);
-    BOOL Delete(const int nID);
-    BOOL Load(const int nStudentID, std::vector<ScheduleClass>& recStudent);
-    BOOL Load(const int nStudentID, ScheduleClass& recStudent);
-
-    BOOL NextID(int& id) const;
-    BOOL LoadAll(std::vector<ScheduleClass>& out);
-
-private:
-
-    CScheduleSet* blk;
-};
-*/
