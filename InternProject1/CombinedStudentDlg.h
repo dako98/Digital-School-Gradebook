@@ -42,4 +42,5 @@ public:
 	int studentNumberVal;
 	COleDateTime studentBirthDateVal;
 	CComboBox classList;
+	CEdit numberInClassEditBox;
 };

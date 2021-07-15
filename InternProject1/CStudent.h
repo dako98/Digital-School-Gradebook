@@ -11,6 +11,7 @@ struct STUDENT : public PERSON
 
     DBTIMESTAMP dtBirthDate;
     int classID;
+    int numberInClass;
 
     virtual BOOL Validate() const override;
 

@@ -30,8 +30,10 @@ BOOL CombinedStudentDlg::OnInitDialog()
 	if(!CDialog::OnInitDialog())
 		return FALSE;
 
+	BOOL isOK = TRUE;
+
 	//TODO: Fill list with classes.
-	LoadAllClasses();
+	isOK = LoadAllClasses();
 
 	studentNumberVal = student.nID;
 
@@ -40,6 +42,10 @@ BOOL CombinedStudentDlg::OnInitDialog()
 		studentBirthDateVal = student.dtBirthDate;
 		studentFirstName.SetWindowText(CString{ student.szFirstName });
 		studentLastName.SetWindowText(CString{ student.szLastName });
+
+		CString tmp;
+		tmp.Format(_T("%d"), student.numberInClass);
+		numberInClassEditBox.SetWindowText(tmp);
 
 	}
 	UpdateData(FALSE);
@@ -53,6 +59,7 @@ BOOL CombinedStudentDlg::OnInitDialog()
 		studentLastName.EnableWindow(FALSE);
 		studentNumber.EnableWindow(FALSE);
 		classList.EnableWindow(FALSE);
+		numberInClassEditBox.EnableWindow(FALSE);
 
 		break;
 
@@ -64,6 +71,8 @@ BOOL CombinedStudentDlg::OnInitDialog()
 		studentLastName.EnableWindow(TRUE);
 		studentNumber.EnableWindow(FALSE);
 		classList.EnableWindow(TRUE);
+		numberInClassEditBox.EnableWindow(TRUE);
+
 
 		break;
 
@@ -72,7 +81,7 @@ BOOL CombinedStudentDlg::OnInitDialog()
 		break;
 	}
 
-	return TRUE;
+	return isOK;
 }
 
 CombinedStudentDlg::~CombinedStudentDlg()
@@ -89,6 +98,7 @@ void CombinedStudentDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT1, studentNumberVal);
 	DDX_DateTimeCtrl(pDX, IDC_DATETIMEPICKER1, studentBirthDateVal);
 	DDX_Control(pDX, IDC_COMBO_CLASSES, classList);
+	DDX_Control(pDX, IDC_EDIT4, numberInClassEditBox);
 }
 
 BOOL CombinedStudentDlg::LoadAllClasses()
@@ -173,6 +183,11 @@ void CombinedStudentDlg::OnBnClickedOk()
 		}
 
 		studentBirthDateVal.GetAsDBTIMESTAMP(st.dtBirthDate);
+
+		st.classID = classList.GetItemData(classList.GetCurSel());
+
+		numberInClassEditBox.GetWindowText(buff);
+		st.numberInClass = _wtoi(buff);
 	}
 
 	switch (m_eDialogMode)

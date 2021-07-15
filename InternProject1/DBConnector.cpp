@@ -8,23 +8,23 @@ StudentSet::StudentSet(CDatabase* pDB)
 {
     constexpr int cntBefore = __COUNTER__;
 
-    m_rgID                  = NULL; __COUNTER__;
-    m_rgIDLengths           = NULL; __COUNTER__;
+    m_rgID                      = NULL; __COUNTER__;
+    m_rgIDLengths               = NULL; __COUNTER__;
 
-    m_rgNumber              = NULL; __COUNTER__;
-    m_rgNumberLengths       = NULL; __COUNTER__;
+    m_rgFirstName               = NULL; __COUNTER__;
+    m_rgFirstNameLengths        = NULL; __COUNTER__;
 
-    m_rgFirstName           = NULL; __COUNTER__;
-    m_rgFirstNameLengths    = NULL; __COUNTER__;
+    m_rgLastName                = NULL; __COUNTER__;
+    m_rgLastNameLengths         = NULL; __COUNTER__;
 
-    m_rgLastName            = NULL; __COUNTER__;
-    m_rgLastNameLengths     = NULL; __COUNTER__;
+    m_rgBirthday                = NULL; __COUNTER__;
+    m_rgBirthdayLengths         = NULL; __COUNTER__;
 
-    m_rgBirthday            = NULL; __COUNTER__;
-    m_rgBirthdayLengths     = NULL; __COUNTER__;
+    m_rgClassID                 = NULL; __COUNTER__;
+    m_rgClassIDLengths          = NULL; __COUNTER__;
 
-    m_rgClassID             = NULL; __COUNTER__;
-    m_rgClassIDLengths      = NULL; __COUNTER__;
+    m_rgNumberInClass           = NULL; __COUNTER__;
+    m_rgNumberInClassLengths    = NULL; __COUNTER__;
 
     constexpr int count = (__COUNTER__ - cntBefore - 1) / 2;
 
@@ -34,12 +34,12 @@ void StudentSet::DoBulkFieldExchange(CFieldExchange* pFX)
 {
     pFX->SetFieldType(CFieldExchange::outputColumn);
 
-    RFX_Int_Bulk    (pFX, _T("[ID]"),               &m_rgID,        &m_rgIDLengths);
-    RFX_Int_Bulk    (pFX, _T("[NumberInClass]"),    &m_rgNumber,    &m_rgNumberLengths);
-    RFX_Text_Bulk   (pFX, _T("[FirstName]"),        &m_rgFirstName, &m_rgFirstNameLengths,  20);
-    RFX_Text_Bulk   (pFX, _T("[LastName]"),         &m_rgLastName,  &m_rgLastNameLengths,   20);
-    RFX_Date_Bulk   (pFX, _T("[Birthday]"),         &m_rgBirthday,  &m_rgBirthdayLengths);
-    RFX_Int_Bulk    (pFX, _T("[ClassID]"),          &m_rgClassID,   &m_rgClassIDLengths);
+    RFX_Int_Bulk    (pFX, _T("[ID]"),               &m_rgID,                &m_rgIDLengths);
+    RFX_Int_Bulk    (pFX, _T("[NumberInClass]"),    &m_rgNumberInClass,     &m_rgNumberInClassLengths);
+    RFX_Text_Bulk   (pFX, _T("[FirstName]"),        &m_rgFirstName,         &m_rgFirstNameLengths,      20);
+    RFX_Text_Bulk   (pFX, _T("[LastName]"),         &m_rgLastName,          &m_rgLastNameLengths,       20);
+    RFX_Date_Bulk   (pFX, _T("[Birthday]"),         &m_rgBirthday,          &m_rgBirthdayLengths);
+    RFX_Int_Bulk    (pFX, _T("[ClassID]"),          &m_rgClassID,           &m_rgClassIDLengths);
 
 }
 
@@ -84,6 +84,8 @@ BOOL StudentSetWrapper::Load(const int nStudentID, STUDENT& recStudent)
         tmp.dtBirthDate.second  =   (blk->m_rgBirthday)->second;
 
         tmp.classID             =   *(blk->m_rgClassID);
+        tmp.numberInClass       =   *(blk->m_rgNumberInClass);
+
         recStudent = tmp;
     }
 
@@ -110,20 +112,7 @@ BOOL StudentSetWrapper::NextID(int& id) const
 
     if (isOK)
     {
-        CString csComboString;
-
         tmp.nID = *(blk->m_rgID);
-
-        strcpy_s(tmp.szFirstName, tmp.MAX_NAME_SIZE, blk->m_rgFirstName);
-
-        strcpy_s(tmp.szLastName, tmp.MAX_NAME_SIZE, blk->m_rgLastName);
-
-        tmp.dtBirthDate.year    =   (blk->m_rgBirthday)->year;
-        tmp.dtBirthDate.month   =   (blk->m_rgBirthday)->month;
-        tmp.dtBirthDate.day     =   (blk->m_rgBirthday)->day;
-        tmp.dtBirthDate.hour    =   (blk->m_rgBirthday)->hour;
-        tmp.dtBirthDate.minute  =   (blk->m_rgBirthday)->minute;
-        tmp.dtBirthDate.second  =   (blk->m_rgBirthday)->second;
 
         id = tmp.nID + 1;
     }
@@ -175,6 +164,9 @@ BOOL StudentSetWrapper::LoadAll(std::vector<STUDENT>& out)
             tmp.dtBirthDate.hour    =   (blk->m_rgBirthday + nPosInRowset)->hour;
             tmp.dtBirthDate.minute  =   (blk->m_rgBirthday + nPosInRowset)->minute;
             tmp.dtBirthDate.second  =   (blk->m_rgBirthday + nPosInRowset)->second;
+
+            tmp.classID             =   *(blk->m_rgClassID + nPosInRowset);
+            tmp.numberInClass       =   *(blk->m_rgNumberInClass + nPosInRowset);
 
             out.push_back(tmp);
         }
@@ -836,7 +828,7 @@ BOOL IDtoNameMapper(const CString& connectionString,
         {
             db.OpenEx(connectionString, CDatabase::openReadOnly | CDatabase::noOdbcDialog);
         }
-        catch (const std::exception& e)
+        catch (const std::exception&)
         {
             isOK = FALSE;
         }

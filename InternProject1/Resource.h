@@ -18,7 +18,6 @@
 #define IDD_EXCELLENT_STUDENTS          170
 #define IDD_FAILS                       172
 #define IDD_BIRTHDAYERS                 174
-#define IDD_DIALOG1                     176
 #define IDD_SCHEDULE                    176
 #define IDC_EDIT1                       1000
 #define IDC_DATETIMEPICKER1             1001
@@ -44,6 +43,7 @@
 #define IDC_GRADE_DATETIMEPICKER1       1038
 #define IDC_GRADES_LIST                 1039
 #define IDC_COMBO_CLASSES               1040
+#define IDC_EDIT4                       1041
 
 // Next default values for new objects
 // 
@@ -51,7 +51,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        178
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1041
+#define _APS_NEXT_CONTROL_VALUE         1042
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

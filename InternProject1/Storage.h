@@ -73,11 +73,11 @@ public:
             db.OpenEx(connectionString, CDatabase::openReadOnly | CDatabase::noOdbcDialog);
             CString sSQL;
             sSQL.Format(_T("INSERT INTO [Students]([NumberInClass],[FirstName],[LastName],[Birthday], [ClassID]) VALUES (%d,'%s','%s','%d-%d-%d', %d)"),
-                recStudent.nID, 
+                recStudent.numberInClass, 
                 CString{ recStudent.szFirstName },
                 CString{ recStudent.szLastName },
-                recStudent.dtBirthDate.year, recStudent.dtBirthDate.month, recStudent.dtBirthDate.day),
-                recStudent.classID;
+                recStudent.dtBirthDate.year, recStudent.dtBirthDate.month, recStudent.dtBirthDate.day,
+                recStudent.classID);
             db.ExecuteSQL(sSQL);
             db.Close();
         }
@@ -96,7 +96,7 @@ public:
             db.OpenEx(connectionString, CDatabase::openReadOnly | CDatabase::noOdbcDialog);
             CString sSQL;
             sSQL.Format(_T("UPDATE [Students] SET [NumberInClass] = %d, [FirstName] = '%s',[LastName] = '%s',[Birthday] = '%d-%d-%d', [ClassID] = %d WHERE [ID] = %d"),
-                recStudent.nID,
+                recStudent.numberInClass,
                 CString{ recStudent.szFirstName },
                 CString{ recStudent.szLastName },
                 recStudent.dtBirthDate.year, recStudent.dtBirthDate.month, recStudent.dtBirthDate.day, 
@@ -742,7 +742,7 @@ public:
             int size = recStudent.days.size();
             for (int dayOfWeek = 0; dayOfWeek < size; dayOfWeek++)
             {
-                for (auto _class : recStudent.days[dayOfWeek].classes)
+                for (const auto& _class : recStudent.days[dayOfWeek].classes)
                 {
 
                     sSQL.Format(_T("UPDATE [Schedule] SET [Begin] = '%d:%d:00', [Duration] = '%d:%d:00', [SubjectID] = %d, [DayOfWeek] = %d WHERE [ID] = %d"),
@@ -1018,7 +1018,7 @@ public:
         {
             db.OpenEx(connectionString, CDatabase::openReadOnly | CDatabase::noOdbcDialog);
         }
-        catch (const std::exception& e)
+        catch (const std::exception&)
         {
             isOK = FALSE;
         }

@@ -17,8 +17,6 @@ public:
     int* m_rgID;
     long* m_rgIDLengths;
 
-    int* m_rgNumber;
-    long* m_rgNumberLengths;
 
     LPSTR m_rgFirstName;
     long* m_rgFirstNameLengths;
@@ -31,6 +29,9 @@ public:
 
     int* m_rgClassID;
     long* m_rgClassIDLengths;
+
+    int* m_rgNumberInClass;
+    long* m_rgNumberInClassLengths;
 
 
     StudentSet(CDatabase* pDB);
