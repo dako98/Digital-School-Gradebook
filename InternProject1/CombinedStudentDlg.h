@@ -29,7 +29,7 @@ private:
 	BOOL LoadAllClasses();
 
 	DialogMode m_eDialogMode;
-	Storage<STUDENT> studentStore;
+	ObjectInterface<STUDENT>* studentStore;
 	STUDENT student;
 
 	DECLARE_MESSAGE_MAP()

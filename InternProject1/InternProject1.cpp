@@ -7,6 +7,8 @@
 #include "InternProject1.h"
 #include "InternProject1Dlg.h"
 
+#include "Utility.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -33,8 +35,17 @@ CInternProject1App::CInternProject1App()
 
 CInternProject1App theApp;
 
+CDatabase databaseConnection;
 
 
+/*virtual*/
+int CInternProject1App::ExitInstance()
+{
+	databaseConnection.Close();
+
+
+	return __super::ExitInstance();
+}
 
 
 // CInternProject1App initialization
@@ -53,6 +64,14 @@ BOOL CInternProject1App::InitInstance()
 
 	CWinApp::InitInstance();
 
+	try
+	{
+		databaseConnection.OpenEx(CString{ databaseConnectionString }, CDatabase::noOdbcDialog);
+	}
+	catch (const CDBException&)
+	{
+		return FALSE;
+	}
 
 	AfxEnableControlContainer();
 

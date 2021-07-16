@@ -11,4 +11,5 @@
 #include "framework.h"
 #include "Storage.h"
 
+extern CDatabase databaseConnection;
 #endif //PCH_H

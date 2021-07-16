@@ -20,9 +20,9 @@ CombinedStudentDlg::CombinedStudentDlg(DialogMode eDialogMode,const STUDENT& stu
 	, m_eDialogMode(eDialogMode)
 	, studentNumberVal(0)
 	, studentBirthDateVal(COleDateTime::GetCurrentTime())
-	, studentStore(studentsPath)
 	, student(student)
 {
+	studentStore = new StudentDatabaseInterface(_T("Students"), &databaseConnection);
 }
 
 BOOL CombinedStudentDlg::OnInitDialog()
@@ -86,6 +86,7 @@ BOOL CombinedStudentDlg::OnInitDialog()
 
 CombinedStudentDlg::~CombinedStudentDlg()
 {
+	delete studentStore;
 }
 
 void CombinedStudentDlg::DoDataExchange(CDataExchange* pDX)
@@ -106,9 +107,8 @@ BOOL CombinedStudentDlg::LoadAllClasses()
 	std::vector<CClass> classes;
 	BOOL isOK = TRUE;
 
-	CDatabase db;
-	db.OpenEx(CString{ classesPath }, CDatabase::openReadOnly | CDatabase::noOdbcDialog);
-	ClassesSet sSet(&db);
+
+	ClassesSet sSet(&databaseConnection);
 
 	ClassesSetWrapper st(&sSet);
 
@@ -132,8 +132,6 @@ BOOL CombinedStudentDlg::LoadAllClasses()
 		classList.SetCurSel(GetIndexByData(student.classID, classList));
 	}
 	UpdateData(FALSE);
-
-	db.Close();
 
 	return isOK;
 }
@@ -164,22 +162,22 @@ void CombinedStudentDlg::OnBnClickedOk()
 
 		if (buff.GetLength() <= STUDENT::MAX_NAME_SIZE)
 		{
-			strcpy_s(st.szFirstName, STUDENT::MAX_NAME_SIZE, CT2A(buff));
+			st.szFirstName = buff;
 		}
 		else
 		{
-			strcpy_s(st.szFirstName, STUDENT::MAX_NAME_SIZE, "");
+			st.szFirstName = "";
 		}
 
 		studentLastName.GetWindowTextW(buff);
 
 		if (buff.GetLength() <= STUDENT::MAX_NAME_SIZE)
 		{
-			strcpy_s(st.szLastName, STUDENT::MAX_NAME_SIZE, CT2A(buff));
+			st.szLastName = buff;
 		}
 		else
 		{
-			strcpy_s(st.szLastName, STUDENT::MAX_NAME_SIZE, "");
+			st.szLastName = "";
 		}
 
 		studentBirthDateVal.GetAsDBTIMESTAMP(st.dtBirthDate);
@@ -194,17 +192,17 @@ void CombinedStudentDlg::OnBnClickedOk()
 	{
 	case DialogMode::eDialogMode_Add:
 
-		isOK = studentStore.Add(st);
+		isOK = studentStore->Add(st);
 		break;
 
 	case DialogMode::eDialogMode_Edit:
 
-		isOK = studentStore.Edit(st);
+		isOK = studentStore->Edit(st);
 		break;
 
 	case DialogMode::eDialogMode_Remove:
 	
-		isOK = studentStore.Delete(st.nID);
+		isOK = studentStore->Delete(st.nID);
 		break;
 	
 	default:
