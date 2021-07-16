@@ -19,9 +19,10 @@ CombinedTeacherDlg::CombinedTeacherDlg(DialogMode eMode, const TEACHER& data)
 	: CDialog(IDD_TEACHER_COMBINED, nullptr)
 	, m_eDialogMode(eMode)
 	, teacherNumberVal(0)
-	, store(teachersPath)
+	, store(nullptr)
 	, tmp(data)
 {
+	store = new TeacherDatabaseInterface(_T("Teachers"), &databaseConnection);
 }
 
 BOOL CombinedTeacherDlg::OnInitDialog()
@@ -67,6 +68,7 @@ BOOL CombinedTeacherDlg::OnInitDialog()
 
 CombinedTeacherDlg::~CombinedTeacherDlg()
 {
+	delete store;
 }
 
 void CombinedTeacherDlg::DoDataExchange(CDataExchange* pDX)
@@ -103,22 +105,22 @@ void CombinedTeacherDlg::OnBnClickedOk()
 
 		if (buff.GetLength() <= TEACHER::MAX_NAME_SIZE)
 		{
-			strcpy_s(st.szFirstName, TEACHER::MAX_NAME_SIZE, CT2A(buff));
+			st.szFirstName = buff;
 		}
 		else
 		{
-			strcpy_s(st.szFirstName, TEACHER::MAX_NAME_SIZE, "");
+			st.szFirstName = "";
 		}
 
 		teacherLastName.GetWindowTextW(buff);
 
 		if (buff.GetLength() <= TEACHER::MAX_NAME_SIZE)
 		{
-			strcpy_s(st.szLastName, TEACHER::MAX_NAME_SIZE, CT2A(buff));
+			st.szLastName = buff;
 		}
 		else
 		{
-			strcpy_s(st.szLastName, TEACHER::MAX_NAME_SIZE, "");
+			st.szLastName = "";
 		}
 	}
 
@@ -126,15 +128,15 @@ void CombinedTeacherDlg::OnBnClickedOk()
 	{
 	case DialogMode::eDialogMode_Add:
 
-		isOK = store.Add(st);
+		isOK = store->Add(st);
 		break;
 	case DialogMode::eDialogMode_Edit:
 
-		isOK = store.Edit(st);
+		isOK = store->Edit(st);
 		break;
 	case DialogMode::eDialogMode_Remove:
 	
-		isOK = store.Delete(st.nID);
+		isOK = store->Delete(st.nID);
 
 
 		break;

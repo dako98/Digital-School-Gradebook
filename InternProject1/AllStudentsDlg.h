@@ -29,6 +29,10 @@ public:
 	afx_msg void OnBnClickedRadio4();
 
 private:
+
+	ObjectInterface<STUDENT>* studentStore;
+	ObjectInterface<TEACHER>* teacherStore;
+
 	BOOL PrintAllStudents();
 	BOOL PrintAllTeachers();
 	BOOL PrintAll();

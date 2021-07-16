@@ -22,11 +22,17 @@ IMPLEMENT_DYNAMIC(AllStudentsDlg, CDialog)
 AllStudentsDlg::AllStudentsDlg(CWnd* pParent /*=nullptr*/)
 	: CDialog(IDD_ALL_STUDENTS, pParent)
 	, allStudentsListVal(_T(""))
+	, studentStore(nullptr)
+	, teacherStore(nullptr)
 {
+	studentStore = new StudentDatabaseInterface(_T("Students"), &databaseConnection);
+	teacherStore = new TeacherDatabaseInterface(_T("Teachers"), &databaseConnection);
 }
 
 AllStudentsDlg::~AllStudentsDlg()
 {
+	delete teacherStore;
+	delete studentStore;
 }
 
 BOOL AllStudentsDlg::PrintAll()
@@ -48,9 +54,8 @@ BOOL AllStudentsDlg::PrintAllStudents()
 	BOOL isOK;
 
 	std::vector<STUDENT> allStudents;
-	Storage<STUDENT> st{ studentsPath };
-	isOK = st.LoadAll(allStudents);
 
+	isOK = studentStore->LoadAll(allStudents);
 	if (isOK)
 	{
 		CString currentRow;
@@ -133,8 +138,8 @@ BOOL AllStudentsDlg::PrintAllTeachers()
 	BOOL isOK;
 
 	std::vector<TEACHER> all;
-	Storage<TEACHER> st{ teachersPath };
-	isOK = st.LoadAll(all);
+
+	isOK = teacherStore->LoadAll(all);
 
 	if (isOK)
 	{
@@ -164,9 +169,8 @@ void AllStudentsDlg::OnBnClickedButtonEdit()
 		if (studentsRadioBtn.GetCheck() == BST_CHECKED)
 		{
 			STUDENT tmp;
-			Storage<STUDENT> studentStore{ studentsPath };
 
-			isOK = studentStore.Load(allStudentsList.GetItemData(allStudentsList.GetCurSel()), tmp);
+			isOK = studentStore->Load(allStudentsList.GetItemData(allStudentsList.GetCurSel()), tmp);
 
 			if (!isOK)
 			{
@@ -180,9 +184,8 @@ void AllStudentsDlg::OnBnClickedButtonEdit()
 		else
 		{
 			TEACHER tmp;
-			Storage<TEACHER> store{ teachersPath };
 
-			isOK = store.Load(allStudentsList.GetItemData(allStudentsList.GetCurSel()), tmp);
+			isOK = teacherStore->Load(allStudentsList.GetItemData(allStudentsList.GetCurSel()), tmp);
 
 			if (!isOK)
 			{
@@ -205,9 +208,8 @@ void AllStudentsDlg::OnBnClickedButtonAdd()
 	if (studentsRadioBtn.GetCheck() == BST_CHECKED)
 	{
 		STUDENT tmp;
-		Storage<STUDENT> store{ studentsPath };
 
-		isOK = store.NextID(tmp.nID);
+		isOK = studentStore->NextID(tmp.nID);
 
 		if (!isOK)
 		{
@@ -221,9 +223,8 @@ void AllStudentsDlg::OnBnClickedButtonAdd()
 	else
 	{
 		TEACHER tmp;
-		Storage<TEACHER> store{ teachersPath };
 
-		isOK = store.NextID(tmp.nID);
+		isOK = teacherStore->NextID(tmp.nID);
 
 		if (!isOK)
 		{
@@ -248,9 +249,8 @@ void AllStudentsDlg::OnBnClickedButtonRemove()
 		if (studentsRadioBtn.GetCheck() == BST_CHECKED)
 		{
 			STUDENT tmp;
-			Storage<STUDENT> studentStore{ studentsPath };
 
-			isOK = studentStore.Load(allStudentsList.GetItemData(allStudentsList.GetCurSel()), tmp);
+			isOK = studentStore->Load(allStudentsList.GetItemData(allStudentsList.GetCurSel()), tmp);
 
 			if (!isOK)
 			{
@@ -264,9 +264,8 @@ void AllStudentsDlg::OnBnClickedButtonRemove()
 		else
 		{
 			TEACHER tmp;
-			Storage<TEACHER> store(teachersPath);
 
-			isOK = store.Load(allStudentsList.GetItemData(allStudentsList.GetCurSel()), tmp);
+			isOK = teacherStore->Load(allStudentsList.GetItemData(allStudentsList.GetCurSel()), tmp);
 
 			if (!isOK)
 			{

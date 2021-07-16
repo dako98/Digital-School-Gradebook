@@ -24,7 +24,7 @@ public:
 
 private:
 	DialogMode m_eDialogMode;
-	Storage<TEACHER> store;
+	ObjectInterface<TEACHER>* store;
 	TEACHER tmp;
 
 protected:

@@ -21,6 +21,7 @@ CombinedStudentDlg::CombinedStudentDlg(DialogMode eDialogMode,const STUDENT& stu
 	, studentNumberVal(0)
 	, studentBirthDateVal(COleDateTime::GetCurrentTime())
 	, student(student)
+	, studentStore(nullptr)
 {
 	studentStore = new StudentDatabaseInterface(_T("Students"), &databaseConnection);
 }
