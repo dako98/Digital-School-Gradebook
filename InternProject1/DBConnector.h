@@ -114,24 +114,29 @@ class GradeSet : public CRecordset
 {
 public:
 
-
+    int ID;
     int* m_rgID;
     long* m_rgIDLengths;
 
+    int studentID;
     int* m_rgStudentID;
     long* m_rgStudentIDLengths;
 
+    int subjectID;
     int* m_rgSubjectID;
     long* m_rgSubjectIDLengths;
 
+    int value;
     int* m_rgValue;
     long* m_rgValueLengths;
 
+    TIMESTAMP_STRUCT date;
     TIMESTAMP_STRUCT* m_rgDate;
     long* m_rgDateLengths;
 
     GradeSet(CDatabase* pDB);
 
+    void DoFieldExchange(CFieldExchange* pFX) override;
     void DoBulkFieldExchange(CFieldExchange* pFX) override;
 };
 class GradeSetWrapper
@@ -157,21 +162,25 @@ class SubjectSet : public CRecordset
 {
 public:
 
-
+    int ID;
     int* m_rgID;
     long* m_rgIDLengths;
 
+    CString name;
     LPSTR m_rgName;
     long* m_rgNameLengths;
 
+    int teacherID;
     int* m_rgTeacherID;
     long* m_rgTeacherIDLengths;
 
+    CString roomName;
     LPSTR m_rgRoomName;
     long* m_rgRoomNameLengths;
 
     SubjectSet(CDatabase* pDB);
 
+    void DoFieldExchange(CFieldExchange* pFX) override;
     void DoBulkFieldExchange(CFieldExchange* pFX) override;
 };
 class SubjectSetWrapper
@@ -197,17 +206,21 @@ class ClassesSet : public CRecordset
 {
 public:
 
+    int ID;
     int* m_rgID;
     long* m_rgIDLengths;
 
+    CString name;
     LPSTR m_rgName;
     long* m_rgNameLengths;
 
+    int teacherID;
     int* m_rgTeacherID;
     long* m_rgTeacherIDLengths;
 
     ClassesSet(CDatabase* pDB);
 
+    void DoFieldExchange(CFieldExchange* pFX) override;
     void DoBulkFieldExchange(CFieldExchange* pFX) override;
 };
 class ClassesSetWrapper
@@ -246,7 +259,7 @@ public:
 };
 
 BOOL IDtoNameMapper(
-    const CString& connectionString,
+    CDatabase* database,
     const CString& table,
     const CString& idField,
     const CString& nameField,
@@ -319,5 +332,65 @@ public:
 
 private:
     TeacherSet recordSet;
+    const CString table;
+};
+
+class SubjectDatabaseInterface : public DatabaseInterface<SUBJECT>
+{
+public:
+    SubjectDatabaseInterface(const std::wstring& tableName, CDatabase* db);
+    virtual ~SubjectDatabaseInterface();
+
+public:
+    virtual BOOL Add(const SUBJECT& recTeacher)                         override;
+    virtual BOOL Edit(const SUBJECT& recTeacher)                        override;
+    virtual BOOL Delete(const int nID)                                  override;
+    virtual BOOL Load(const int nTeacherID, SUBJECT& recTeacher)        override;
+
+    virtual BOOL NextID(int& id) const                                  override;
+    virtual BOOL LoadAll(std::vector<SUBJECT>& out)                     override;
+
+private:
+    SubjectSet recordSet;
+    const CString table;
+};
+
+class GradeDatabaseInterface : public DatabaseInterface<GRADE>
+{
+public:
+    GradeDatabaseInterface(const std::wstring& tableName, CDatabase* db);
+    virtual ~GradeDatabaseInterface();
+
+public:
+    virtual BOOL Add(const GRADE& recTeacher)                         override;
+    virtual BOOL Edit(const GRADE& recTeacher)                        override;
+    virtual BOOL Delete(const int nID)                                  override;
+    virtual BOOL Load(const int nTeacherID, GRADE& recTeacher)        override;
+
+    virtual BOOL NextID(int& id) const                                  override;
+    virtual BOOL LoadAll(std::vector<GRADE>& out)                     override;
+
+private:
+    GradeSet recordSet;
+    const CString table;
+};
+
+class ClassesDatabaseInterface : public DatabaseInterface<CClass>
+{
+public:
+    ClassesDatabaseInterface(const std::wstring& tableName, CDatabase* db);
+    virtual ~ClassesDatabaseInterface();
+
+public:
+    virtual BOOL Add(const CClass& recTeacher)                         override;
+    virtual BOOL Edit(const CClass& recTeacher)                        override;
+    virtual BOOL Delete(const int nID)                                  override;
+    virtual BOOL Load(const int nTeacherID, CClass& recTeacher)        override;
+
+    virtual BOOL NextID(int& id) const                                  override;
+    virtual BOOL LoadAll(std::vector<CClass>& out)                     override;
+
+private:
+    ClassesSet recordSet;
     const CString table;
 };
