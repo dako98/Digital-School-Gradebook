@@ -10,7 +10,6 @@ CClass::CClass()
 
 BOOL CClass::Validate() const
 {
-    return ID > 0 &&
-        name != "" &&
-        teacherID > 0;
+    return (name != "" &&
+        teacherID > 0);
 }

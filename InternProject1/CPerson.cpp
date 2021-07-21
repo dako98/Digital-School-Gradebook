@@ -5,8 +5,8 @@
 std::ostream& operator<<(std::ostream& out, const PERSON& obj)
 {
 	out << obj.nID << ' ' <<
-		strlen(obj.szFirstName) << ' ' << obj.szFirstName << ' ' <<
-		strlen(obj.szLastName) << ' ' << obj.szLastName;
+		wcslen(obj.szFirstName) << ' ' << obj.szFirstName << ' ' <<
+		wcslen(obj.szLastName) << ' ' << obj.szLastName;
 
 	return out;
 }
@@ -20,7 +20,8 @@ std::istream& operator>>(std::istream& in, PERSON& obj)
 
 void PERSON::Read(std::istream& in)
 {
-	int count;
+/*
+int count;
 
 	in >> nID;
 
@@ -57,18 +58,21 @@ void PERSON::Read(std::istream& in)
 			in.setstate(std::ios_base::failbit);
 		}
 	}
+	*/
 }
 
 PERSON::PERSON()
 	:nID(-1)
+	, szFirstName("")
+	, szLastName("")
 {
-	szFirstName[0] = '\0';
-	szLastName[0] = '\0';
 }
 
 BOOL PERSON::Validate() const
 {
-	return (strcmp(szFirstName, "") != 0 && strlen(szFirstName) <= MAX_NAME_SIZE &&
-		strcmp(szLastName, "") != 0 && strlen(szLastName) <= MAX_NAME_SIZE &&
-		nID > 0);
+	return 
+		//(strcmp(szFirstName, "") != 0 && strlen(szFirstName) <= MAX_NAME_SIZE &&
+		//strcmp(szLastName, "") != 0 && strlen(szLastName) <= MAX_NAME_SIZE &&
+		(szFirstName != "" &&
+		szLastName != "");
 }

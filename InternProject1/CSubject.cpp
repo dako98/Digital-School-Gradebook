@@ -5,8 +5,8 @@ std::ostream& operator<<(std::ostream& out, const SUBJECT& obj)
 {
     out << obj.nID << ' ' <<
         obj.nTeacherID << ' ' <<
-        strlen(obj.szName) << ' ' << obj.szName << ' ' <<
-        strlen(obj.szRoom) << ' ' << obj.szRoom;
+        obj.szName.GetLength() << ' ' << obj.szName << ' ' <<
+        obj.szRoom.GetLength() << ' ' << obj.szRoom;
 
     return out;
 }
@@ -20,24 +20,25 @@ std::istream& operator>>(std::istream& in, SUBJECT& obj)
 
 SUBJECT::SUBJECT()
     :nID(-1)
-    ,nTeacherID(-1)
+    , nTeacherID(-1)
+    , szName()
+    , szRoom()
 {
-    szName[0] = '\0';
-    szRoom[0] = '\0';
 }
 
 BOOL SUBJECT::Validate() const
 {
-    return (strcmp(szName, "") != 0 && strlen(szName) <= MAX_NAME_SIZE &&
-        nID > 0 &&
-        strcmp(szRoom, "") != 0 && strlen(szRoom) <= MAX_NAME_SIZE &&
+    return
+        (szName != "" &&
+        szRoom != "" &&
         nTeacherID > 0);
 }
 
 void SUBJECT::Read(std::istream& in)
 {
     in >> nID >> nTeacherID;
-
+    ASSERT(FALSE);
+    /*
     if (in.good())
     {
         int len;
@@ -74,4 +75,5 @@ void SUBJECT::Read(std::istream& in)
             }
         }
     }
+    */
 }

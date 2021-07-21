@@ -12,8 +12,7 @@ GRADE::GRADE()
 
 BOOL GRADE::Validate() const
 {
-	return (nID > 0 &&
-		nStudentID > 0 &&
+	return (nStudentID > 0 &&
 		nSubjectID > 0 &&
 		value > GRADE::GRADES::INVALID && value < GRADE::GRADES::COUNT&&
 		COleDateTime{ dtDate } <= COleDateTime::GetCurrentTime());
