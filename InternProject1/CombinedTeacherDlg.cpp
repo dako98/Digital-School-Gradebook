@@ -19,10 +19,9 @@ CombinedTeacherDlg::CombinedTeacherDlg(DialogMode eMode, const TEACHER& data)
 	: CDialog(IDD_TEACHER_COMBINED, nullptr)
 	, m_eDialogMode(eMode)
 	, teacherNumberVal(0)
-	, store(nullptr)
+	, store(new TeacherDatabaseInterface(_T("Teachers"), &databaseConnection))
 	, tmp(data)
 {
-	store = new TeacherDatabaseInterface(_T("Teachers"), &databaseConnection);
 }
 
 BOOL CombinedTeacherDlg::OnInitDialog()
@@ -36,6 +35,10 @@ BOOL CombinedTeacherDlg::OnInitDialog()
 	{
 		teacherFirstName.SetWindowText(CString{ tmp.szFirstName });
 		teacherLastName.SetWindowText(CString{ tmp.szLastName });
+	}
+	else
+	{
+//		store->NextID(teacherNumberVal);
 	}
 	UpdateData(FALSE);
 
@@ -68,7 +71,6 @@ BOOL CombinedTeacherDlg::OnInitDialog()
 
 CombinedTeacherDlg::~CombinedTeacherDlg()
 {
-	delete store;
 }
 
 void CombinedTeacherDlg::DoDataExchange(CDataExchange* pDX)

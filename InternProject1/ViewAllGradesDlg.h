@@ -1,5 +1,6 @@
 #pragma once
 
+#include "DBConnector.h"
 // ViewAllGradesDlg dialog
 
 class ViewAllGradesDlg : public CDialog
@@ -19,6 +20,11 @@ public:
 #endif
 private:
 	BOOL PrintAllGrades();
+
+	std::unique_ptr<ObjectInterface<GRADE>>		gradeStore;
+	std::unique_ptr<ObjectInterface<STUDENT>>	studentStore;
+	std::unique_ptr<ObjectInterface<SUBJECT>>	subjectStore;
+
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 

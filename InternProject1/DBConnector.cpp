@@ -67,6 +67,7 @@ void StudentSet::DoFieldExchange(CFieldExchange* pFX)
 StudentSetWrapper::StudentSetWrapper(StudentSet *pDB)
     :blk(&*pDB)
 {
+    ASSERT(FALSE);
 }
 BOOL StudentSetWrapper::Load(const int nStudentID, STUDENT& recStudent)
 {
@@ -266,6 +267,7 @@ void TeacherSet::DoFieldExchange(CFieldExchange* pFX)
 TeacherSetWrapper::TeacherSetWrapper(TeacherSet* pDB)
     :blk(&*pDB)
 {
+    ASSERT(FALSE);
 }
 BOOL TeacherSetWrapper::Load(const int nStudentID, TEACHER& recStudent)
 {
@@ -970,6 +972,38 @@ BOOL IDtoNameMapper(CDatabase* db,
     return isOK;
 }
 
+template<class T>
+BOOL DatabaseInterface<T>::LastID(int& id) const
+{
+    BOOL isGood = TRUE;
+    id = -1;
+
+    CRecordset rs(db);
+    try
+    {
+        rs.Open(CRecordset::forwardOnly, _T("select scope_identity() as last_id"), CRecordset::readOnly);
+    }
+    catch (const CDBException&)
+    {
+        isGood = FALSE;
+    }
+
+    CString strLastID;
+
+    if (isGood)
+    {
+        rs.GetFieldValue(_T("last_id"), strLastID);
+        rs.Close();
+        isGood = strLastID != "";
+    }
+
+    if (isGood)
+    {
+        id = _wtoi(strLastID);
+    }
+    return isGood;
+}
+
 StudentDatabaseInterface::~StudentDatabaseInterface()
 {
     if (recordSet.IsOpen())
@@ -977,19 +1011,19 @@ StudentDatabaseInterface::~StudentDatabaseInterface()
         recordSet.Close();
     }
 }
-
 StudentDatabaseInterface::StudentDatabaseInterface(const std::wstring& tableName, CDatabase* db)
     :DatabaseInterface(db)
     , recordSet(this->db)
     , table(tableName.c_str())
 { }
-
-BOOL StudentDatabaseInterface::Add(const STUDENT& recStudent)
+BOOL StudentDatabaseInterface::Add(STUDENT& recStudent)
 {
     BOOL isGood = TRUE;
 
     if (isGood = recStudent.Validate())
     {
+        // Check if number in class is duplicate
+        recordSet.m_strFilter.Format(_T("[NumberInClass] = %d AND [ClassID] = %d"), recStudent.numberInClass, recStudent.classID);
         try
         {
             recordSet.Open(CRecordset::dynaset, table, CRecordset::none);
@@ -998,6 +1032,11 @@ BOOL StudentDatabaseInterface::Add(const STUDENT& recStudent)
         {
             isGood = FALSE;
         }
+        isGood = recordSet.GetRowsFetched() == 0;
+
+        recordSet.m_strFilter = "";
+
+        isGood = isGood && recordSet.Requery();
 
         if (isGood)
         {
@@ -1023,7 +1062,6 @@ BOOL StudentDatabaseInterface::Add(const STUDENT& recStudent)
             recordSet.birthday.second   = 0;
             recordSet.birthday.fraction = 0;
 
-
             try
             {
                 isGood = recordSet.Update();
@@ -1043,12 +1081,16 @@ BOOL StudentDatabaseInterface::Add(const STUDENT& recStudent)
                 db->Rollback();
             }
 
+            if (isGood)
+            {
+                LastID(recStudent.nID);
+            }
+
             recordSet.Close();
         }
     }
     return isGood;
 }
-
 BOOL StudentDatabaseInterface::Edit(const STUDENT& recStudent)
 {
     BOOL isGood = TRUE;
@@ -1087,7 +1129,7 @@ BOOL StudentDatabaseInterface::Edit(const STUDENT& recStudent)
 
             try
             {
-                isGood = recordSet.Update();
+                recordSet.Update();
             }
             catch (const CDBException&)
             {
@@ -1176,20 +1218,20 @@ BOOL StudentDatabaseInterface::Load(const int nID, STUDENT& recStudent)
 
     if (isGood)
     {
-        recStudent.nID = recordSet.ID;
+        recStudent.nID                  = recordSet.ID;
 
-        recStudent.szFirstName = recordSet.firstName;
-        recStudent.szLastName = recordSet.lastName;
+        recStudent.szFirstName          = recordSet.firstName;
+        recStudent.szLastName           = recordSet.lastName;
 
-        recStudent.dtBirthDate.year = recordSet.birthday.year;
-        recStudent.dtBirthDate.month = recordSet.birthday.month;
-        recStudent.dtBirthDate.day = recordSet.birthday.day;
-        recStudent.dtBirthDate.hour = recordSet.birthday.hour;
-        recStudent.dtBirthDate.minute = recordSet.birthday.minute;
-        recStudent.dtBirthDate.second = recordSet.birthday.second;
+        recStudent.dtBirthDate.year     = recordSet.birthday.year;
+        recStudent.dtBirthDate.month    = recordSet.birthday.month;
+        recStudent.dtBirthDate.day      = recordSet.birthday.day;
+        recStudent.dtBirthDate.hour     = recordSet.birthday.hour;
+        recStudent.dtBirthDate.minute   = recordSet.birthday.minute;
+        recStudent.dtBirthDate.second   = recordSet.birthday.second;
 
-        recStudent.classID = recordSet.classID;
-        recStudent.numberInClass = recordSet.numberInClass;
+        recStudent.classID              = recordSet.classID;
+        recStudent.numberInClass        = recordSet.numberInClass;
 
         recordSet.Close();
 
@@ -1199,11 +1241,6 @@ BOOL StudentDatabaseInterface::Load(const int nID, STUDENT& recStudent)
     return isGood;
 }
 
-BOOL StudentDatabaseInterface::NextID(int& id) const 
-{ 
-    id = -1; 
-    return TRUE;
-}
 BOOL StudentDatabaseInterface::LoadAll(std::vector<STUDENT>& out)
 {
     BOOL isGood = TRUE;
@@ -1228,21 +1265,21 @@ BOOL StudentDatabaseInterface::LoadAll(std::vector<STUDENT>& out)
             {
                 STUDENT tmp;
 
-                tmp.nID = *(recordSet.m_rgID + nPosInRowset);
+                tmp.nID                 = *(recordSet.m_rgID + nPosInRowset);
 
 
-                tmp.szFirstName = CString{ recordSet.m_rgFirstName + nPosInRowset*20 };
-                tmp.szLastName = CString{ recordSet.m_rgLastName + nPosInRowset*20 };
+                tmp.szFirstName         = CString{ recordSet.m_rgFirstName + nPosInRowset*20 };
+                tmp.szLastName          = CString{ recordSet.m_rgLastName + nPosInRowset*20 };
 
-                tmp.dtBirthDate.year = (recordSet.m_rgBirthday + nPosInRowset)->year;
-                tmp.dtBirthDate.month = (recordSet.m_rgBirthday + nPosInRowset)->month;
-                tmp.dtBirthDate.day = (recordSet.m_rgBirthday + nPosInRowset)->day;
-                tmp.dtBirthDate.hour = (recordSet.m_rgBirthday + nPosInRowset)->hour;
-                tmp.dtBirthDate.minute = (recordSet.m_rgBirthday + nPosInRowset)->minute;
-                tmp.dtBirthDate.second = (recordSet.m_rgBirthday + nPosInRowset)->second;
+                tmp.dtBirthDate.year    = (recordSet.m_rgBirthday + nPosInRowset)->year;
+                tmp.dtBirthDate.month   = (recordSet.m_rgBirthday + nPosInRowset)->month;
+                tmp.dtBirthDate.day     = (recordSet.m_rgBirthday + nPosInRowset)->day;
+                tmp.dtBirthDate.hour    = (recordSet.m_rgBirthday + nPosInRowset)->hour;
+                tmp.dtBirthDate.minute  = (recordSet.m_rgBirthday + nPosInRowset)->minute;
+                tmp.dtBirthDate.second  = (recordSet.m_rgBirthday + nPosInRowset)->second;
 
-                tmp.classID = *(recordSet.m_rgClassID + nPosInRowset);
-                tmp.numberInClass = *(recordSet.m_rgNumberInClass + nPosInRowset);
+                tmp.classID             = *(recordSet.m_rgClassID + nPosInRowset);
+                tmp.numberInClass       = *(recordSet.m_rgNumberInClass + nPosInRowset);
 
                 isGood = tmp.Validate();
 
@@ -1258,15 +1295,12 @@ BOOL StudentDatabaseInterface::LoadAll(std::vector<STUDENT>& out)
     return isGood;
 }
 
-
-
 TeacherDatabaseInterface::TeacherDatabaseInterface(const std::wstring& tableName, CDatabase* db)
     :DatabaseInterface(db)
     , recordSet(this->db)
     , table(tableName.c_str())
 { }
-
-BOOL TeacherDatabaseInterface::Add(const TEACHER& recStudent)
+BOOL TeacherDatabaseInterface::Add(TEACHER& recStudent)
 {
     BOOL isGood = TRUE;
 
@@ -1314,12 +1348,16 @@ BOOL TeacherDatabaseInterface::Add(const TEACHER& recStudent)
                 db->Rollback();
             }
 
+            if (isGood)
+            {
+                LastID(recStudent.nID);
+            }
+
             recordSet.Close();
         }
     }
     return isGood;
 }
-
 BOOL TeacherDatabaseInterface::Edit(const TEACHER& recStudent)
 {
     BOOL isGood = TRUE;
@@ -1353,7 +1391,7 @@ BOOL TeacherDatabaseInterface::Edit(const TEACHER& recStudent)
 
             try
             {
-                isGood = recordSet.Update();
+                recordSet.Update();
             }
             catch (const CDBException&)
             {
@@ -1454,12 +1492,6 @@ BOOL TeacherDatabaseInterface::Load(const int nID, TEACHER& recStudent)
 
     return isGood;
 }
-
-BOOL TeacherDatabaseInterface::NextID(int& id) const 
-{
-    id = -1;
-    return TRUE;
-}
 BOOL TeacherDatabaseInterface::LoadAll(std::vector<TEACHER>& out)
 {
     BOOL isGood = TRUE;
@@ -1502,7 +1534,6 @@ BOOL TeacherDatabaseInterface::LoadAll(std::vector<TEACHER>& out)
     }
     return isGood;
 }
-
 TeacherDatabaseInterface::~TeacherDatabaseInterface()
 {
     if (recordSet.IsOpen())
@@ -1511,14 +1542,12 @@ TeacherDatabaseInterface::~TeacherDatabaseInterface()
     }
 }
 
-
 SubjectDatabaseInterface::SubjectDatabaseInterface(const std::wstring& tableName, CDatabase* db)
     :DatabaseInterface(db)
     , recordSet(this->db)
     , table(tableName.c_str())
 { }
-
-BOOL SubjectDatabaseInterface::Add(const SUBJECT& recStudent)
+BOOL SubjectDatabaseInterface::Add(SUBJECT& recStudent)
 {
     BOOL isGood = TRUE;
 
@@ -1544,7 +1573,7 @@ BOOL SubjectDatabaseInterface::Add(const SUBJECT& recStudent)
 
             recordSet.AddNew();
 
-            recordSet.name          = recordSet.name;
+            recordSet.name          = recStudent.szName;
             recordSet.teacherID     = recStudent.nTeacherID;
             recordSet.roomName      = recStudent.szRoom;
 
@@ -1567,12 +1596,16 @@ BOOL SubjectDatabaseInterface::Add(const SUBJECT& recStudent)
                 db->Rollback();
             }
 
+            if (isGood)
+            {
+                LastID(recStudent.nID);
+            }
+
             recordSet.Close();
         }
     }
     return isGood;
 }
-
 BOOL SubjectDatabaseInterface::Edit(const SUBJECT& recStudent)
 {
     BOOL isGood = TRUE;
@@ -1607,7 +1640,7 @@ BOOL SubjectDatabaseInterface::Edit(const SUBJECT& recStudent)
 
             try
             {
-                isGood = recordSet.Update();
+                recordSet.Update();
             }
             catch (const CDBException&)
             {
@@ -1696,11 +1729,11 @@ BOOL SubjectDatabaseInterface::Load(const int nID, SUBJECT& recStudent)
 
     if (isGood)
     {
-            recordSet.ID            = recStudent.nID;
+        recStudent.nID          = recordSet.ID;
 
-            recordSet.name          = recordSet.name;
-            recordSet.teacherID     = recStudent.nTeacherID;
-            recordSet.roomName      = recStudent.szRoom;
+        recStudent.szName       = recordSet.name;
+        recStudent.nTeacherID   = recordSet.teacherID;
+        recStudent.szRoom       = recordSet.roomName;
 
         recordSet.Close();
 
@@ -1708,12 +1741,6 @@ BOOL SubjectDatabaseInterface::Load(const int nID, SUBJECT& recStudent)
     }
 
     return isGood;
-}
-
-BOOL SubjectDatabaseInterface::NextID(int& id) const
-{
-    id = -1;
-    return TRUE;
 }
 BOOL SubjectDatabaseInterface::LoadAll(std::vector<SUBJECT>& out)
 {
@@ -1759,11 +1786,653 @@ BOOL SubjectDatabaseInterface::LoadAll(std::vector<SUBJECT>& out)
     }
     return isGood;
 }
-
 SubjectDatabaseInterface::~SubjectDatabaseInterface()
 {
     if (recordSet.IsOpen())
     {
         recordSet.Close();
     }
+}
+
+GradeDatabaseInterface::GradeDatabaseInterface(const std::wstring& tableName, CDatabase* db)
+    :DatabaseInterface(db)
+    , recordSet(this->db)
+    , table(tableName.c_str())
+{ }
+BOOL GradeDatabaseInterface::Add(GRADE& recStudent)
+{
+    BOOL isGood = TRUE;
+
+    if (isGood = recStudent.Validate())
+    {
+        try
+        {
+            recordSet.Open(CRecordset::dynaset, table, CRecordset::none);
+        }
+        catch (const CDBException&)
+        {
+            isGood = FALSE;
+        }
+
+        if (isGood)
+        {
+            isGood = recordSet.CanAppend();
+        }
+
+        if (isGood)
+        {
+            db->BeginTrans();
+
+            recordSet.AddNew();
+
+            recordSet.studentID     = recStudent.nStudentID;
+            recordSet.subjectID     = recStudent.nSubjectID;
+            recordSet.value         = recStudent.value;
+            
+            recordSet.date.year     = recStudent.dtDate.year;
+            recordSet.date.month    = recStudent.dtDate.month;
+            recordSet.date.day      = recStudent.dtDate.day;
+            recordSet.date.hour     = recStudent.dtDate.hour;
+            recordSet.date.minute   = recStudent.dtDate.minute;
+            recordSet.date.second   = recStudent.dtDate.second;
+            recordSet.date.fraction = recStudent.dtDate.fraction;
+
+            try
+            {
+                isGood = recordSet.Update();
+            }
+            catch (const CDBException&)
+            {
+                isGood = FALSE;
+            }
+
+
+            if (isGood)
+            {
+                db->CommitTrans();
+            }
+            else
+            {
+                db->Rollback();
+            }
+
+            if (isGood)
+            {
+                LastID(recStudent.nID);
+            }
+
+            recordSet.Close();
+        }
+    }
+    return isGood;
+}
+BOOL GradeDatabaseInterface::Edit(const GRADE& recStudent)
+{
+    BOOL isGood = TRUE;
+
+    if (isGood = recStudent.Validate())
+    {
+        recordSet.m_strFilter.Format(_T("ID = %d"), recStudent.nID);
+
+        try
+        {
+            recordSet.Open(CRecordset::dynaset, table);
+
+            ASSERT(recordSet.GetRowsFetched() == 1);
+        }
+        catch (const CDBException&)
+        {
+            isGood = FALSE;
+        }
+        if (isGood)
+        {
+            isGood = recordSet.CanUpdate();
+        }
+        if (isGood)
+        {
+            db->BeginTrans();
+
+            recordSet.Edit();
+
+            recordSet.studentID     = recStudent.nStudentID;
+            recordSet.subjectID     = recStudent.nSubjectID;
+            recordSet.value         = recStudent.value;
+            
+            recordSet.date.year     = recStudent.dtDate.year;
+            recordSet.date.month    = recStudent.dtDate.month;
+            recordSet.date.day      = recStudent.dtDate.day;
+            recordSet.date.hour     = recStudent.dtDate.hour;
+            recordSet.date.minute   = recStudent.dtDate.minute;
+            recordSet.date.second   = recStudent.dtDate.second;
+            recordSet.date.fraction = recStudent.dtDate.fraction;
+
+            try
+            {
+                recordSet.Update();
+            }
+            catch (const CDBException&)
+            {
+                isGood = FALSE;
+            }
+
+            if (isGood)
+            {
+                db->CommitTrans();
+            }
+            else
+            {
+                db->Rollback();
+            }
+
+            recordSet.Close();
+        }
+    }
+    return isGood;
+}
+BOOL GradeDatabaseInterface::Delete(const int nID)
+{
+    BOOL isGood = TRUE;
+
+    recordSet.m_strFilter.Format(_T("ID = %d"), nID);
+
+    try
+    {
+        recordSet.Open(CRecordset::dynaset, table);
+
+        ASSERT(recordSet.GetRowsFetched() == 1);
+    }
+    catch (const CDBException&)
+    {
+        isGood = FALSE;
+    }
+    if (isGood)
+    {
+        isGood = recordSet.CanUpdate();
+    }
+    if (isGood)
+    {
+        db->BeginTrans();
+
+
+        try
+        {
+            recordSet.Delete();
+            recordSet.MoveNext();
+        }
+        catch (const CDBException&)
+        {
+            isGood = FALSE;
+        }
+
+        if (isGood)
+        {
+            db->CommitTrans();
+        }
+        else
+        {
+            db->Rollback();
+        }
+
+        recordSet.Close();
+    }
+
+    return isGood;
+}
+BOOL GradeDatabaseInterface::Load(const int nID, GRADE& recStudent)
+{
+    BOOL isGood = TRUE;
+
+    recordSet.m_strFilter.Format(_T("ID = %d"), nID);
+
+    try
+    {
+        recordSet.Open(CRecordset::snapshot, table, CRecordset::readOnly);
+
+        ASSERT(recordSet.GetRowsFetched() == 1);
+    }
+    catch (const CDBException&)
+    {
+        isGood = FALSE;
+    }
+
+    if (isGood)
+    {
+        recStudent.nID              = recordSet.ID;
+        recStudent.nStudentID       = recordSet.studentID;
+        recStudent.nSubjectID       = recordSet.subjectID;
+        recStudent.value            = recordSet.value;
+        
+        recStudent.dtDate.year      = recordSet.date.year;
+        recStudent.dtDate.month     = recordSet.date.month;
+        recStudent.dtDate.day       = recordSet.date.day;
+        recStudent.dtDate.hour      = recordSet.date.hour;
+        recStudent.dtDate.minute    = recordSet.date.minute;
+        recStudent.dtDate.second    = recordSet.date.second;
+        recStudent.dtDate.fraction  = recordSet.date.fraction;
+
+        recordSet.Close();
+
+        isGood = recStudent.Validate();
+    }
+
+    return isGood;
+}
+BOOL GradeDatabaseInterface::LoadAll(std::vector<GRADE>& out)
+{
+    BOOL isGood = TRUE;
+    out.clear();
+    recordSet.m_strFilter = "";
+
+    try
+    {
+        recordSet.Open(CRecordset::snapshot, table, CRecordset::readOnly | CRecordset::useMultiRowFetch);
+    }
+    catch (const CDBException&)
+    {
+        isGood = FALSE;
+    }
+
+    if (isGood)
+    {
+        int rowsFetched = recordSet.GetRowsFetched();
+        while (!recordSet.IsEOF())
+        {
+            for (int nPosInRowset = 0; nPosInRowset < rowsFetched; nPosInRowset++)
+            {
+                GRADE tmp;
+
+                tmp.nID              = *(recordSet.m_rgID + nPosInRowset);
+                tmp.nStudentID       = *(recordSet.m_rgStudentID + nPosInRowset);
+                tmp.nSubjectID       = *(recordSet.m_rgSubjectID + nPosInRowset);
+                tmp.value            = *(recordSet.m_rgValue + nPosInRowset);
+                
+                tmp.dtDate.year      = (recordSet.m_rgDate + nPosInRowset)->year;
+                tmp.dtDate.month     = (recordSet.m_rgDate + nPosInRowset)->month;
+                tmp.dtDate.day       = (recordSet.m_rgDate + nPosInRowset)->day;
+                tmp.dtDate.hour      = (recordSet.m_rgDate + nPosInRowset)->hour;
+                tmp.dtDate.minute    = (recordSet.m_rgDate + nPosInRowset)->minute;
+                tmp.dtDate.second    = (recordSet.m_rgDate + nPosInRowset)->second;
+                tmp.dtDate.fraction  = (recordSet.m_rgDate + nPosInRowset)->fraction;
+
+                isGood = tmp.Validate();
+
+                if (isGood)
+                {
+                    out.push_back(tmp);
+                }
+            }
+            recordSet.MoveNext();
+        }
+        recordSet.Close();
+    }
+    return isGood;
+}
+GradeDatabaseInterface::~GradeDatabaseInterface()
+{
+    if (recordSet.IsOpen())
+    {
+        recordSet.Close();
+    }
+}
+
+ClassesDatabaseInterface::ClassesDatabaseInterface(const std::wstring& tableName, CDatabase* db)
+    :DatabaseInterface(db)
+    , recordSet(this->db)
+    , table(tableName.c_str())
+{ }
+BOOL ClassesDatabaseInterface::Add(CClass& recStudent)
+{
+    BOOL isGood = TRUE;
+
+    if (isGood = recStudent.Validate())
+    {
+        try
+        {
+            recordSet.Open(CRecordset::dynaset, table, CRecordset::none);
+        }
+        catch (const CDBException&)
+        {
+            isGood = FALSE;
+        }
+
+        if (isGood)
+        {
+            isGood = recordSet.CanAppend();
+        }
+
+        if (isGood)
+        {
+            db->BeginTrans();
+
+            recordSet.AddNew();
+
+            recordSet.name          = recStudent.name;
+            recordSet.teacherID     = recStudent.teacherID;
+
+            try
+            {
+                isGood = recordSet.Update();
+            }
+            catch (const CDBException&)
+            {
+                isGood = FALSE;
+            }
+
+
+            if (isGood)
+            {
+                db->CommitTrans();
+            }
+            else
+            {
+                db->Rollback();
+            }
+
+            if (isGood)
+            {
+                LastID(recStudent.ID);
+            }
+
+            recordSet.Close();
+        }
+    }
+    return isGood;
+}
+BOOL ClassesDatabaseInterface::Edit(const CClass& recStudent)
+{
+    BOOL isGood = TRUE;
+
+    if (isGood = recStudent.Validate())
+    {
+        recordSet.m_strFilter.Format(_T("ID = %d"), recStudent.ID);
+
+        try
+        {
+            recordSet.Open(CRecordset::dynaset, table);
+
+            ASSERT(recordSet.GetRowsFetched() == 1);
+        }
+        catch (const CDBException&)
+        {
+            isGood = FALSE;
+        }
+        if (isGood)
+        {
+            isGood = recordSet.CanUpdate();
+        }
+        if (isGood)
+        {
+            db->BeginTrans();
+
+            recordSet.Edit();
+
+            recordSet.name          = recStudent.name;
+            recordSet.teacherID     = recStudent.teacherID;
+
+            try
+            {
+                recordSet.Update();
+            }
+            catch (const CDBException&)
+            {
+                isGood = FALSE;
+            }
+
+            if (isGood)
+            {
+                db->CommitTrans();
+            }
+            else
+            {
+                db->Rollback();
+            }
+
+            recordSet.Close();
+        }
+    }
+    return isGood;
+}
+BOOL ClassesDatabaseInterface::Delete(const int nID)
+{
+    BOOL isGood = TRUE;
+
+    recordSet.m_strFilter.Format(_T("ID = %d"), nID);
+
+    try
+    {
+        recordSet.Open(CRecordset::dynaset, table);
+
+        ASSERT(recordSet.GetRowsFetched() == 1);
+    }
+    catch (const CDBException&)
+    {
+        isGood = FALSE;
+    }
+    if (isGood)
+    {
+        isGood = recordSet.CanUpdate();
+    }
+    if (isGood)
+    {
+        db->BeginTrans();
+
+
+        try
+        {
+            recordSet.Delete();
+            recordSet.MoveNext();
+        }
+        catch (const CDBException&)
+        {
+            isGood = FALSE;
+        }
+
+        if (isGood)
+        {
+            db->CommitTrans();
+        }
+        else
+        {
+            db->Rollback();
+        }
+
+        recordSet.Close();
+    }
+
+    return isGood;
+}
+BOOL ClassesDatabaseInterface::Load(const int nID, CClass& recStudent)
+{
+    BOOL isGood = TRUE;
+
+    recordSet.m_strFilter.Format(_T("ID = %d"), nID);
+
+    try
+    {
+        recordSet.Open(CRecordset::snapshot, table, CRecordset::readOnly);
+
+        ASSERT(recordSet.GetRowsFetched() == 1);
+    }
+    catch (const CDBException&)
+    {
+        isGood = FALSE;
+    }
+
+    if (isGood)
+    {
+        recStudent.ID           = recordSet.ID;
+        recStudent.name         = recordSet.name;
+        recStudent.teacherID    = recordSet.teacherID;
+
+        recordSet.Close();
+
+        isGood = recStudent.Validate();
+    }
+
+    return isGood;
+}
+BOOL ClassesDatabaseInterface::LoadAll(std::vector<CClass>& out)
+{
+    BOOL isGood = TRUE;
+    out.clear();
+    recordSet.m_strFilter = "";
+
+    try
+    {
+        recordSet.Open(CRecordset::snapshot, table, CRecordset::readOnly | CRecordset::useMultiRowFetch);
+    }
+    catch (const CDBException&)
+    {
+        isGood = FALSE;
+    }
+
+    if (isGood)
+    {
+        int rowsFetched = recordSet.GetRowsFetched();
+        while (!recordSet.IsEOF())
+        {
+            for (int nPosInRowset = 0; nPosInRowset < rowsFetched; nPosInRowset++)
+            {
+                CClass tmp;
+
+                tmp.ID          = *(recordSet.m_rgID + nPosInRowset);
+                tmp.name        = CString{ recordSet.m_rgName + nPosInRowset * 5 };
+                tmp.teacherID   = *(recordSet.m_rgTeacherID + nPosInRowset);
+
+                isGood = tmp.Validate();
+
+                if (isGood)
+                {
+                    out.push_back(tmp);
+                }
+            }
+            recordSet.MoveNext();
+        }
+        recordSet.Close();
+    }
+    return isGood;
+}
+ClassesDatabaseInterface::~ClassesDatabaseInterface()
+{
+    if (recordSet.IsOpen())
+    {
+        recordSet.Close();
+    }
+}
+
+ScheduleDatabaseInterface::ScheduleDatabaseInterface(const std::wstring& tableName, CDatabase* db)
+    :DatabaseInterface(db)
+    , recordSet(this->db)
+    , table(tableName.c_str())
+{}
+ScheduleDatabaseInterface::~ScheduleDatabaseInterface()
+{
+    if (recordSet.IsOpen())
+    {
+        recordSet.Close();
+    }
+}
+BOOL ScheduleDatabaseInterface::Load(const int classID, CSchedule& recStudent)
+{
+    BOOL isGood = TRUE;
+    CSchedule result;
+    ScheduleClass sc;
+    result.classID = classID;
+
+    recordSet.m_strFilter.Format(_T("[ClassID] = %d"), classID);
+
+
+    recordSet.Open(AFX_DB_USE_DEFAULT_TYPE, _T("Schedule"), CRecordset::readOnly | CRecordset::useMultiRowFetch);
+
+
+    while (!recordSet.IsEOF())
+    {
+        int rowsFetched = recordSet.GetRowsFetched();
+
+        for (int nPosInRowset = 0; nPosInRowset < rowsFetched; nPosInRowset++)
+        {
+
+            sc.nID              = *(recordSet.m_rgID + nPosInRowset);
+            sc.nSubjectID       = *(recordSet.m_rgSubjectID + nPosInRowset);
+            sc.begin.hour       = (recordSet.m_rgBeginTime + nPosInRowset)->hour;
+            sc.begin.minute     = (recordSet.m_rgBeginTime + nPosInRowset)->minute;
+            sc.begin.second     = (recordSet.m_rgBeginTime + nPosInRowset)->second;
+            sc.duration.hour    = (recordSet.m_rgDuration + nPosInRowset)->hour;
+            sc.duration.minute  = (recordSet.m_rgDuration + nPosInRowset)->minute;
+            sc.duration.second  = (recordSet.m_rgDuration + nPosInRowset)->second;
+
+            int dayOfWeek       = *(recordSet.m_rgDayOfWeek + nPosInRowset);
+
+            ASSERT(dayOfWeek < 7);
+
+            //                result.days[dayOfWeek].classes.push_back(sc);
+            result.days[dayOfWeek].classes.insert(sc);
+        }
+        recordSet.MoveNext();
+    }
+
+    recordSet.Close();
+
+    recordSet.m_strFilter = "";
+
+    recStudent = result;
+
+    return isGood;
+}
+BOOL ScheduleDatabaseInterface::Edit(const CSchedule& recStudent)
+{
+    BOOL isGood = TRUE;
+
+
+    int size = recStudent.days.size();
+    recordSet.Open(CRecordset::dynaset, table);
+
+    for (int dayOfWeek = 0; dayOfWeek < size; dayOfWeek++)
+    {
+        for (const auto& _class : recStudent.days[dayOfWeek].classes)
+        {
+            recordSet.m_strFilter.Format(_T("[ID] = %d"), _class.nID);
+            isGood = recordSet.Requery();
+
+            if (isGood)
+            {
+                db->BeginTrans();
+
+                recordSet.Edit();
+
+                recordSet.beginTime.hour    = _class.begin.hour;
+                recordSet.beginTime.minute  = _class.begin.minute;
+                recordSet.beginTime.second  = _class.begin.second;
+
+                recordSet.duration.hour     = _class.duration.hour;
+                recordSet.duration.minute   = _class.duration.minute;
+                recordSet.duration.second   = _class.duration.second;
+
+                recordSet.subjectID         = _class.nSubjectID;
+                recordSet.dayOfWeek         = dayOfWeek;
+
+                try
+                {
+                    recordSet.Update();
+                }
+                catch (const CDBException&)
+                {
+                    isGood = FALSE;
+                }
+
+                if (isGood)
+                {
+                    db->CommitTrans();
+                }
+                else
+                {
+                    db->Rollback();
+                }
+            }
+        }
+    }
+
+    recordSet.Close();
+
+    return isGood;
 }

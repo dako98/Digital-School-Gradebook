@@ -4,6 +4,7 @@
 
 #include "Storage.h"
 #include "CSubject.h"
+#include "DBConnector.h"
 
 // CombinedSubjectDlg dialog
 
@@ -25,7 +26,10 @@ public:
 
 private:
 	DialogMode m_eDialogMode;
-	Storage<SUBJECT> store;
+//	Storage<SUBJECT> store;
+	std::unique_ptr<ObjectInterface<SUBJECT>>	subjectStore;
+	std::unique_ptr<ObjectInterface<GRADE>>		gradeStore;
+	std::unique_ptr<ObjectInterface<TEACHER>>	teacherStore;
 	SUBJECT tmp;
 
 protected:

@@ -29,7 +29,8 @@ private:
 	BOOL LoadAllClasses();
 
 	DialogMode m_eDialogMode;
-	ObjectInterface<STUDENT>* studentStore;
+	std::unique_ptr<ObjectInterface<STUDENT>>	studentStore;
+	std::unique_ptr<ObjectInterface<CClass>>	classesStore;
 	STUDENT student;
 
 	DECLARE_MESSAGE_MAP()

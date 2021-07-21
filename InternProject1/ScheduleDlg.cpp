@@ -18,6 +18,8 @@ IMPLEMENT_DYNAMIC(ScheduleDlg, CDialog)
 
 ScheduleDlg::ScheduleDlg(CWnd* pParent /*=nullptr*/)
 	: CDialog(IDD_SCHEDULE, pParent)
+	, scheduleStore(new ScheduleDatabaseInterface(_T("Schedule"), &databaseConnection))
+	, classStore(new ClassesDatabaseInterface(_T("Classes"), &databaseConnection))
 {
 
 }
@@ -30,9 +32,9 @@ BOOL ScheduleDlg::PrintSchedule()
 {
 	BOOL isOK = TRUE;
 
-	Storage<CSchedule> scheduleStore(databaseConnectionString);
+//	Storage<CSchedule> scheduleStore(databaseConnectionString);
 	CSchedule schedule;
-	isOK = scheduleStore.Load(classSelectDropList.GetItemData(classSelectDropList.GetCurSel()), schedule);
+	isOK = scheduleStore->Load(classSelectDropList.GetItemData(classSelectDropList.GetCurSel()), schedule);
 
 	ListView_SetExtendedListViewStyle(ScheduleListControl, LVS_EX_GRIDLINES);
 
@@ -43,6 +45,7 @@ BOOL ScheduleDlg::PrintSchedule()
 			100);           // Width of items under header
 */
 
+/*	
 	ScheduleListControl.SetColumnWidth(0, 200);
 	ScheduleListControl.SetColumnWidth(1, 200);
 	ScheduleListControl.SetColumnWidth(2, 200);
@@ -50,6 +53,7 @@ BOOL ScheduleDlg::PrintSchedule()
 	ScheduleListControl.SetColumnWidth(4, 200);
 	ScheduleListControl.SetColumnWidth(5, 200);
 	ScheduleListControl.SetColumnWidth(6, 200);
+*/
 
 	CString text;
 
@@ -84,7 +88,7 @@ BOOL ScheduleDlg::PrintSchedule()
 	std::vector<int> ids(uniqueIDs.begin(), uniqueIDs.end());
 	std::unordered_map<int, CString> subjectNames;
 
-	isOK = IDtoNameMapper(CString{ databaseConnectionString }, CString{ "Subjects" }, CString{ "ID" }, CString{ "Name" }, ids, subjectNames);
+	isOK = IDtoNameMapper(&databaseConnection, CString{ "Subjects" }, CString{ "ID" }, CString{ "Name" }, ids, subjectNames);
 
 	if (isOK)
 	{
@@ -109,10 +113,10 @@ BOOL ScheduleDlg::OnInitDialog()
 
 	BOOL isOK = TRUE;
 
-	Storage<CClass> classStorage(databaseConnectionString);
+//	Storage<CClass> classStorage(databaseConnectionString);
 	std::vector<CClass> allClasses;
 
-	isOK = classStorage.LoadAll(allClasses);
+	isOK = classStore->LoadAll(allClasses);
 
 	if (isOK)
 	{

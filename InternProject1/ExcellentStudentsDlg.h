@@ -1,4 +1,5 @@
 #pragma once
+#include "DBConnector.h"
 
 
 // ExcellentStudentsDlg dialog
@@ -25,4 +26,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	CListBox excellentStudentsList;
+private:
+	std::unique_ptr<ObjectInterface<STUDENT>>	studentStore;
+	std::unique_ptr<ObjectInterface<GRADE>>		gradeStore;
 };

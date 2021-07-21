@@ -46,22 +46,27 @@ private:
 #include "CSubject.h"
 #include "CSchedule.h"
 
+
 template<>
 class Storage<STUDENT>
 {
 public:
     Storage(const std::string& path)
         :connectionString(path.c_str())
+//        , db(&databaseConnection)
     {
-        CDatabase db;
-
-        db.OpenEx(connectionString, CDatabase::openReadOnly | CDatabase::noOdbcDialog);
-        db.Close();
+        ASSERT(FALSE);
     }
+
+    //Storage(CDatabase& db)
+    //    :db(&db)
+    //{
+
+    //}
+
     virtual ~Storage()
     {}
 
-    // TODO: Disambiguate StudentID and NumberInClass.
 
     BOOL Add(STUDENT& recStudent)
     {
@@ -69,17 +74,21 @@ public:
 
         if (isGood = recStudent.Validate())
         {
-            CDatabase db;
-            db.OpenEx(connectionString, CDatabase::openReadOnly | CDatabase::noOdbcDialog);
-            CString sSQL;
-            sSQL.Format(_T("INSERT INTO [Students]([NumberInClass],[FirstName],[LastName],[Birthday], [ClassID]) VALUES (%d,'%s','%s','%d-%d-%d', %d)"),
-                recStudent.numberInClass, 
-                CString{ recStudent.szFirstName },
-                CString{ recStudent.szLastName },
-                recStudent.dtBirthDate.year, recStudent.dtBirthDate.month, recStudent.dtBirthDate.day,
-                recStudent.classID);
-            db.ExecuteSQL(sSQL);
-            db.Close();
+            StudentSet ss(db);
+
+            ss.Open(CRecordset::dynaset, _T("Student"), CRecordset::appendOnly);
+
+            ss.AddNew();
+
+            ss.numberInClass    = recStudent.numberInClass;
+            ss.firstName        = CString{ recStudent.szFirstName };
+            ss.lastName         = CString{ recStudent.szLastName };
+            ss.birthday.year    = recStudent.dtBirthDate.year;
+            ss.birthday.month   = recStudent.dtBirthDate.month;
+            ss.birthday.day     = recStudent.dtBirthDate.day;
+            ss.classID          = recStudent.classID;
+
+            ss.Update();
         }
         return isGood;
     }
@@ -174,15 +183,15 @@ private:
         STUDENT tmp;
 
         CDatabase db;
-        db.OpenEx(connectionString, CDatabase::openReadOnly | CDatabase::noOdbcDialog);
+        db.OpenEx(connectionString, /*CDatabase::openReadOnly | */CDatabase::noOdbcDialog);
         StudentSet sSet(&db);
 
         StudentSetWrapper st(&sSet);
-
+        
         isGood = st.LoadAll(allStudents);
 
         db.Close();
-
+        
         return isGood;
     }
     BOOL _AddBulk(const std::vector<STUDENT>& allStudents, std::fstream& file)
@@ -203,6 +212,7 @@ private:
         return isGood;
     }
 
+    CDatabase* db;
     const CString connectionString;
 };
 
@@ -214,6 +224,7 @@ public:
         :connectionString(path.c_str())
     {
         CDatabase db;
+        ASSERT(FALSE);
 
         db.OpenEx(connectionString, CDatabase::openReadOnly | CDatabase::noOdbcDialog);
         db.Close();
@@ -366,7 +377,7 @@ public:
         :connectionString(path.c_str())
     {
         CDatabase db;
-
+        ASSERT(FALSE);
         db.OpenEx(connectionString, CDatabase::openReadOnly | CDatabase::noOdbcDialog);
         db.Close();
     }
@@ -532,7 +543,7 @@ public:
         :connectionString(path.c_str())
     {
         CDatabase db;
-
+        ASSERT(FALSE);
         db.OpenEx(connectionString, CDatabase::openReadOnly | CDatabase::noOdbcDialog);
         db.Close();
     }
@@ -690,7 +701,7 @@ public:
         :connectionString(path.c_str())
     {
         CDatabase db;
-
+        ASSERT(FALSE);
         db.OpenEx(connectionString, CDatabase::openReadOnly | CDatabase::noOdbcDialog);
         db.Close();
     }
@@ -830,7 +841,6 @@ public:
         return isGood;
     }
     
-
     BOOL NextID(int& id) const
     {
         BOOL isGood = TRUE;
@@ -877,7 +887,7 @@ public:
         :connectionString(path.c_str())
     {
         CDatabase db;
-
+        ASSERT(FALSE);
         db.OpenEx(connectionString, CDatabase::openReadOnly | CDatabase::noOdbcDialog);
         db.Close();
     }
@@ -1063,3 +1073,123 @@ public:
 private:
     const CString connectionString;
 };
+
+/*
+
+template<class T>
+class TRecordSet : public CRecordset
+{
+public:
+    TRecordSet(const std::string& tableName)
+        :tableName(tableName.c_str())
+    {
+    }
+    virtual ~Storage()
+    {}
+
+
+    BOOL Add(T& recStudent)
+    {
+        BOOL isGood = TRUE;
+
+        if (isGood = recStudent.Validate())
+        {
+            CDatabase db;
+            db.OpenEx(connectionString, CDatabase::openReadOnly | CDatabase::noOdbcDialog);
+            CString sSQL;
+            sSQL.Format(_T("INSERT INTO [Teachers]([FirstName],[LastName]) VALUES ('%s','%s')"),
+                CString{ recStudent.szFirstName },
+                CString{ recStudent.szLastName });
+            db.ExecuteSQL(sSQL);
+            db.Close();
+        }
+        return isGood;
+    }
+    BOOL Edit(TEACHER& recStudent)
+    {
+        BOOL isGood = TRUE;
+
+        isGood = recStudent.Validate();
+
+        if (isGood)
+        {
+            //FIXME: fix bad ID handling.
+            CDatabase db;
+            db.OpenEx(connectionString, CDatabase::openReadOnly | CDatabase::noOdbcDialog);
+            CString sSQL;
+            sSQL.Format(_T("UPDATE [Teachers] SET [FirstName] = '%s',[LastName] = '%s' WHERE [ID] = %d"),
+                CString{ recStudent.szFirstName },
+                CString{ recStudent.szLastName },
+                recStudent.nID);
+            db.ExecuteSQL(sSQL);
+            db.Close();
+        }
+        return isGood;
+    }
+    BOOL Delete(const int nStudentID)
+    {
+        BOOL isGood = TRUE;
+
+        if (isGood)
+        {
+            CDatabase db;
+            db.OpenEx(connectionString, CDatabase::openReadOnly | CDatabase::noOdbcDialog);
+            CString sSQL;
+            sSQL.Format(_T("DELETE [Teachers] WHERE [ID] = %d"), nStudentID);
+            db.ExecuteSQL(sSQL);
+            db.Close();
+        }
+
+        return isGood;
+    }
+    BOOL Load(const int nStudentID, TEACHER& recStudent)
+    {
+        BOOL isGood = TRUE;
+        TEACHER tmp;
+
+        CDatabase db;
+        db.OpenEx(connectionString, CDatabase::openReadOnly | CDatabase::noOdbcDialog);
+        TeacherSet sSet(&db);
+
+        TeacherSetWrapper st(&sSet);
+
+        isGood = st.Load(nStudentID, recStudent);
+        db.Close();
+
+        return isGood;
+    }
+
+    BOOL NextID(int& id) const
+    {
+        BOOL isGood = TRUE;
+        TEACHER tmp;
+
+        CDatabase db;
+        db.OpenEx(connectionString, CDatabase::openReadOnly | CDatabase::noOdbcDialog);
+        TeacherSet sSet(&db);
+
+        TeacherSetWrapper st(&sSet);
+
+        isGood = st.NextID(id);
+        db.Close();
+
+        return isGood;
+    }
+    BOOL LoadAll(std::vector<TEACHER>& out)
+    {
+        BOOL isOK = FALSE;
+
+        std::fstream file;
+
+        isOK = _LoadAll(out, file);
+
+        return isOK;
+    }
+
+private:
+
+
+    const CString tableName;
+};
+
+*/

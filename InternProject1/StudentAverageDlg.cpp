@@ -23,8 +23,10 @@ StudentAverageDlg::StudentAverageDlg(CWnd* pParent /*=nullptr*/)
 	: CDialog(IDD_STUDENT_AVERAGE_GRADE, pParent)
 	, studentAverageVal(0)
 	, subjectAverageVal(0)
+	, studentStore(new StudentDatabaseInterface(_T("Students"), &databaseConnection))
+	, gradeStore(new GradeDatabaseInterface(_T("Grades"), &databaseConnection))
+	, subjectStore(new SubjectDatabaseInterface(_T("Subjects"), &databaseConnection))
 {
-
 }
 
 BOOL StudentAverageDlg::PrintAllStudents()
@@ -32,8 +34,8 @@ BOOL StudentAverageDlg::PrintAllStudents()
 	BOOL isOK;
 
 	std::vector<STUDENT> allStudents;
-	Storage<STUDENT> st{ studentsPath };
-	isOK = st.LoadAll(allStudents);
+//	Storage<STUDENT> st{ studentsPath };
+	isOK = studentStore->LoadAll(allStudents);
 
 	CString currentRow;
 
@@ -57,8 +59,8 @@ BOOL StudentAverageDlg::PrintAllSubjects()
 {
 	BOOL isOK;
 	std::vector<SUBJECT> allSubjects;
-	Storage<SUBJECT> st{ subjectsPath };
-	isOK = st.LoadAll(allSubjects);
+//	Storage<SUBJECT> st{ subjectsPath };
+	isOK = subjectStore->LoadAll(allSubjects);
 
 	CString currentRow;
 	if (isOK)
@@ -87,8 +89,8 @@ BOOL StudentAverageDlg::UpdateAverage()
 	if (index != CB_ERR)
 	{
 		std::vector<GRADE> grades;
-		Storage<GRADE> gradeStore{ gradesPath };
-		isOK = gradeStore.LoadAll(grades);
+//		Storage<GRADE> gradeStore{ gradesPath };
+		isOK = gradeStore->LoadAll(grades);
 		std::vector<GRADE> studentGrades;
 
 		if (isOK)

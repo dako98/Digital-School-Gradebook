@@ -1,5 +1,6 @@
 #pragma once
 
+#include "DBConnector.h"
 
 // BirthdayersDlg dialog
 
@@ -21,6 +22,7 @@ public:
 
 private:
 	DBTIMESTAMP date;
+	std::unique_ptr<ObjectInterface<STUDENT>> studentStore;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support

@@ -1,5 +1,5 @@
 #pragma once
-
+#include "DBConnector.h"
 
 // StudentAverageDlg dialog
 
@@ -23,6 +23,10 @@ private:
 	BOOL UpdateAverage();
 	BOOL PrintAllStudents();
 	BOOL PrintAllSubjects();
+
+	std::unique_ptr<ObjectInterface<STUDENT>>	studentStore;
+	std::unique_ptr<ObjectInterface<GRADE>>		gradeStore;
+	std::unique_ptr<ObjectInterface<SUBJECT>>	subjectStore;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support

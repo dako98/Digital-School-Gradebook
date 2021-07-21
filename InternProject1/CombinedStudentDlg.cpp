@@ -21,9 +21,9 @@ CombinedStudentDlg::CombinedStudentDlg(DialogMode eDialogMode,const STUDENT& stu
 	, studentNumberVal(0)
 	, studentBirthDateVal(COleDateTime::GetCurrentTime())
 	, student(student)
-	, studentStore(nullptr)
+	, studentStore(new StudentDatabaseInterface(_T("Students"), &databaseConnection))
+	, classesStore(new ClassesDatabaseInterface(_T("Classes"), &databaseConnection))
 {
-	studentStore = new StudentDatabaseInterface(_T("Students"), &databaseConnection);
 }
 
 BOOL CombinedStudentDlg::OnInitDialog()
@@ -48,6 +48,10 @@ BOOL CombinedStudentDlg::OnInitDialog()
 		tmp.Format(_T("%d"), student.numberInClass);
 		numberInClassEditBox.SetWindowText(tmp);
 
+	}
+	else
+	{
+//		studentStore->NextID(studentNumberVal);
 	}
 	UpdateData(FALSE);
 
@@ -87,7 +91,6 @@ BOOL CombinedStudentDlg::OnInitDialog()
 
 CombinedStudentDlg::~CombinedStudentDlg()
 {
-	delete studentStore;
 }
 
 void CombinedStudentDlg::DoDataExchange(CDataExchange* pDX)
@@ -109,11 +112,11 @@ BOOL CombinedStudentDlg::LoadAllClasses()
 	BOOL isOK = TRUE;
 
 
-	ClassesSet sSet(&databaseConnection);
+//	ClassesSet sSet(&databaseConnection);
 
-	ClassesSetWrapper st(&sSet);
+//	ClassesSetWrapper st(&sSet);
 
-	isOK = st.LoadAll(classes);
+	isOK = classesStore->LoadAll(classes);
 
 
 	if (isOK)

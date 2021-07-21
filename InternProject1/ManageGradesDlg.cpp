@@ -51,6 +51,7 @@ void ManageGradesDlg::OnBnClickedButton1()
 void ManageGradesDlg::OnBnClickedButton2()
 {
 	GRADE tmp;
+/*
 	Storage<GRADE> store{ gradesPath };
 	BOOL isOK = TRUE;
 
@@ -61,7 +62,7 @@ void ManageGradesDlg::OnBnClickedButton2()
 		int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
 		return;
 	}
-
+*/
 	CombinedGradeDlg dlg{ eDialogMode_Add, tmp };
 	dlg.DoModal();
 }

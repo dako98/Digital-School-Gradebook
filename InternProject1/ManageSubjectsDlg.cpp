@@ -51,7 +51,7 @@ void ManageSubjectsDlg::OnBnClickedButton1()
 void ManageSubjectsDlg::OnBnClickedButton2()
 {
 	SUBJECT tmp;
-	Storage<SUBJECT> store{ subjectsPath };
+/*	Storage<SUBJECT> store{subjectsPath};
 	BOOL isOK = TRUE;
 
 	isOK = store.NextID(tmp.nID);
@@ -61,7 +61,7 @@ void ManageSubjectsDlg::OnBnClickedButton2()
 		int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
 		return;
 	}
-
+*/
 	CombinedSubjectDlg dlg{ eDialogMode_Add, tmp };
 	dlg.DoModal();
 }

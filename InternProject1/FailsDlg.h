@@ -2,6 +2,8 @@
 
 #include <unordered_map>
 
+#include "DBConnector.h"
+
 // FailsDlg dialog
 
 class FailsDlg : public CDialog
@@ -40,4 +42,8 @@ private:
 		};
 		std::unordered_map<int, subject> subject;
 	};
+	std::unique_ptr <ObjectInterface<STUDENT>>	studentStore;
+	std::unique_ptr <ObjectInterface<SUBJECT>>	subjectStore;
+	std::unique_ptr <ObjectInterface<GRADE>>	gradeStore;
+
 };

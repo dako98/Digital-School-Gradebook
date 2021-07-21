@@ -1,5 +1,6 @@
 #pragma once
 
+#include "DBConnector.h"
 
 // ScheduleDlg dialog
 
@@ -30,6 +31,9 @@ public:
 
 private:
 	BOOL PrintSchedule();
+
+	std::unique_ptr<ObjectInterface<CSchedule>>	scheduleStore;
+	std::unique_ptr<ObjectInterface<CClass>>	classStore;
 public:
 	afx_msg void OnCbnSelchangeCombo1();
 };

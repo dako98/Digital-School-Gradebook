@@ -9,6 +9,7 @@
 #include "CGrade.h"
 #include "CSubject.h"
 #include "CClass.h"
+#include "CSchedule.h"
 
 class StudentSet : public CRecordset
 {
@@ -274,12 +275,12 @@ public:
     virtual ~ObjectInterface() {}
 
 public:
-    virtual BOOL Add        (const T& input)            = 0;
+    virtual BOOL Add        (T& input)                  = 0;
     virtual BOOL Edit       (const T& input)            = 0;
     virtual BOOL Delete     (const int id)              = 0;
     virtual BOOL Load       (const int ID, T& result)   = 0;
      
-    virtual BOOL NextID     (int& id) const             = 0;
+    virtual BOOL LastID     (int& id) const             = 0;
     virtual BOOL LoadAll    (std::vector<T>& out)       = 0;
 };
 
@@ -290,6 +291,8 @@ public:
     DatabaseInterface(CDatabase* db)
         :db(db) {}
     virtual ~DatabaseInterface() {}
+
+    BOOL LastID(int& id) const override;
 
 protected:
     CDatabase* db;
@@ -302,12 +305,11 @@ public:
     virtual ~StudentDatabaseInterface();
 
 public:
-	virtual BOOL Add        (const STUDENT& recStudent)                 override; 
+	virtual BOOL Add        (STUDENT& recStudent)                       override; 
 	virtual BOOL Edit       (const STUDENT& recStudent)                 override;
 	virtual BOOL Delete     (const int nID)                             override;
 	virtual BOOL Load       (const int nStudentID, STUDENT& recStudent) override;
 
-	virtual BOOL NextID     (int& id) const                             override;
 	virtual BOOL LoadAll    (std::vector<STUDENT>& out)                 override;
 
 private:
@@ -322,12 +324,11 @@ public:
     virtual ~TeacherDatabaseInterface();
 
 public:
-    virtual BOOL Add(const TEACHER& recTeacher)                         override;
+    virtual BOOL Add(TEACHER& recTeacher)                               override;
     virtual BOOL Edit(const TEACHER& recTeacher)                        override;
     virtual BOOL Delete(const int nID)                                  override;
     virtual BOOL Load(const int nTeacherID, TEACHER& recTeacher)        override;
 
-    virtual BOOL NextID(int& id) const                                  override;
     virtual BOOL LoadAll(std::vector<TEACHER>& out)                     override;
 
 private:
@@ -342,12 +343,11 @@ public:
     virtual ~SubjectDatabaseInterface();
 
 public:
-    virtual BOOL Add(const SUBJECT& recTeacher)                         override;
+    virtual BOOL Add(SUBJECT& recTeacher)                               override;
     virtual BOOL Edit(const SUBJECT& recTeacher)                        override;
     virtual BOOL Delete(const int nID)                                  override;
     virtual BOOL Load(const int nTeacherID, SUBJECT& recTeacher)        override;
 
-    virtual BOOL NextID(int& id) const                                  override;
     virtual BOOL LoadAll(std::vector<SUBJECT>& out)                     override;
 
 private:
@@ -362,13 +362,12 @@ public:
     virtual ~GradeDatabaseInterface();
 
 public:
-    virtual BOOL Add(const GRADE& recTeacher)                         override;
-    virtual BOOL Edit(const GRADE& recTeacher)                        override;
+    virtual BOOL Add(GRADE& recTeacher)                                 override;
+    virtual BOOL Edit(const GRADE& recTeacher)                          override;
     virtual BOOL Delete(const int nID)                                  override;
-    virtual BOOL Load(const int nTeacherID, GRADE& recTeacher)        override;
+    virtual BOOL Load(const int nTeacherID, GRADE& recTeacher)          override;
 
-    virtual BOOL NextID(int& id) const                                  override;
-    virtual BOOL LoadAll(std::vector<GRADE>& out)                     override;
+    virtual BOOL LoadAll(std::vector<GRADE>& out)                       override;
 
 private:
     GradeSet recordSet;
@@ -382,15 +381,32 @@ public:
     virtual ~ClassesDatabaseInterface();
 
 public:
-    virtual BOOL Add(const CClass& recTeacher)                         override;
-    virtual BOOL Edit(const CClass& recTeacher)                        override;
+    virtual BOOL Add(CClass& recTeacher)                                override;
+    virtual BOOL Edit(const CClass& recTeacher)                         override;
     virtual BOOL Delete(const int nID)                                  override;
-    virtual BOOL Load(const int nTeacherID, CClass& recTeacher)        override;
+    virtual BOOL Load(const int nTeacherID, CClass& recTeacher)         override;
 
-    virtual BOOL NextID(int& id) const                                  override;
-    virtual BOOL LoadAll(std::vector<CClass>& out)                     override;
+    virtual BOOL LoadAll(std::vector<CClass>& out)                      override;
 
 private:
     ClassesSet recordSet;
+    const CString table;
+};
+
+class ScheduleDatabaseInterface : public DatabaseInterface<CSchedule>
+{
+public:
+    ScheduleDatabaseInterface(const std::wstring& tableName, CDatabase* db);
+    virtual ~ScheduleDatabaseInterface();
+
+    virtual BOOL Edit(const CSchedule& recTeacher)                      override;
+    virtual BOOL Load(const int nTeacherID, CSchedule& recTeacher)      override;
+
+private:
+    virtual BOOL Add(CSchedule& recTeacher)                             override { return FALSE; }
+    virtual BOOL Delete(const int nID)                                  override{ return FALSE; }
+    virtual BOOL LoadAll(std::vector<CSchedule>& out)                   override { return FALSE; }
+
+    ScheduleClassSet recordSet;
     const CString table;
 };

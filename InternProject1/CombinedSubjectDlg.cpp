@@ -21,7 +21,9 @@ CombinedSubjectDlg::CombinedSubjectDlg(DialogMode eMode, const SUBJECT& data)
 	: CDialog(IDD_SUBJECT_COMBINED, nullptr)
 	, m_eDialogMode(eMode)
 	, subjectIDVal(0)
-	, store(subjectsPath)
+	, subjectStore(new SubjectDatabaseInterface(_T("Subjects"), &databaseConnection))
+	, gradeStore(new GradeDatabaseInterface(_T("Grades"), &databaseConnection))
+	, teacherStore(new TeacherDatabaseInterface(_T("Teachers"), &databaseConnection))
 	, tmp(data)
 {
 }
@@ -38,12 +40,16 @@ BOOL CombinedSubjectDlg::OnInitDialog()
 		subjectName.SetWindowText(CString{ tmp.szName });
 		subjectRoom.SetWindowText(CString{ tmp.szRoom });
 	}
+	else
+	{
+//		subjectStore->NextID(subjectIDVal);
+	}
 
 	BOOL isOK = TRUE;
 
 	std::vector<TEACHER> allTeachers;
-	Storage<TEACHER> te{ teachersPath };
-	isOK = te.LoadAll(allTeachers);
+//	Storage<TEACHER> te{ teachersPath };
+	isOK = teacherStore->LoadAll(allTeachers);
 
 	if (isOK)
 	{
@@ -138,22 +144,28 @@ void CombinedSubjectDlg::OnBnClickedOk()
 
 			if (buff.GetLength() <= SUBJECT::MAX_NAME_SIZE)
 			{
-				strcpy_s(su.szName, SUBJECT::MAX_NAME_SIZE, CT2A(buff));
+//				strcpy_s(su.szName, SUBJECT::MAX_NAME_SIZE, CT2A(buff));
+				su.szName = buff;
 			}
 			else
 			{
-				strcpy_s(su.szName, SUBJECT::MAX_NAME_SIZE, "");
+//				strcpy_s(su.szName, SUBJECT::MAX_NAME_SIZE, "");
+				su.szName = "";
 			}
 
 			subjectRoom.GetWindowTextW(buff);
 
 			if (buff.GetLength() <= SUBJECT::MAX_NAME_SIZE)
 			{
-				strcpy_s(su.szRoom, SUBJECT::MAX_NAME_SIZE, CT2A(buff));
+//				strcpy_s(su.szRoom, SUBJECT::MAX_NAME_SIZE, CT2A(buff));
+				su.szRoom = buff;
+
 			}
 			else
 			{
-				strcpy_s(su.szRoom, SUBJECT::MAX_NAME_SIZE, "");
+//				strcpy_s(su.szRoom, SUBJECT::MAX_NAME_SIZE, "");
+				su.szRoom = "";
+
 			}
 		}
 		else
@@ -167,20 +179,20 @@ void CombinedSubjectDlg::OnBnClickedOk()
 	{
 	case DialogMode::eDialogMode_Add:
 
-		isOK = store.Add(su);
+		isOK = subjectStore->Add(su);
 		break;
 	case DialogMode::eDialogMode_Edit:
 
-		isOK = store.Edit(su);
+		isOK = subjectStore->Edit(su);
 		break;
 	case DialogMode::eDialogMode_Remove:
 	{
-		isOK = store.Delete(su.nID);
+		isOK = subjectStore->Delete(su.nID);
 
+/*
 		Storage<GRADE> gradeStore{ gradesPath };
 		std::vector<GRADE> allGrades;
-
-		isOK = gradeStore.LoadAll(allGrades);
+		isOK = gradeStore->LoadAll(allGrades);
 
 		if (isOK)
 		{
@@ -188,7 +200,7 @@ void CombinedSubjectDlg::OnBnClickedOk()
 			{
 				if (grade.nSubjectID == su.nID)
 				{
-					isOK = gradeStore.Delete(grade.nID);
+					isOK = gradeStore->Delete(grade.nID);
 
 					if (!isOK)
 					{
@@ -197,6 +209,7 @@ void CombinedSubjectDlg::OnBnClickedOk()
 				}
 			}
 		}
+		*/
 	}
 	break;
 

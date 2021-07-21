@@ -27,7 +27,10 @@ private:
 	BOOL PrintAllSubjects();
 
 	DialogMode m_eDialogMode;
-	Storage<GRADE> store;
+//	Storage<GRADE> store;
+	std::unique_ptr<ObjectInterface<GRADE>>		gradeStore;
+	std::unique_ptr<ObjectInterface<STUDENT>>	studentStore;
+	std::unique_ptr<ObjectInterface<SUBJECT>>	subjectStore;
 	GRADE tmp;
 
 protected:

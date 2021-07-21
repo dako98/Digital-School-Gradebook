@@ -30,8 +30,8 @@ public:
 
 private:
 
-	ObjectInterface<STUDENT>* studentStore;
-	ObjectInterface<TEACHER>* teacherStore;
+	std::unique_ptr<ObjectInterface<STUDENT>>	studentStore;
+	std::unique_ptr<ObjectInterface<TEACHER>>	teacherStore;
 
 	BOOL PrintAllStudents();
 	BOOL PrintAllTeachers();

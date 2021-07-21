@@ -1,5 +1,6 @@
 #pragma once
 
+#include"DBConnector.h"
 
 // AllSubjectsDlg dialog
 
@@ -29,4 +30,6 @@ public:
 	afx_msg void OnBnClickedButtonRemove();
 private:
 	BOOL PrintAll();
+
+	std::unique_ptr<ObjectInterface<SUBJECT>> store;
 };

@@ -19,8 +19,10 @@ CombinedGradeDlg::CombinedGradeDlg(DialogMode eMode, const GRADE& data)
 	: CDialog(IDD_GRADES_COMBINED, nullptr)
 	, m_eDialogMode(eMode)
 	, gradeIDVal(0)
-	, store(gradesPath)
 	, tmp(data)
+	, gradeStore(new GradeDatabaseInterface(_T("Grades"), &databaseConnection))
+	, studentStore(new StudentDatabaseInterface(_T("Students"), &databaseConnection))
+	, subjectStore(new SubjectDatabaseInterface(_T("Subjects"), &databaseConnection))
 {
 }
 
@@ -29,8 +31,8 @@ BOOL CombinedGradeDlg::PrintAllStudents()
 	BOOL isOK;
 
 	std::vector<STUDENT> allStudents;
-	Storage<STUDENT> st{ studentsPath };
-	isOK = st.LoadAll(allStudents);
+//	Storage<STUDENT> st{ studentsPath };
+	isOK = studentStore->LoadAll(allStudents);
 
 	if (isOK)
 	{
@@ -55,8 +57,8 @@ BOOL CombinedGradeDlg::PrintAllSubjects()
 	BOOL isOK;
 
 	std::vector<SUBJECT> allStudents;
-	Storage<SUBJECT> st{ subjectsPath };
-	isOK = st.LoadAll(allStudents);
+//	Storage<SUBJECT> st{ subjectsPath };
+	isOK = subjectStore->LoadAll(allStudents);
 
 	if (isOK)
 	{
@@ -82,7 +84,15 @@ BOOL CombinedGradeDlg::OnInitDialog()
 
 	BOOL isOK;
 
-	gradeIDVal = tmp.nID;
+
+	if (m_eDialogMode != DialogMode::eDialogMode_Add)
+	{
+		gradeIDVal = tmp.nID;
+	}
+	else
+	{
+//		gradeStore->NextID(gradeIDVal);
+	}
 
 	// Load all students
 	isOK = PrintAllStudents();
@@ -197,17 +207,17 @@ void CombinedGradeDlg::OnBnClickedOk()
 	{
 	case DialogMode::eDialogMode_Add:
 
-		isOK = store.Add(st);
+		isOK = gradeStore->Add(st);
 		break;
 
 	case DialogMode::eDialogMode_Edit:
 
-		isOK = store.Edit(st);
+		isOK = gradeStore->Edit(st);
 		break;
 
 	case DialogMode::eDialogMode_Remove:
 
-		isOK = store.Delete(st.nID);
+		isOK = gradeStore->Delete(st.nID);
 		break;
 
 	default:

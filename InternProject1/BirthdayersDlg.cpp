@@ -18,8 +18,8 @@ IMPLEMENT_DYNAMIC(BirthdayersDlg, CDialog)
 BirthdayersDlg::BirthdayersDlg(const DBTIMESTAMP& date)
 	: CDialog(IDD_BIRTHDAYERS, nullptr)
 	, date(date)
+	, studentStore(new StudentDatabaseInterface(_T("Students"), &databaseConnection))
 {
-
 }
 
 BOOL BirthdayersDlg::OnInitDialog()
@@ -30,8 +30,8 @@ BOOL BirthdayersDlg::OnInitDialog()
 	BOOL isOK = TRUE;
 
 	std::vector<STUDENT> allStudents;
-	Storage<STUDENT> studentStore{ studentsPath };
-	isOK = studentStore.LoadAll(allStudents);
+//	Storage<STUDENT> studentStore{ studentsPath };
+	isOK = studentStore->LoadAll(allStudents);
 
 	if (isOK)
 	{

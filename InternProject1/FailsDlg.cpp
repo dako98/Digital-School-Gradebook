@@ -23,6 +23,9 @@ IMPLEMENT_DYNAMIC(FailsDlg, CDialog)
 
 FailsDlg::FailsDlg(CWnd* pParent /*=nullptr*/)
 	: CDialog(IDD_FAILS, pParent)
+	, studentStore(new StudentDatabaseInterface(_T("Students"), &databaseConnection))
+	, gradeStore(new GradeDatabaseInterface(_T("Grades"), &databaseConnection))
+	, subjectStore(new SubjectDatabaseInterface(_T("Subjects"), &databaseConnection))
 {
 
 }
@@ -35,9 +38,9 @@ BOOL FailsDlg::OnInitDialog()
 	BOOL isOK;
 
 	// Load all grades
-	Storage<GRADE> gradeStore{ gradesPath };
+//	Storage<GRADE> gradeStore{ gradesPath };
 	std::vector<GRADE> allGrades;
-	isOK = gradeStore.LoadAll(allGrades);
+	isOK = gradeStore->LoadAll(allGrades);
 
 	if (isOK)
 	{
@@ -80,9 +83,6 @@ BOOL FailsDlg::OnInitDialog()
 			}
 		}
 
-		Storage<STUDENT> studentStore{ studentsPath };
-		Storage<SUBJECT> subjectStore{ subjectsPath };
-
 		CString currentRow;
 
 		// Print fails
@@ -90,13 +90,13 @@ BOOL FailsDlg::OnInitDialog()
 		{
 			STUDENT tmpSt;
 			SUBJECT tmpSu;
-			isOK = studentStore.Load(student.first, tmpSt);
+			isOK = studentStore->Load(student.first, tmpSt);
 
 			if (isOK)
 			{
 				for (const auto& subject : student.second)
 				{
-					isOK = subjectStore.Load(subject, tmpSu);
+					isOK = subjectStore->Load(subject, tmpSu);
 
 					if (!isOK)
 					{
@@ -126,14 +126,14 @@ BOOL FailsDlg::OnInitDialog()
 			{
 				STUDENT tmpSt;
 				SUBJECT tmpSu;
-				isOK = studentStore.Load(student.first, tmpSt);
+				isOK = studentStore->Load(student.first, tmpSt);
 
 				if (isOK && student.second.size() >= 3)
 				{
 
 					for (const auto& subject : student.second)
 					{
-						isOK = subjectStore.Load(subject, tmpSu);
+						isOK = subjectStore->Load(subject, tmpSu);
 
 						if (!isOK)
 						{

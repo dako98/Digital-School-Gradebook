@@ -22,17 +22,13 @@ IMPLEMENT_DYNAMIC(AllStudentsDlg, CDialog)
 AllStudentsDlg::AllStudentsDlg(CWnd* pParent /*=nullptr*/)
 	: CDialog(IDD_ALL_STUDENTS, pParent)
 	, allStudentsListVal(_T(""))
-	, studentStore(nullptr)
-	, teacherStore(nullptr)
+	, studentStore(new StudentDatabaseInterface(_T("Students"), &databaseConnection))
+	, teacherStore(new TeacherDatabaseInterface(_T("Teachers"), &databaseConnection))
 {
-	studentStore = new StudentDatabaseInterface(_T("Students"), &databaseConnection);
-	teacherStore = new TeacherDatabaseInterface(_T("Teachers"), &databaseConnection);
 }
 
 AllStudentsDlg::~AllStudentsDlg()
 {
-	delete teacherStore;
-	delete studentStore;
 }
 
 BOOL AllStudentsDlg::PrintAll()
@@ -208,8 +204,7 @@ void AllStudentsDlg::OnBnClickedButtonAdd()
 	if (studentsRadioBtn.GetCheck() == BST_CHECKED)
 	{
 		STUDENT tmp;
-
-		isOK = studentStore->NextID(tmp.nID);
+//		isOK = studentStore->NextID(tmp.nID);
 
 		if (!isOK)
 		{
@@ -224,7 +219,7 @@ void AllStudentsDlg::OnBnClickedButtonAdd()
 	{
 		TEACHER tmp;
 
-		isOK = teacherStore->NextID(tmp.nID);
+//		isOK = teacherStore->NextID(tmp.nID);
 
 		if (!isOK)
 		{

@@ -24,7 +24,7 @@ public:
 
 private:
 	DialogMode m_eDialogMode;
-	ObjectInterface<TEACHER>* store;
+	std::unique_ptr<ObjectInterface<TEACHER>> store;
 	TEACHER tmp;
 
 protected:

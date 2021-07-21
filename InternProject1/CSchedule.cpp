@@ -125,44 +125,60 @@ BOOL ScheduleClassSetWrapper::LoadAll(std::vector<ScheduleClass>& out)
     return isOK;
 }
 
-
 ScheduleClassSet::ScheduleClassSet(CDatabase* pDB)
     : CRecordset(pDB)
 {
     constexpr int cntBefore = __COUNTER__;
 
+    ID                          =   -1;     __COUNTER__;
+    m_rgID                      =   NULL;
+    m_rgIDLengths               =   NULL;
 
-    m_rgID                      =   NULL; __COUNTER__;
-    m_rgIDLengths               =   NULL; __COUNTER__;
+    beginTime                   =   { 0, }; __COUNTER__;
+    m_rgBeginTime               =   NULL;
+    m_rgBeginTimeLengths        =   NULL;
 
-    m_rgBeginTime               =   NULL; __COUNTER__;
-    m_rgBeginTimeLengths        =   NULL; __COUNTER__;
+    duration                    =   { 0, }; __COUNTER__;
+    m_rgDuration                =   NULL;
+    m_rgDurationLengths         =   NULL;
 
-    m_rgDuration                =   NULL; __COUNTER__;
-    m_rgDurationLengths         =   NULL; __COUNTER__;
+    subjectID                   =   -1;     __COUNTER__;
+    m_rgSubjectID               =   NULL;
+    m_rgSubjectIDLengths        =   NULL;
 
-    m_rgSubjectID               =   NULL; __COUNTER__;
-    m_rgSubjectIDLengths        =   NULL; __COUNTER__;
+    dayOfWeek                   =   -1;     __COUNTER__;
+    m_rgDayOfWeek               =   NULL;
+    m_rgDayOfWeekLengths        =   NULL;
 
-    m_rgDayOfWeek               =   NULL; __COUNTER__;
-    m_rgDayOfWeekLengths        =   NULL; __COUNTER__;
+    classID                     =   -1;     __COUNTER__;
+    m_rgClassID                 =   NULL;
+    m_rgClassIDLengths          =   NULL;
 
-    m_rgClassID                 =   NULL; __COUNTER__;
-    m_rgClassIDLengths          =   NULL; __COUNTER__;
-
-    constexpr int count = (__COUNTER__ - cntBefore - 1) / 2;
+    constexpr int count = (__COUNTER__ - cntBefore - 1);
 
     m_nFields = count;
+}
+void ScheduleClassSet::DoFieldExchange(CFieldExchange* pFX)
+{
+    pFX->SetFieldType(CFieldExchange::outputColumn);
+
+    RFX_Int     (pFX, _T("[ID]"),           ID);
+
+    RFX_Date    (pFX, _T("[Begin]"),         beginTime);
+    RFX_Date    (pFX, _T("[Duration]"),     duration);
+    RFX_Int     (pFX, _T("[SubjectID]"),    subjectID);
+    RFX_Int     (pFX, _T("[DayOfWeek]"),    dayOfWeek);
+    RFX_Int     (pFX, _T("[ClassID]"),      classID);
 }
 void ScheduleClassSet::DoBulkFieldExchange(CFieldExchange* pFX)
 {
     pFX->SetFieldType(CFieldExchange::outputColumn);
 
-    RFX_Int_Bulk(pFX, _T("[ID]"), &m_rgID, &m_rgIDLengths);
+    RFX_Int_Bulk(pFX, _T("[ID]"),               &m_rgID, &m_rgIDLengths);
 
-    RFX_Date_Bulk(pFX, _T("[Date]"), &m_rgBeginTime, &m_rgBeginTimeLengths);
-    RFX_Date_Bulk(pFX, _T("[Date]"), &m_rgDuration, &m_rgDurationLengths);
-    RFX_Int_Bulk(pFX, _T("[SubjectID]"), &m_rgSubjectID, &m_rgSubjectIDLengths);
-    RFX_Int_Bulk(pFX, _T("[DayOfWeek]"), &m_rgDayOfWeek, &m_rgDayOfWeekLengths);
-    RFX_Int_Bulk(pFX, _T("[ClassID]"), &m_rgClassID, &m_rgClassIDLengths);
+    RFX_Date_Bulk   (pFX, _T("[Begin]"),         &m_rgBeginTime, &m_rgBeginTimeLengths);
+    RFX_Date_Bulk   (pFX, _T("[Duration]"),     &m_rgDuration, &m_rgDurationLengths);
+    RFX_Int_Bulk    (pFX, _T("[SubjectID]"),    &m_rgSubjectID, &m_rgSubjectIDLengths);
+    RFX_Int_Bulk    (pFX, _T("[DayOfWeek]"),    &m_rgDayOfWeek, &m_rgDayOfWeekLengths);
+    RFX_Int_Bulk    (pFX, _T("[ClassID]"),      &m_rgClassID, &m_rgClassIDLengths);
 }

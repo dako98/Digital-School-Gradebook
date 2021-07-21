@@ -24,6 +24,9 @@ IMPLEMENT_DYNAMIC(ViewAllGradesDlg, CDialog)
 
 ViewAllGradesDlg::ViewAllGradesDlg(CWnd* pParent /*=nullptr*/)
 	: CDialog(IDD_ALL_GRADES, pParent)
+	, gradeStore(new GradeDatabaseInterface(_T("Grades"), &databaseConnection))
+	, studentStore(new StudentDatabaseInterface(_T("Students"), &databaseConnection))
+	, subjectStore(new SubjectDatabaseInterface(_T("Subjects"), &databaseConnection))
 {
 
 }
@@ -54,19 +57,19 @@ BOOL ViewAllGradesDlg::PrintAllGrades()
 	std::vector<STUDENT> allStudents;
 	std::vector<SUBJECT> allSubjects;
 
-	Storage<GRADE> gr{ gradesPath };
-	Storage<STUDENT> st{ studentsPath };
-	Storage<SUBJECT> su{ subjectsPath };
+//	Storage<GRADE> gr{ gradesPath };
+//	Storage<STUDENT> st{ studentsPath };
+//	Storage<SUBJECT> su{ subjectsPath };
 
-	isOK = gr.LoadAll(allGrades);
+	isOK = gradeStore->LoadAll(allGrades);
 
 	if (isOK)
 	{
-		isOK = st.LoadAll(allStudents);
+		isOK = studentStore->LoadAll(allStudents);
 
 		if (isOK)
 		{
-			su.LoadAll(allSubjects);
+			subjectStore->LoadAll(allSubjects);
 		}
 	}
 
@@ -122,10 +125,10 @@ END_MESSAGE_MAP()
 void ViewAllGradesDlg::OnBnClickedButtonAdd()
 {
 	GRADE tmp;
-	Storage<GRADE> store{ gradesPath };
+//	Storage<GRADE> store{ gradesPath };
 	BOOL isOK = TRUE;
 
-	isOK = store.NextID(tmp.nID);
+//	isOK = gradeStore->NextID(tmp.nID);
 
 	if (!isOK)
 	{
@@ -144,12 +147,12 @@ void ViewAllGradesDlg::OnBnClickedButtonEdit()
 {
 	if (gradesList.GetCurSel() != LB_ERR)
 	{
-		BOOL isOK;
+		BOOL isOK = TRUE;
 
 		GRADE tmp;
-		Storage<GRADE> studentStore{ gradesPath };
-
-		isOK = studentStore.Load(gradesList.GetItemData(gradesList.GetCurSel()), tmp);
+//		Storage<GRADE> studentStore{ gradesPath };
+		tmp.nID = gradesList.GetItemData(gradesList.GetCurSel());
+		isOK = gradeStore->Load(tmp.nID, tmp);
 
 		if (!isOK)
 		{
@@ -169,12 +172,13 @@ void ViewAllGradesDlg::OnBnClickedButtonRemove()
 {
 	if (gradesList.GetCurSel() != LB_ERR)
 	{
-		BOOL isOK;
+		BOOL isOK = TRUE;
 
 		GRADE tmp;
-		Storage<GRADE> studentStore{ gradesPath };
+//		Storage<GRADE> studentStore{ gradesPath };
+		tmp.nID = gradesList.GetItemData(gradesList.GetCurSel());
 
-		isOK = studentStore.Load(gradesList.GetItemData(gradesList.GetCurSel()), tmp);
+		isOK = gradeStore->Load(tmp.nID, tmp);
 
 		if (!isOK)
 		{
