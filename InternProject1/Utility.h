@@ -37,7 +37,7 @@ inline unsigned int     DigitsCount(T number, unsigned short radix = 10)
     int digits = 1;
     while (number /= radix)
     {
-        digits++;
+        ++digits;
     }
 
     return digits;
