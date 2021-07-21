@@ -55,27 +55,33 @@ class ScheduleClassSet : public CRecordset
 {
 public:
 
-
+    int ID;
     int* m_rgID;
     long* m_rgIDLengths;
 
+    TIMESTAMP_STRUCT beginTime;
     TIMESTAMP_STRUCT* m_rgBeginTime;
     long* m_rgBeginTimeLengths;
 
+    TIMESTAMP_STRUCT duration;
     TIMESTAMP_STRUCT* m_rgDuration;
     long* m_rgDurationLengths;
 
+    int subjectID;
     int* m_rgSubjectID;
     long* m_rgSubjectIDLengths;
 
+    int dayOfWeek;
     int* m_rgDayOfWeek;
     long* m_rgDayOfWeekLengths;
 
+    int classID;
     int* m_rgClassID;
     long* m_rgClassIDLengths;
 
     ScheduleClassSet(CDatabase* pDB);
 
+    void DoFieldExchange(CFieldExchange* pFX) override;
     void DoBulkFieldExchange(CFieldExchange* pFX) override;
 };
 class ScheduleClassSetWrapper
