@@ -13,8 +13,8 @@ struct SUBJECT
 
     int nID;
     int nTeacherID;
-    char szName[MAX_NAME_SIZE + 1];
-    char szRoom[MAX_NAME_SIZE + 1];
+    CString szName;
+    CString szRoom;
 
 
     virtual BOOL Validate() const;

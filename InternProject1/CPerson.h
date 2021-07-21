@@ -9,8 +9,8 @@ struct PERSON
 	PERSON();
 
 	int nID;
-	char szFirstName[MAX_NAME_SIZE + 1];
-	char szLastName[MAX_NAME_SIZE + 1];
+	CString szFirstName;
+	CString szLastName;
 
 	virtual BOOL Validate() const;
 
