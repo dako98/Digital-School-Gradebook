@@ -7,6 +7,7 @@
 #include "afxdialogex.h"
 
 #include "Utility.h"
+#include "ScheduledClassEditDlg.h"
 
 #include "CSchedule.h"
 #include "Storage.h"
@@ -20,6 +21,7 @@ ScheduleDlg::ScheduleDlg(CWnd* pParent /*=nullptr*/)
 	: CDialog(IDD_SCHEDULE, pParent)
 	, scheduleStore(new ScheduleDatabaseInterface(_T("Schedule"), &databaseConnection))
 	, classStore(new ClassesDatabaseInterface(_T("Classes"), &databaseConnection))
+	, schedule()
 {
 
 }
@@ -32,10 +34,25 @@ BOOL ScheduleDlg::PrintSchedule()
 {
 	BOOL isOK = TRUE;
 
-//	Storage<CSchedule> scheduleStore(databaseConnectionString);
-	CSchedule schedule;
-	isOK = scheduleStore->Load(classSelectDropList.GetItemData(classSelectDropList.GetCurSel()), schedule);
+	int nCount = ScheduleListControl.GetItemCount();
 
+	// Delete all of the items from the list view control.
+	for (int i = 0; i < nCount; i++)
+	{
+		ScheduleListControl.DeleteItem(0);
+	}
+
+	int nColumnCount = ScheduleListControl.GetHeaderCtrl()->GetItemCount();
+
+	// Delete all of the columns.
+	for (int i = 0; i < nColumnCount; i++)
+	{
+		ScheduleListControl.DeleteColumn(0);
+	}
+
+//	Storage<CSchedule> scheduleStore(databaseConnectionString);
+	
+	isOK = scheduleStore->Load(classSelectDropList.GetItemData(classSelectDropList.GetCurSel()), schedule);
 	ListView_SetExtendedListViewStyle(ScheduleListControl, LVS_EX_GRIDLINES);
 
 	/*	ScheduleListControl.InsertColumn(
@@ -132,7 +149,7 @@ BOOL ScheduleDlg::OnInitDialog()
 			classSelectDropList.SetItemData(index, cClass.ID);
 		}
 
-		classSelectDropList.SetCurSel(CB_ERR);
+		classSelectDropList.SetCurSel(allClasses.size() > 0 ? 0 : CB_ERR);
 
 		if (classSelectDropList.GetCurSel() != CB_ERR)
 		{
@@ -153,6 +170,7 @@ void ScheduleDlg::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(ScheduleDlg, CDialog)
 	ON_CBN_SELCHANGE(IDC_COMBO1, &ScheduleDlg::OnCbnSelchangeCombo1)
+	ON_BN_CLICKED(IDC_BUTTON1, &ScheduleDlg::OnBnClickedButtonEdit)
 END_MESSAGE_MAP()
 
 
@@ -162,21 +180,16 @@ END_MESSAGE_MAP()
 void ScheduleDlg::OnCbnSelchangeCombo1()
 {
 	// TODO: Add your control notification handler code here
-	int nCount = ScheduleListControl.GetItemCount();
 
-	// Delete all of the items from the list view control.
-	for (int i = 0; i < nCount; i++)
-	{
-		ScheduleListControl.DeleteItem(0);
-	}
 
-	int nColumnCount = ScheduleListControl.GetHeaderCtrl()->GetItemCount();
+	PrintSchedule();
+}
 
-	// Delete all of the columns.
-	for (int i = 0; i < nColumnCount; i++)
-	{
-		ScheduleListControl.DeleteColumn(0);
-	}
 
+void ScheduleDlg::OnBnClickedButtonEdit()
+{
+	// TODO: Add your control notification handler code here
+	ScheduledClassEditDlg dlg(schedule);
+	dlg.DoModal();
 	PrintSchedule();
 }
