@@ -26,6 +26,7 @@ enum DialogMode
 };
 
 extern int		        GetIndexByData(const int target, const CComboBox& comboBox);
+extern int              GetIndexByData(const int target, const CListBox& listBox);
 extern CString	        MapGradeName(const int value);
 extern unsigned short   DigitsCount(INT32 x);
 
@@ -34,7 +35,7 @@ inline unsigned int     DigitsCount(T number, unsigned short radix = 10)
 {
     assert(radix > 0, "Only positive radixes are supported.");
 
-    int digits = 1;
+    unsigned int digits = 1;
     while (number /= radix)
     {
         ++digits;

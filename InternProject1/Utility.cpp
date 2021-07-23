@@ -21,6 +21,23 @@ inline int GetIndexByData(const int target, const CComboBox& comboBox)
 	return result;
 }
 
+inline int GetIndexByData(const int target, const CListBox& listBox)
+{
+	int result = LB_ERR;
+	int length = listBox.GetCount();
+
+	for (int i = 0; i < length; i++)
+	{
+		if (listBox.GetItemData(i) == target)
+		{
+			result = i;
+			break;
+		}
+	}
+
+	return result;
+}
+
 CString MapGradeName(const int value)
 {
 	CString name;
@@ -76,4 +93,3 @@ inline unsigned short DigitsCount(INT32 x)
         return 2;
     return 1;
 }
-
