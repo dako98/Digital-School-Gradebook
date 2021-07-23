@@ -4,6 +4,8 @@
 #include <set>
 #include <array>
 
+#include "sortedVector.h"
+
 
 struct ScheduleClass
 {
@@ -18,11 +20,19 @@ struct ScheduleClass
 	DBTIME begin;
 	DBTIME duration;
 	int nSubjectID;
+    int dayOfWeek;
+    int classID;
+
+    bool operator< (const ScheduleClass& second) const
+    {
+        return (this->begin.hour < second.begin.hour) || this->begin.hour == second.begin.hour && this->begin.minute < second.begin.minute;
+    }
+    BOOL Validate() const;
 };
 
 struct ScheduleDay
 {
-	ScheduleDay() = default;
+	ScheduleDay();
 
 private:
     struct cmp {
@@ -33,8 +43,8 @@ private:
         }
     };
 public:
-
-    std::set<ScheduleClass, cmp> classes;
+    sorted_vector<ScheduleClass> classes;
+//    std::set<ScheduleClass, cmp> classes;
 };
 
 struct CSchedule
@@ -59,12 +69,16 @@ public:
     int* m_rgID;
     long* m_rgIDLengths;
 
-    TIMESTAMP_STRUCT beginTime;
-    TIMESTAMP_STRUCT* m_rgBeginTime;
+//    TIMESTAMP_STRUCT beginTime;
+//    TIMESTAMP_STRUCT* m_rgBeginTime;
+    CString beginTime;
+    LPSTR m_rgBeginTime;
     long* m_rgBeginTimeLengths;
 
-    TIMESTAMP_STRUCT duration;
-    TIMESTAMP_STRUCT* m_rgDuration;
+//    TIMESTAMP_STRUCT duration;
+//    TIMESTAMP_STRUCT* m_rgDuration;
+    CString duration;
+    LPSTR m_rgDuration;
     long* m_rgDurationLengths;
 
     int subjectID;
