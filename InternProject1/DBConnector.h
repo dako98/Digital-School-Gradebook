@@ -248,14 +248,17 @@ class IDtoNameSet : public CRecordset
 {
 public:
 
+    int ID;
     int* m_rgID;
     long* m_rgIDLengths;
 
+    CString name;
     LPSTR m_rgName;
     long* m_rgNameLengths;
 
     IDtoNameSet(CDatabase* pDB);
 
+    void DoFieldExchange(CFieldExchange* pFX) override;
     void DoBulkFieldExchange(CFieldExchange* pFX) override;
 };
 
@@ -267,6 +270,12 @@ BOOL IDtoNameMapper(
     const std::vector<int>& id,
     std::unordered_map<int, CString>& name);
 
+BOOL IDtoNameMapper(CDatabase* db,
+    const CString& table,
+    const CString& idField,
+    const CString& nameField,
+    const int& id,
+    CString& name);
 
 template<class T>
 class ObjectInterface
@@ -400,12 +409,30 @@ public:
     virtual ~ScheduleDatabaseInterface();
 
     virtual BOOL Edit(const CSchedule& recTeacher)                      override;
-    virtual BOOL Load(const int nTeacherID, CSchedule& recTeacher)      override;
+    virtual BOOL Load(const int classID, CSchedule& recTeacher)         override;
 
 private:
     virtual BOOL Add(CSchedule& recTeacher)                             override { return FALSE; }
-    virtual BOOL Delete(const int nID)                                  override{ return FALSE; }
+    virtual BOOL Delete(const int nID)                                  override { return FALSE; }
     virtual BOOL LoadAll(std::vector<CSchedule>& out)                   override { return FALSE; }
+
+    ScheduleClassSet recordSet;
+    const CString table;
+};
+
+class ScheduledClassDatabaseInterface : public DatabaseInterface<ScheduleClass>
+{
+public:
+    ScheduledClassDatabaseInterface(const std::wstring& tableName, CDatabase* db);
+    virtual ~ScheduledClassDatabaseInterface();
+
+    virtual BOOL Edit(const ScheduleClass& recTeacher)                  override;
+    virtual BOOL Load(const int nID, ScheduleClass& recTeacher)         override;
+    virtual BOOL Add(ScheduleClass& recTeacher)                         override;
+    virtual BOOL Delete(const int nID)                                  override;
+
+private:
+    virtual BOOL LoadAll(std::vector<ScheduleClass>& out)               override { return FALSE; }
 
     ScheduleClassSet recordSet;
     const CString table;

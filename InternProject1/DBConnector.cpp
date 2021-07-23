@@ -2,6 +2,44 @@
 #include "DBConnector.h"
 
 #include "Utility.h"
+#include <sstream>
+
+CString DBTimeToCString(const DBTIME& time)
+{
+    CString result;
+//    result.Format(_T("%d-%d-%d %d:%d:%d:%d"), time.year, time.month, time.day, time.hour, time.minute, time.second, time.fraction);
+    result.Format(_T("%d:%d:%d"), time.hour, time.minute, time.second);
+    return result;
+}
+
+
+DBTIME CStringToTIMESTAMP_STRUCT(const CString& time)
+{
+    DBTIME result;
+    std::wstringstream ss(time.GetString());
+/*
+    ss >> result.year;
+    ss.ignore();
+
+    ss >> result.month;
+    ss.ignore();
+
+    ss >> result.day;
+    ss.ignore();
+    */
+    ss >> result.hour;
+    ss.ignore();
+
+    ss >> result.minute;
+    ss.ignore();
+
+    ss >> result.second;
+//    ss.ignore();
+
+//    ss >> result.fraction;
+
+    return result;
+}
 
 StudentSet::StudentSet(CDatabase* pDB)
     : CRecordset(pDB)
@@ -886,23 +924,32 @@ IDtoNameSet::IDtoNameSet(CDatabase* pDB)
     constexpr int cntBefore = __COUNTER__;
 
 
+    ID                      = -1; __COUNTER__;
+    m_rgID                  = NULL;
+    m_rgIDLengths           = NULL;
 
-    m_rgID                  = NULL; __COUNTER__;
-    m_rgIDLengths           = NULL; __COUNTER__;
+    name                    = ""; __COUNTER__;
+    m_rgName                = NULL;
+    m_rgNameLengths         = NULL;
 
-    m_rgName                = NULL; __COUNTER__;
-    m_rgNameLengths         = NULL; __COUNTER__;
-
-    constexpr int count = (__COUNTER__ - cntBefore - 1) / 2;
+    constexpr int count = (__COUNTER__ - cntBefore - 1);
 
     m_nFields               = count;
 }
+void IDtoNameSet::DoFieldExchange(CFieldExchange* pFX)
+{
+    pFX->SetFieldType(CFieldExchange::outputColumn);
+
+    RFX_Int (pFX, _T("[ID]"),   ID);
+    RFX_Text(pFX, _T("[Name]"), name);
+}
+
 void IDtoNameSet::DoBulkFieldExchange(CFieldExchange* pFX)
 {
     pFX->SetFieldType(CFieldExchange::outputColumn);
 
-    RFX_Int_Bulk(pFX, _T("[ID]"), &m_rgID, &m_rgIDLengths);
-    RFX_Text_Bulk(pFX, _T("[Name]"), &m_rgName, &m_rgNameLengths, 256);
+    RFX_Int_Bulk    (pFX, _T("[ID]"),   &m_rgID,    &m_rgIDLengths);
+    RFX_Text_Bulk   (pFX, _T("[Name]"), &m_rgName,  &m_rgNameLengths, 256);
 }
 
 
@@ -968,6 +1015,40 @@ BOOL IDtoNameMapper(CDatabase* db,
             blk.Close();
 
         }// !Creating SQL querry
+
+    return isOK;
+}
+
+BOOL IDtoNameMapper(CDatabase* db,
+    const CString& table,
+    const CString& idField,
+    const CString& nameField,
+    const int& id,
+    CString& name)
+{
+    BOOL isOK = TRUE;
+    
+    CString sSQL;
+    sSQL.Format(_T("SELECT [%s], [%s] FROM [%s] WHERE [%s] = %d"), idField, nameField, table, idField, id);
+
+    IDtoNameSet rs(db);
+
+    try
+    {
+        rs.Open(AFX_DB_USE_DEFAULT_TYPE, sSQL, CRecordset::readOnly);
+    }
+    catch (const std::exception&)
+    {
+        isOK = FALSE;
+    }
+
+    if (isOK)
+    {
+        ASSERT(rs.GetRowsFetched() == 1);
+
+        name = rs.name;
+        rs.Close();
+    }
 
     return isOK;
 }
@@ -2354,19 +2435,23 @@ BOOL ScheduleDatabaseInterface::Load(const int classID, CSchedule& recStudent)
 
             sc.nID              = *(recordSet.m_rgID + nPosInRowset);
             sc.nSubjectID       = *(recordSet.m_rgSubjectID + nPosInRowset);
-            sc.begin.hour       = (recordSet.m_rgBeginTime + nPosInRowset)->hour;
+/*            sc.begin.hour = (recordSet.m_rgBeginTime + nPosInRowset)->hour;
             sc.begin.minute     = (recordSet.m_rgBeginTime + nPosInRowset)->minute;
             sc.begin.second     = (recordSet.m_rgBeginTime + nPosInRowset)->second;
             sc.duration.hour    = (recordSet.m_rgDuration + nPosInRowset)->hour;
             sc.duration.minute  = (recordSet.m_rgDuration + nPosInRowset)->minute;
             sc.duration.second  = (recordSet.m_rgDuration + nPosInRowset)->second;
+            */
+            sc.begin = CStringToTIMESTAMP_STRUCT(CString{ recordSet.m_rgBeginTime + nPosInRowset * 50 });
+            sc.duration = CStringToTIMESTAMP_STRUCT(CString{ recordSet.m_rgDuration + nPosInRowset * 50 });
 
             int dayOfWeek       = *(recordSet.m_rgDayOfWeek + nPosInRowset);
 
             ASSERT(dayOfWeek < 7);
 
             //                result.days[dayOfWeek].classes.push_back(sc);
-            result.days[dayOfWeek].classes.insert(sc);
+//            result.days[dayOfWeek].classes.insert(sc);
+              result.days[dayOfWeek].classes.push_sorted(sc);
         }
         recordSet.MoveNext();
     }
@@ -2391,42 +2476,59 @@ BOOL ScheduleDatabaseInterface::Edit(const CSchedule& recStudent)
     {
         for (const auto& _class : recStudent.days[dayOfWeek].classes)
         {
-            recordSet.m_strFilter.Format(_T("[ID] = %d"), _class.nID);
-            isGood = recordSet.Requery();
-
-            if (isGood)
+            if (_class.nID != -1)
             {
-                db->BeginTrans();
-
-                recordSet.Edit();
-
-                recordSet.beginTime.hour    = _class.begin.hour;
-                recordSet.beginTime.minute  = _class.begin.minute;
-                recordSet.beginTime.second  = _class.begin.second;
-
-                recordSet.duration.hour     = _class.duration.hour;
-                recordSet.duration.minute   = _class.duration.minute;
-                recordSet.duration.second   = _class.duration.second;
-
-                recordSet.subjectID         = _class.nSubjectID;
-                recordSet.dayOfWeek         = dayOfWeek;
-
-                try
+                recordSet.m_strFilter.Format(_T("[ID] = %d"), _class.nID);
+                isGood = recordSet.Requery();
+                if (recordSet.GetRowsFetched() > 0)
                 {
-                    recordSet.Update();
-                }
-                catch (const CDBException&)
-                {
-                    isGood = FALSE;
-                }
+                    if (isGood)
+                    {
+                        db->BeginTrans();
 
-                if (isGood)
-                {
-                    db->CommitTrans();
-                }
-                else
-                {
-                    db->Rollback();
+                        recordSet.Edit();
+                        /*
+                                        recordSet.beginTime.day     = 0;
+                                        recordSet.beginTime.month   = 0;
+                                        recordSet.beginTime.year    = 0;
+                                        recordSet.beginTime.hour    = _class.begin.hour;
+                                        recordSet.beginTime.minute  = _class.begin.minute;
+                                        recordSet.beginTime.second  = _class.begin.second;
+                                        recordSet.beginTime.fraction= 0;
+
+
+                                        recordSet.duration.hour     = _class.duration.hour;
+                                        recordSet.duration.minute   = _class.duration.minute;
+                                        recordSet.duration.second   = _class.duration.second;
+                                        recordSet.duration.day      = 0;
+                                        recordSet.duration.month    = 0;
+                                        recordSet.duration.year     = 0;
+                                        recordSet.duration.fraction = 0;
+                         */
+                        recordSet.beginTime = DBTimeToCString(_class.begin);
+                        recordSet.duration = DBTimeToCString(_class.duration);
+
+                        recordSet.subjectID = _class.nSubjectID;
+                        recordSet.dayOfWeek = dayOfWeek;
+
+                        try
+                        {
+                            recordSet.Update();
+                        }
+                        catch (const CDBException&)
+                        {
+                            isGood = FALSE;
+                        }
+
+                        if (isGood)
+                        {
+                            db->CommitTrans();
+                        }
+                        else
+                        {
+                            db->Rollback();
+                        }
+                    }
                 }
             }
         }
@@ -2436,3 +2538,261 @@ BOOL ScheduleDatabaseInterface::Edit(const CSchedule& recStudent)
 
     return isGood;
 }
+
+ScheduledClassDatabaseInterface::ScheduledClassDatabaseInterface(const std::wstring& tableName, CDatabase* db)
+    :DatabaseInterface(db)
+    , recordSet(this->db)
+    , table(tableName.c_str())
+{}
+ScheduledClassDatabaseInterface::~ScheduledClassDatabaseInterface()
+{
+    if (recordSet.IsOpen())
+    {
+        recordSet.Close();
+    }
+}
+BOOL ScheduledClassDatabaseInterface::Load(const int nID, ScheduleClass& recStudent)
+{
+    BOOL isGood = TRUE;
+
+    recordSet.m_strFilter.Format(_T("ID = %d"), nID);
+
+    try
+    {
+        recordSet.Open(CRecordset::snapshot, table, CRecordset::readOnly);
+
+        ASSERT(recordSet.GetRowsFetched() == 1);
+    }
+    catch (const CDBException&)
+    {
+        isGood = FALSE;
+    }
+
+    if (isGood)
+    {
+        recStudent.nID              = recordSet.ID;
+        /*
+        recStudent.begin.hour       = recordSet.beginTime.hour;
+        recStudent.begin.minute     = recordSet.beginTime.minute;
+        recStudent.begin.second     = recordSet.beginTime.second;
+
+        recStudent.duration.hour    = recordSet.duration.hour;
+        recStudent.duration.minute  = recordSet.duration.minute;
+        recStudent.duration.second  = recordSet.duration.second;
+        */
+        recStudent.begin            = CStringToTIMESTAMP_STRUCT(recordSet.beginTime);
+        recStudent.duration         = CStringToTIMESTAMP_STRUCT(recordSet.duration);
+        recStudent.nSubjectID       = recordSet.subjectID;
+        recStudent.classID          = recordSet.classID;
+        recStudent.dayOfWeek        = recordSet.dayOfWeek;
+
+        recordSet.Close();
+
+        isGood = recStudent.Validate();
+    }
+
+    return isGood;
+}
+BOOL ScheduledClassDatabaseInterface::Edit(const ScheduleClass& recStudent)
+{
+    BOOL isGood = TRUE;
+
+    if (isGood = recStudent.Validate())
+    {
+        recordSet.m_strFilter.Format(_T("ID = %d"), recStudent.nID);
+
+        try
+        {
+            recordSet.Open(CRecordset::dynaset, table);
+
+            ASSERT(recordSet.GetRowsFetched() == 1);
+        }
+        catch (const CDBException&)
+        {
+            isGood = FALSE;
+        }
+        if (isGood)
+        {
+            isGood = recordSet.CanUpdate();
+        }
+        if (isGood)
+        {
+            db->BeginTrans();
+
+            recordSet.Edit();
+            /*
+            recordSet.beginTime.day     = 0;
+            recordSet.beginTime.month   = 0;
+            recordSet.beginTime.year    = 0;
+            recordSet.beginTime.hour    = recStudent.begin.hour;
+            recordSet.beginTime.minute  = recStudent.begin.minute;
+            recordSet.beginTime.second  = recStudent.begin.second;
+            recordSet.beginTime.fraction= 0;
+
+            recordSet.duration.hour     = recStudent.duration.hour;
+            recordSet.duration.minute   = recStudent.duration.minute;
+            recordSet.duration.second   = recStudent.duration.second;
+            recordSet.duration.day      = 0;
+            recordSet.duration.month    = 0;
+            recordSet.duration.year     = 0;
+            recordSet.duration.fraction = 0;
+            */
+            recordSet.beginTime         = DBTimeToCString(recStudent.begin);
+            recordSet.duration          = DBTimeToCString(recStudent.duration);
+            recordSet.subjectID         = recStudent.nSubjectID;
+            recordSet.dayOfWeek         = recStudent.dayOfWeek;
+            recordSet.classID           = recStudent.classID;
+
+
+
+            try
+            {
+                recordSet.Update();
+            }
+            catch (const CDBException&)
+            {
+                isGood = FALSE;
+            }
+
+            if (isGood)
+            {
+                db->CommitTrans();
+            }
+            else
+            {
+                db->Rollback();
+            }
+
+            recordSet.Close();
+        }
+    }
+    return isGood;
+}
+BOOL ScheduledClassDatabaseInterface::Add(ScheduleClass& recStudent)
+{
+    BOOL isGood = TRUE;
+
+    if (isGood = recStudent.Validate())
+    {
+        try
+        {
+            recordSet.Open(CRecordset::dynaset, table, CRecordset::none);
+        }
+        catch (const CDBException&)
+        {
+            isGood = FALSE;
+        }
+
+        if (isGood)
+        {
+            isGood = recordSet.CanAppend();
+        }
+
+        if (isGood)
+        {
+            db->BeginTrans();
+
+            recordSet.AddNew();
+            /*
+            recordSet.beginTime.day     = 0;
+            recordSet.beginTime.month   = 0;
+            recordSet.beginTime.year    = 0;
+            recordSet.beginTime.hour    = recStudent.begin.hour;
+            recordSet.beginTime.minute  = recStudent.begin.minute;
+            recordSet.beginTime.second  = recStudent.begin.second;
+            recordSet.beginTime.fraction= 0;
+
+            recordSet.duration.hour     = recStudent.duration.hour;
+            recordSet.duration.minute   = recStudent.duration.minute;
+            recordSet.duration.second   = recStudent.duration.second;
+            recordSet.duration.day      = 0;
+            recordSet.duration.month    = 0;
+            recordSet.duration.year     = 0;
+            recordSet.duration.fraction = 0;
+            */
+            recordSet.beginTime         = DBTimeToCString(recStudent.begin);
+            recordSet.duration          = DBTimeToCString(recStudent.duration);
+            recordSet.subjectID         = recStudent.nSubjectID;
+            recordSet.classID           = recStudent.classID;
+            recordSet.dayOfWeek         = recStudent.dayOfWeek;
+
+            try
+            {
+                isGood = recordSet.Update();
+            }
+            catch (const CDBException&)
+            {
+                isGood = FALSE;
+            }
+
+
+            if (isGood)
+            {
+                db->CommitTrans();
+            }
+            else
+            {
+                db->Rollback();
+            }
+
+            if (isGood)
+            {
+                LastID(recStudent.nID);
+            }
+
+            recordSet.Close();
+        }
+    }
+    return isGood;
+}
+BOOL ScheduledClassDatabaseInterface::Delete(const int nID)
+{
+    BOOL isGood = TRUE;
+
+    recordSet.m_strFilter.Format(_T("ID = %d"), nID);
+
+    try
+    {
+        recordSet.Open(CRecordset::dynaset, table);
+
+        ASSERT(recordSet.GetRowsFetched() == 1);
+    }
+    catch (const CDBException&)
+    {
+        isGood = FALSE;
+    }
+    if (isGood)
+    {
+        isGood = recordSet.CanUpdate();
+    }
+    if (isGood)
+    {
+        db->BeginTrans();
+
+
+        try
+        {
+            recordSet.Delete();
+            recordSet.MoveNext();
+        }
+        catch (const CDBException&)
+        {
+            isGood = FALSE;
+        }
+
+        if (isGood)
+        {
+            db->CommitTrans();
+        }
+        else
+        {
+            db->Rollback();
+        }
+
+        recordSet.Close();
+    }
+
+    return isGood;
+}
+
+

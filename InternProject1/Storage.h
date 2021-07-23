@@ -813,7 +813,7 @@ public:
 
             for (int nPosInRowset = 0; nPosInRowset < rowsFetched; nPosInRowset++)
             {
-
+                /*
                 sc.nID              =   *(sSet.m_rgID + nPosInRowset);
                 sc.nSubjectID       =   *(sSet.m_rgSubjectID + nPosInRowset);
                 sc.begin.hour       =   (sSet.m_rgBeginTime + nPosInRowset)->hour;
@@ -822,13 +822,15 @@ public:
                 sc.duration.hour    =   (sSet.m_rgDuration + nPosInRowset)->hour;
                 sc.duration.minute  =   (sSet.m_rgDuration + nPosInRowset)->minute;
                 sc.duration.second  =   (sSet.m_rgDuration + nPosInRowset)->second;
-
+                */
+                ASSERT(FALSE);
                 int dayOfWeek = *(sSet.m_rgDayOfWeek + nPosInRowset);
 
                 ASSERT(dayOfWeek < 7);
 
 //                result.days[dayOfWeek].classes.push_back(sc);
-                result.days[dayOfWeek].classes.insert(sc);
+//                result.days[dayOfWeek].classes.insert(sc);
+                  result.days[dayOfWeek].classes.push_sorted(sc);
             }
             sSet.MoveNext();
         }

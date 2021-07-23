@@ -32,6 +32,7 @@ BOOL ScheduleClassSetWrapper::Load(const int nStudentID, std::vector<ScheduleCla
 
         for (int nPosInRowset = 0; nPosInRowset < rowsFetched; nPosInRowset++)
         {
+            /*
             tmp.nID             =   *(blk->m_rgID + nPosInRowset);
             tmp.nSubjectID      =   *(blk->m_rgSubjectID + nPosInRowset);
             tmp.begin.hour      =   (blk->m_rgBeginTime + nPosInRowset)->hour;
@@ -40,7 +41,8 @@ BOOL ScheduleClassSetWrapper::Load(const int nStudentID, std::vector<ScheduleCla
             tmp.duration.hour   =   (blk->m_rgDuration + nPosInRowset)->hour;
             tmp.duration.minute =   (blk->m_rgDuration + nPosInRowset)->minute;
             tmp.duration.second =   (blk->m_rgDuration + nPosInRowset)->second;
-
+            */
+            ASSERT(FALSE);
             out.push_back(tmp);
         }
     }
@@ -104,7 +106,7 @@ BOOL ScheduleClassSetWrapper::LoadAll(std::vector<ScheduleClass>& out)
 
         for (int nPosInRowset = 0; nPosInRowset < rowsFetched; nPosInRowset++)
         {
-
+            /*
             tmp.nID                 =   *(blk->m_rgID + nPosInRowset);
             tmp.nSubjectID          =   *(blk->m_rgSubjectID + nPosInRowset);
 
@@ -115,8 +117,9 @@ BOOL ScheduleClassSetWrapper::LoadAll(std::vector<ScheduleClass>& out)
             tmp.duration.hour       =   (blk->m_rgDuration + nPosInRowset)->hour;
             tmp.duration.minute     =   (blk->m_rgDuration + nPosInRowset)->minute;
             tmp.duration.second     =   (blk->m_rgDuration + nPosInRowset)->second;
-
             out.push_back(tmp);
+            */
+            ASSERT(FALSE);
         }
     }
 
@@ -134,11 +137,13 @@ ScheduleClassSet::ScheduleClassSet(CDatabase* pDB)
     m_rgID                      =   NULL;
     m_rgIDLengths               =   NULL;
 
-    beginTime                   =   { 0, }; __COUNTER__;
+//    beginTime                   =   { 0, }; __COUNTER__;
+    beginTime                   =   "";     __COUNTER__;
     m_rgBeginTime               =   NULL;
     m_rgBeginTimeLengths        =   NULL;
 
-    duration                    =   { 0, }; __COUNTER__;
+//    duration                    =   { 0, }; __COUNTER__;
+    duration                    =   "";     __COUNTER__;
     m_rgDuration                =   NULL;
     m_rgDurationLengths         =   NULL;
 
@@ -164,8 +169,10 @@ void ScheduleClassSet::DoFieldExchange(CFieldExchange* pFX)
 
     RFX_Int     (pFX, _T("[ID]"),           ID);
 
-    RFX_Date    (pFX, _T("[Begin]"),         beginTime);
-    RFX_Date    (pFX, _T("[Duration]"),     duration);
+//    RFX_Date    (pFX, _T("[Begin]"),        beginTime);
+//    RFX_Date    (pFX, _T("[Begin]"),        beginTime);
+    RFX_Text    (pFX, _T("[Begin]"),        beginTime);
+    RFX_Text    (pFX, _T("[Duration]"),     duration);
     RFX_Int     (pFX, _T("[SubjectID]"),    subjectID);
     RFX_Int     (pFX, _T("[DayOfWeek]"),    dayOfWeek);
     RFX_Int     (pFX, _T("[ClassID]"),      classID);
@@ -174,11 +181,28 @@ void ScheduleClassSet::DoBulkFieldExchange(CFieldExchange* pFX)
 {
     pFX->SetFieldType(CFieldExchange::outputColumn);
 
-    RFX_Int_Bulk(pFX, _T("[ID]"),               &m_rgID, &m_rgIDLengths);
+    RFX_Int_Bulk    (pFX, _T("[ID]"),           &m_rgID, &m_rgIDLengths);
 
-    RFX_Date_Bulk   (pFX, _T("[Begin]"),         &m_rgBeginTime, &m_rgBeginTimeLengths);
-    RFX_Date_Bulk   (pFX, _T("[Duration]"),     &m_rgDuration, &m_rgDurationLengths);
+//    RFX_Date_Bulk   (pFX, _T("[Begin]"),        &m_rgBeginTime, &m_rgBeginTimeLengths);
+//    RFX_Date_Bulk   (pFX, _T("[Duration]"),     &m_rgDuration, &m_rgDurationLengths);
+
+    RFX_Text_Bulk   (pFX, _T("[Begin]"),        &m_rgBeginTime, &m_rgBeginTimeLengths,50);
+    RFX_Text_Bulk   (pFX, _T("[Duration]"),     &m_rgDuration, &m_rgDurationLengths,50);
     RFX_Int_Bulk    (pFX, _T("[SubjectID]"),    &m_rgSubjectID, &m_rgSubjectIDLengths);
     RFX_Int_Bulk    (pFX, _T("[DayOfWeek]"),    &m_rgDayOfWeek, &m_rgDayOfWeekLengths);
     RFX_Int_Bulk    (pFX, _T("[ClassID]"),      &m_rgClassID, &m_rgClassIDLengths);
+}
+
+ScheduleDay::ScheduleDay()
+{
+    classes.SetSorted(true);
+}
+
+BOOL ScheduleClass::Validate() const
+{
+    return 
+//        (
+//        !(begin.hour == 0 && begin.minute == 0 && begin.second == 0) ||
+//        !(duration.hour == 0 && duration.minute == 0 && duration.second == 0)) &&
+        nSubjectID != -1;
 }
