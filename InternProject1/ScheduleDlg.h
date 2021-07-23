@@ -34,6 +34,8 @@ private:
 
 	std::unique_ptr<ObjectInterface<CSchedule>>	scheduleStore;
 	std::unique_ptr<ObjectInterface<CClass>>	classStore;
+	CSchedule									schedule;
 public:
 	afx_msg void OnCbnSelchangeCombo1();
+	afx_msg void OnBnClickedButtonEdit();
 };
