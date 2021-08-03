@@ -4,7 +4,7 @@
 #include "Utility.h"
 #include <sstream>
 
-CString DBTimeToCString(const DBTIME& time)
+CString DBTIMEToCString(const DBTIME& time)
 {
     CString result;
 //    result.Format(_T("%d-%d-%d %d:%d:%d:%d"), time.year, time.month, time.day, time.hour, time.minute, time.second, time.fraction);
@@ -13,7 +13,7 @@ CString DBTimeToCString(const DBTIME& time)
 }
 
 
-DBTIME CStringToTIMESTAMP_STRUCT(const CString& time)
+DBTIME CStringToDBTIME(const CString& time)
 {
     DBTIME result;
     std::wstringstream ss(time.GetString());
@@ -40,6 +40,30 @@ DBTIME CStringToTIMESTAMP_STRUCT(const CString& time)
 
     return result;
 }
+
+BOOL ValidateUniqueStudentNumber(const STUDENT& recStudent, CDatabase* db)
+{
+    BOOL isUnique = TRUE;
+    StudentSet recordSet(db);
+    recordSet.m_strFilter.Format(_T("[NumberInClass] = %d AND [ClassID] = %d"), recStudent.numberInClass, recStudent.classID);
+
+    try
+    {
+        recordSet.Open(CRecordset::dynaset, _T("Students"), StudentSet::readOnly);
+    }
+    catch (const CDBException&)
+    {
+        isUnique = FALSE;
+    }
+    isUnique = recordSet.GetRowsFetched() == 0;
+
+    recordSet.m_strFilter = "";
+
+    recordSet.Close();
+
+    return isUnique;
+}
+
 
 StudentSet::StudentSet(CDatabase* pDB)
     : CRecordset(pDB)
@@ -1097,79 +1121,72 @@ StudentDatabaseInterface::StudentDatabaseInterface(const std::wstring& tableName
     , recordSet(this->db)
     , table(tableName.c_str())
 { }
+
+
 BOOL StudentDatabaseInterface::Add(STUDENT& recStudent)
 {
-    BOOL isGood = TRUE;
-
-    if (isGood = recStudent.Validate())
+    // Check if number in class is duplicate
+    BOOL isGood = recStudent.Validate() && ValidateUniqueStudentNumber(recStudent, db);
+    if (!isGood)
     {
-        // Check if number in class is duplicate
-        recordSet.m_strFilter.Format(_T("[NumberInClass] = %d AND [ClassID] = %d"), recStudent.numberInClass, recStudent.classID);
-        try
-        {
-            recordSet.Open(CRecordset::dynaset, table, CRecordset::none);
-        }
-        catch (const CDBException&)
-        {
-            isGood = FALSE;
-        }
-        isGood = recordSet.GetRowsFetched() == 0;
-
-        recordSet.m_strFilter = "";
-
-        isGood = isGood && recordSet.Requery();
-
-        if (isGood)
-        {
-            isGood = recordSet.CanAppend();
-        }
-
-        if (isGood)
-        {
-            db->BeginTrans();
-
-            recordSet.AddNew();
-
-            recordSet.numberInClass     = recStudent.numberInClass;
-            recordSet.firstName         = recStudent.szFirstName;
-            recordSet.lastName          = recStudent.szLastName;
-            recordSet.birthday.year     = recStudent.dtBirthDate.year;
-            recordSet.birthday.month    = recStudent.dtBirthDate.month;
-            recordSet.birthday.day      = recStudent.dtBirthDate.day;
-            recordSet.classID           = recStudent.classID;
-
-            recordSet.birthday.hour     = 0;
-            recordSet.birthday.minute   = 0;
-            recordSet.birthday.second   = 0;
-            recordSet.birthday.fraction = 0;
-
-            try
-            {
-                isGood = recordSet.Update();
-            }
-            catch (const CDBException&)
-            {
-                isGood = FALSE;
-            }
-
-
-            if (isGood)
-            {
-                db->CommitTrans();
-            }
-            else
-            {
-                db->Rollback();
-            }
-
-            if (isGood)
-            {
-                LastID(recStudent.nID);
-            }
-
-            recordSet.Close();
-        }
+        return FALSE;
     }
+    
+    recordSet.m_strFilter.Format(_T("[NumberInClass] = %d AND [ClassID] = %d"), recStudent.numberInClass, recStudent.classID);
+    try
+    {
+        recordSet.Open(CRecordset::dynaset, table, CRecordset::none);
+    }
+    catch (const CDBException&)
+    {
+        return FALSE;
+    }
+
+    if (!recordSet.CanAppend())
+    {
+        return FALSE;
+    }
+
+
+    db->BeginTrans();
+
+    recordSet.AddNew();
+
+    recordSet.numberInClass = recStudent.numberInClass;
+    recordSet.firstName = recStudent.szFirstName;
+    recordSet.lastName = recStudent.szLastName;
+    recordSet.birthday.year = recStudent.dtBirthDate.year;
+    recordSet.birthday.month = recStudent.dtBirthDate.month;
+    recordSet.birthday.day = recStudent.dtBirthDate.day;
+    recordSet.classID = recStudent.classID;
+
+    recordSet.birthday.hour = 0;
+    recordSet.birthday.minute = 0;
+    recordSet.birthday.second = 0;
+    recordSet.birthday.fraction = 0;
+
+    try
+    {
+        isGood = recordSet.Update();
+    }
+    catch (const CDBException&)
+    {
+        isGood = FALSE;
+    }
+
+
+    if (isGood)
+    {
+        db->CommitTrans();
+        LastID(recStudent.nID);
+    }
+    else
+    {
+        db->Rollback();
+    }
+
+    recordSet.Close();
+    
     return isGood;
 }
 BOOL StudentDatabaseInterface::Edit(const STUDENT& recStudent)
@@ -2442,8 +2459,8 @@ BOOL ScheduleDatabaseInterface::Load(const int classID, CSchedule& recStudent)
             sc.duration.minute  = (recordSet.m_rgDuration + nPosInRowset)->minute;
             sc.duration.second  = (recordSet.m_rgDuration + nPosInRowset)->second;
             */
-            sc.begin = CStringToTIMESTAMP_STRUCT(CString{ recordSet.m_rgBeginTime + nPosInRowset * 50 });
-            sc.duration = CStringToTIMESTAMP_STRUCT(CString{ recordSet.m_rgDuration + nPosInRowset * 50 });
+            sc.begin = CStringToDBTIME(CString{ recordSet.m_rgBeginTime + nPosInRowset * 50 });
+            sc.duration = CStringToDBTIME(CString{ recordSet.m_rgDuration + nPosInRowset * 50 });
 
             int dayOfWeek       = *(recordSet.m_rgDayOfWeek + nPosInRowset);
 
@@ -2505,8 +2522,8 @@ BOOL ScheduleDatabaseInterface::Edit(const CSchedule& recStudent)
                                         recordSet.duration.year     = 0;
                                         recordSet.duration.fraction = 0;
                          */
-                        recordSet.beginTime = DBTimeToCString(_class.begin);
-                        recordSet.duration = DBTimeToCString(_class.duration);
+                        recordSet.beginTime = DBTIMEToCString(_class.begin);
+                        recordSet.duration = DBTIMEToCString(_class.duration);
 
                         recordSet.subjectID = _class.nSubjectID;
                         recordSet.dayOfWeek = dayOfWeek;
@@ -2580,8 +2597,8 @@ BOOL ScheduledClassDatabaseInterface::Load(const int nID, ScheduleClass& recStud
         recStudent.duration.minute  = recordSet.duration.minute;
         recStudent.duration.second  = recordSet.duration.second;
         */
-        recStudent.begin            = CStringToTIMESTAMP_STRUCT(recordSet.beginTime);
-        recStudent.duration         = CStringToTIMESTAMP_STRUCT(recordSet.duration);
+        recStudent.begin            = CStringToDBTIME(recordSet.beginTime);
+        recStudent.duration         = CStringToDBTIME(recordSet.duration);
         recStudent.nSubjectID       = recordSet.subjectID;
         recStudent.classID          = recordSet.classID;
         recStudent.dayOfWeek        = recordSet.dayOfWeek;
@@ -2637,8 +2654,8 @@ BOOL ScheduledClassDatabaseInterface::Edit(const ScheduleClass& recStudent)
             recordSet.duration.year     = 0;
             recordSet.duration.fraction = 0;
             */
-            recordSet.beginTime         = DBTimeToCString(recStudent.begin);
-            recordSet.duration          = DBTimeToCString(recStudent.duration);
+            recordSet.beginTime         = DBTIMEToCString(recStudent.begin);
+            recordSet.duration          = DBTIMEToCString(recStudent.duration);
             recordSet.subjectID         = recStudent.nSubjectID;
             recordSet.dayOfWeek         = recStudent.dayOfWeek;
             recordSet.classID           = recStudent.classID;
@@ -2710,8 +2727,8 @@ BOOL ScheduledClassDatabaseInterface::Add(ScheduleClass& recStudent)
             recordSet.duration.year     = 0;
             recordSet.duration.fraction = 0;
             */
-            recordSet.beginTime         = DBTimeToCString(recStudent.begin);
-            recordSet.duration          = DBTimeToCString(recStudent.duration);
+            recordSet.beginTime         = DBTIMEToCString(recStudent.begin);
+            recordSet.duration          = DBTIMEToCString(recStudent.duration);
             recordSet.subjectID         = recStudent.nSubjectID;
             recordSet.classID           = recStudent.classID;
             recordSet.dayOfWeek         = recStudent.dayOfWeek;

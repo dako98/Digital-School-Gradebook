@@ -1,7 +1,6 @@
 #pragma once
 
 #include "afxdb.h"
-#include <tuple>
 #include <unordered_map>
 
 #include "CStudent.h"
@@ -276,6 +275,11 @@ BOOL IDtoNameMapper(CDatabase* db,
     const CString& nameField,
     const int& id,
     CString& name);
+
+BOOL    ValidateUniqueStudentNumber(const STUDENT& recStudent, CDatabase* db);
+DBTIME  CStringToDBTIME(const CString& time);
+CString DBTimeToCString(const DBTIME& time);
+
 
 template<class T>
 class ObjectInterface
