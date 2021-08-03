@@ -21,16 +21,17 @@ public:
 private:
 	BOOL PrintAllGrades();
 
-	std::unique_ptr<ObjectInterface<GRADE>>		gradeStore;
-	std::unique_ptr<ObjectInterface<STUDENT>>	studentStore;
-	std::unique_ptr<ObjectInterface<SUBJECT>>	subjectStore;
+	GradeDatabaseInterface		m_gradeStore;
+	StudentDatabaseInterface	m_studentStore;
+	SubjectDatabaseInterface	m_subjectStore;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 	DECLARE_MESSAGE_MAP()
 public:
-	CListBox gradesList;
+	CListBox					m_gradesList;
+
 	afx_msg void OnBnClickedButtonAdd();
 	afx_msg void OnBnClickedButtonEdit();
 	afx_msg void OnBnClickedButtonRemove();

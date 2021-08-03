@@ -21,11 +21,11 @@ IMPLEMENT_DYNAMIC(StudentAverageDlg, CDialog)
 
 StudentAverageDlg::StudentAverageDlg(CWnd* pParent /*=nullptr*/)
 	: CDialog(IDD_STUDENT_AVERAGE_GRADE, pParent)
-	, studentAverageVal(0)
-	, subjectAverageVal(0)
-	, studentStore(new StudentDatabaseInterface(_T("Students"), &databaseConnection))
-	, gradeStore(new GradeDatabaseInterface(_T("Grades"), &databaseConnection))
-	, subjectStore(new SubjectDatabaseInterface(_T("Subjects"), &databaseConnection))
+	, m_studentAverageVal(0)
+	, m_subjectAverageVal(0)
+	, m_studentStore(_T("Students"), &databaseConnection)
+	, m_gradeStore(_T("Grades"), &databaseConnection)
+	, m_subjectStore(_T("Subjects"), &databaseConnection)
 {
 }
 
@@ -35,7 +35,7 @@ BOOL StudentAverageDlg::PrintAllStudents()
 
 	std::vector<STUDENT> allStudents;
 //	Storage<STUDENT> st{ studentsPath };
-	isOK = studentStore->LoadAll(allStudents);
+	isOK = m_studentStore.LoadAll(allStudents);
 
 	CString currentRow;
 
@@ -48,8 +48,8 @@ BOOL StudentAverageDlg::PrintAllStudents()
 				CString{ student.szFirstName },
 				CString{ student.szLastName });
 
-			int index = studentDropList.AddString(currentRow);
-			studentDropList.SetItemData(index, student.nID);
+			int index = m_studentDropList.AddString(currentRow);
+			m_studentDropList.SetItemData(index, student.nID);
 		}
 	}
 	return isOK;
@@ -60,7 +60,7 @@ BOOL StudentAverageDlg::PrintAllSubjects()
 	BOOL isOK;
 	std::vector<SUBJECT> allSubjects;
 //	Storage<SUBJECT> st{ subjectsPath };
-	isOK = subjectStore->LoadAll(allSubjects);
+	isOK = m_subjectStore.LoadAll(allSubjects);
 
 	CString currentRow;
 	if (isOK)
@@ -71,8 +71,8 @@ BOOL StudentAverageDlg::PrintAllSubjects()
 				subject.nID,
 				CString{ subject.szName });
 
-			int index = subjectDropList.AddString(currentRow);
-			subjectDropList.SetItemData(index, subject.nID);
+			int index = m_subjectDropList.AddString(currentRow);
+			m_subjectDropList.SetItemData(index, subject.nID);
 		}
 	}
 	return isOK;
@@ -81,7 +81,7 @@ BOOL StudentAverageDlg::PrintAllSubjects()
 
 BOOL StudentAverageDlg::UpdateAverage()
 {
-	int index = studentDropList.GetCurSel();
+	int index = m_studentDropList.GetCurSel();
 	int studentID = -1;
 	int subjectID = -1;
 	BOOL isOK = TRUE;
@@ -90,19 +90,19 @@ BOOL StudentAverageDlg::UpdateAverage()
 	{
 		std::vector<GRADE> grades;
 //		Storage<GRADE> gradeStore{ gradesPath };
-		isOK = gradeStore->LoadAll(grades);
+		isOK = m_gradeStore.LoadAll(grades);
 		std::vector<GRADE> studentGrades;
 
 		if (isOK)
 		{
 
-			studentID = studentDropList.GetItemData(index);
+			studentID = m_studentDropList.GetItemData(index);
 
-			index = subjectDropList.GetCurSel();
+			index = m_subjectDropList.GetCurSel();
 
 			if (index != CB_ERR)
 			{
-				subjectID = subjectDropList.GetItemData(index);
+				subjectID = m_subjectDropList.GetItemData(index);
 			}
 
 			int studentSum = 0, studentCount = 0, subjectSum = 0, subjectCount = 0;
@@ -125,8 +125,8 @@ BOOL StudentAverageDlg::UpdateAverage()
 			float tmpStVal = (studentSum / (float)(studentCount > 0 ? studentCount : 1));
 			float tmpSuVal = (subjectSum / (float)(subjectCount > 0 ? subjectCount : 1));
 
-			studentAverageVal = (tmpStVal < GRADE::GRADES::INVALID + 1 ? 0 : GRADE::GRADES::INVALID + 1 + tmpStVal);
-			subjectAverageVal = (tmpSuVal < GRADE::GRADES::INVALID + 1 ? 0 : GRADE::GRADES::INVALID + 1 + tmpSuVal);
+			m_studentAverageVal = (tmpStVal < GRADE::GRADES::INVALID + 1 ? 0 : GRADE::GRADES::INVALID + 1 + tmpStVal);
+			m_subjectAverageVal = (tmpSuVal < GRADE::GRADES::INVALID + 1 ? 0 : GRADE::GRADES::INVALID + 1 + tmpSuVal);
 		}
 	}
 
@@ -167,12 +167,12 @@ StudentAverageDlg::~StudentAverageDlg()
 void StudentAverageDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_COMBO1, studentDropList);
-	DDX_Control(pDX, IDC_COMBO2, subjectDropList);
-	DDX_Control(pDX, IDC_EDIT1, studentAverage);
-	DDX_Control(pDX, IDC_EDIT2, subjectAverage);
-	DDX_Text(pDX, IDC_EDIT1, studentAverageVal);
-	DDX_Text(pDX, IDC_EDIT2, subjectAverageVal);
+	DDX_Control(pDX, IDC_COMBO1, m_studentDropList);
+	DDX_Control(pDX, IDC_COMBO2, m_subjectDropList);
+	DDX_Control(pDX, IDC_EDIT1, m_studentAverage);
+	DDX_Control(pDX, IDC_EDIT2, m_subjectAverage);
+	DDX_Text(pDX, IDC_EDIT1, m_studentAverageVal);
+	DDX_Text(pDX, IDC_EDIT2, m_subjectAverageVal);
 }
 
 

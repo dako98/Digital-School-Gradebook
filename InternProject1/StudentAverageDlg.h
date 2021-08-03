@@ -24,21 +24,21 @@ private:
 	BOOL PrintAllStudents();
 	BOOL PrintAllSubjects();
 
-	std::unique_ptr<ObjectInterface<STUDENT>>	studentStore;
-	std::unique_ptr<ObjectInterface<GRADE>>		gradeStore;
-	std::unique_ptr<ObjectInterface<SUBJECT>>	subjectStore;
+	StudentDatabaseInterface	m_studentStore;
+	GradeDatabaseInterface		m_gradeStore;
+	SubjectDatabaseInterface	m_subjectStore;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 	DECLARE_MESSAGE_MAP()
 public:
-	CComboBox studentDropList;
-	CComboBox subjectDropList;
-	CEdit studentAverage;
-	CEdit subjectAverage;
-	float studentAverageVal;
-	float subjectAverageVal;
+	CComboBox					m_studentDropList;
+	CComboBox					m_subjectDropList;
+	CEdit						m_studentAverage;
+	CEdit						m_subjectAverage;
+	float						m_studentAverageVal;
+	float						m_subjectAverageVal;
 	afx_msg void OnCbnSelchangeCombo1();
 	afx_msg void OnCbnSelchangeCombo2();
 };

@@ -23,15 +23,15 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-	CListBox allStudentsList;
-	CString allStudentsListVal;
-	CButton studentsRadioBtn;
+	CListBox	m_allStudentsList;
+	CString		m_allStudentsListVal;
+	CButton		m_studentsRadioBtn;
 	afx_msg void OnBnClickedRadio4();
 
 private:
 
-	std::unique_ptr<ObjectInterface<STUDENT>>	studentStore;
-	std::unique_ptr<ObjectInterface<TEACHER>>	teacherStore;
+	StudentDatabaseInterface	m_studentStore;
+	TeacherDatabaseInterface	m_teacherStore;
 
 	BOOL PrintAllStudents();
 	BOOL PrintAllTeachers();

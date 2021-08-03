@@ -18,11 +18,11 @@ IMPLEMENT_DYNAMIC(CombinedGradeDlg, CDialog)
 CombinedGradeDlg::CombinedGradeDlg(DialogMode eMode, const GRADE& data)
 	: CDialog(IDD_GRADES_COMBINED, nullptr)
 	, m_eDialogMode(eMode)
-	, gradeIDVal(0)
-	, tmp(data)
-	, gradeStore(new GradeDatabaseInterface(_T("Grades"), &databaseConnection))
-	, studentStore(new StudentDatabaseInterface(_T("Students"), &databaseConnection))
-	, subjectStore(new SubjectDatabaseInterface(_T("Subjects"), &databaseConnection))
+	, m_gradeIDVal(0)
+	, m_tmp(data)
+	, m_gradeStore(_T("Grades"), &databaseConnection)
+	, m_studentStore(_T("Students"), &databaseConnection)
+	, m_subjectStore(_T("Subjects"), &databaseConnection)
 {
 }
 
@@ -32,7 +32,7 @@ BOOL CombinedGradeDlg::PrintAllStudents()
 
 	std::vector<STUDENT> allStudents;
 //	Storage<STUDENT> st{ studentsPath };
-	isOK = studentStore->LoadAll(allStudents);
+	isOK = m_studentStore.LoadAll(allStudents);
 
 	if (isOK)
 	{
@@ -45,8 +45,8 @@ BOOL CombinedGradeDlg::PrintAllStudents()
 				CString{ student.szFirstName },
 				CString{ student.szLastName });
 
-			int index = studentDropdown.AddString(currentRow);
-			studentDropdown.SetItemData(index, student.nID);
+			int index = m_studentDropdown.AddString(currentRow);
+			m_studentDropdown.SetItemData(index, student.nID);
 		}
 	}
 	return isOK;
@@ -58,7 +58,7 @@ BOOL CombinedGradeDlg::PrintAllSubjects()
 
 	std::vector<SUBJECT> allStudents;
 //	Storage<SUBJECT> st{ subjectsPath };
-	isOK = subjectStore->LoadAll(allStudents);
+	isOK = m_subjectStore.LoadAll(allStudents);
 
 	if (isOK)
 	{
@@ -70,8 +70,8 @@ BOOL CombinedGradeDlg::PrintAllSubjects()
 				student.nID,
 				CString{ student.szName });
 
-			int index = subjectDropdown.AddString(currentRow);
-			subjectDropdown.SetItemData(index, student.nID);
+			int index = m_subjectDropdown.AddString(currentRow);
+			m_subjectDropdown.SetItemData(index, student.nID);
 		}
 	}
 	return isOK;
@@ -87,11 +87,11 @@ BOOL CombinedGradeDlg::OnInitDialog()
 
 	if (m_eDialogMode != DialogMode::eDialogMode_Add)
 	{
-		gradeIDVal = tmp.nID;
+		m_gradeIDVal = m_tmp.nID;
 	}
 	else
 	{
-//		gradeStore->NextID(gradeIDVal);
+//		m_gradeStore.NextID(m_gradeIDVal);
 	}
 
 	// Load all students
@@ -100,7 +100,7 @@ BOOL CombinedGradeDlg::OnInitDialog()
 	if (isOK)
 	{
 		// Select student
-		studentDropdown.SetCurSel(GetIndexByData(tmp.nStudentID, studentDropdown));
+		m_studentDropdown.SetCurSel(GetIndexByData(m_tmp.nStudentID, m_studentDropdown));
 
 		// Load all subjects
 		isOK = PrintAllSubjects();
@@ -109,21 +109,21 @@ BOOL CombinedGradeDlg::OnInitDialog()
 	if (isOK)
 	{
 		// Select subject
-		subjectDropdown.SetCurSel(GetIndexByData(tmp.nSubjectID, subjectDropdown));
+		m_subjectDropdown.SetCurSel(GetIndexByData(m_tmp.nSubjectID, m_subjectDropdown));
 
 
 		// Load all grade values
 		for (size_t i = GRADE::GRADES::INVALID + 1; i < GRADE::GRADES::COUNT; i++)
 		{
-			int index = gradeDropdown.AddString(MapGradeName(i));
-			gradeDropdown.SetItemData(index, i);
+			int index = m_gradeDropdown.AddString(MapGradeName(i));
+			m_gradeDropdown.SetItemData(index, i);
 		}
 
 		// Select grade value
-		gradeDropdown.SetCurSel(GetIndexByData(tmp.value, gradeDropdown));
+		m_gradeDropdown.SetCurSel(GetIndexByData(m_tmp.value, m_gradeDropdown));
 
 		// Select date
-		gradeDateVal = tmp.dtDate;
+		m_gradeDateVal = m_tmp.dtDate;
 	}
 
 	UpdateData(FALSE);
@@ -132,19 +132,19 @@ BOOL CombinedGradeDlg::OnInitDialog()
 	{
 	case DialogMode::eDialogMode_Remove:
 
-		studentDropdown.EnableWindow(FALSE);
-		subjectDropdown.EnableWindow(FALSE);
-		gradeDropdown.EnableWindow(FALSE);
-		gradeDate.EnableWindow(FALSE);
+		m_studentDropdown.EnableWindow(FALSE);
+		m_subjectDropdown.EnableWindow(FALSE);
+		m_gradeDropdown.EnableWindow(FALSE);
+		m_gradeDate.EnableWindow(FALSE);
 
 		break;
 
 	case DialogMode::eDialogMode_Add:
 
-		studentDropdown.EnableWindow(TRUE);
-		subjectDropdown.EnableWindow(TRUE);
-		gradeDropdown.EnableWindow(TRUE);
-		gradeDate.EnableWindow(TRUE);
+		m_studentDropdown.EnableWindow(TRUE);
+		m_subjectDropdown.EnableWindow(TRUE);
+		m_gradeDropdown.EnableWindow(TRUE);
+		m_gradeDate.EnableWindow(TRUE);
 
 		UpdateData(FALSE);
 
@@ -152,10 +152,10 @@ BOOL CombinedGradeDlg::OnInitDialog()
 
 	case DialogMode::eDialogMode_Edit:
 
-		studentDropdown.EnableWindow(FALSE);
-		subjectDropdown.EnableWindow(TRUE);
-		gradeDropdown.EnableWindow(TRUE);
-		gradeDate.EnableWindow(TRUE);
+		m_studentDropdown.EnableWindow(FALSE);
+		m_subjectDropdown.EnableWindow(TRUE);
+		m_gradeDropdown.EnableWindow(TRUE);
+		m_gradeDate.EnableWindow(TRUE);
 		break;
 
 	default:
@@ -172,12 +172,12 @@ CombinedGradeDlg::~CombinedGradeDlg()
 void CombinedGradeDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	DDX_Text(pDX, IDC_EDIT1, gradeIDVal);
-	DDX_Control(pDX, IDC_GRADES_STUDENT_COMBO, studentDropdown);
-	DDX_Control(pDX, IDC_COMBO2, subjectDropdown);
-	DDX_Control(pDX, IDC_COMBO3, gradeDropdown);
-	DDX_Control(pDX, IDC_GRADE_DATETIMEPICKER1, gradeDate);
-	DDX_DateTimeCtrl(pDX, IDC_GRADE_DATETIMEPICKER1, gradeDateVal);
+	DDX_Text(pDX, IDC_EDIT1, m_gradeIDVal);
+	DDX_Control(pDX, IDC_GRADES_STUDENT_COMBO, m_studentDropdown);
+	DDX_Control(pDX, IDC_COMBO2, m_subjectDropdown);
+	DDX_Control(pDX, IDC_COMBO3, m_gradeDropdown);
+	DDX_Control(pDX, IDC_GRADE_DATETIMEPICKER1, m_gradeDate);
+	DDX_DateTimeCtrl(pDX, IDC_GRADE_DATETIMEPICKER1, m_gradeDateVal);
 }
 
 
@@ -196,28 +196,28 @@ void CombinedGradeDlg::OnBnClickedOk()
 	BOOL isOK = TRUE;
 	GRADE st;
 
-	st.nID = gradeIDVal;
-	st.nStudentID = studentDropdown.GetItemData(studentDropdown.GetCurSel());
-	st.nSubjectID = subjectDropdown.GetItemData(subjectDropdown.GetCurSel());
-	st.value = gradeDropdown.GetItemData(gradeDropdown.GetCurSel());
-	gradeDateVal.GetAsDBTIMESTAMP(st.dtDate);
+	st.nID = m_gradeIDVal;
+	st.nStudentID = m_studentDropdown.GetItemData(m_studentDropdown.GetCurSel());
+	st.nSubjectID = m_subjectDropdown.GetItemData(m_subjectDropdown.GetCurSel());
+	st.value = m_gradeDropdown.GetItemData(m_gradeDropdown.GetCurSel());
+	m_gradeDateVal.GetAsDBTIMESTAMP(st.dtDate);
 
 
 	switch (m_eDialogMode)
 	{
 	case DialogMode::eDialogMode_Add:
 
-		isOK = gradeStore->Add(st);
+		isOK = m_gradeStore.Add(st);
 		break;
 
 	case DialogMode::eDialogMode_Edit:
 
-		isOK = gradeStore->Edit(st);
+		isOK = m_gradeStore.Edit(st);
 		break;
 
 	case DialogMode::eDialogMode_Remove:
 
-		isOK = gradeStore->Delete(st.nID);
+		isOK = m_gradeStore.Delete(st.nID);
 		break;
 
 	default:

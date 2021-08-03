@@ -28,20 +28,21 @@ private:
 
 	BOOL LoadAllClasses();
 
-	DialogMode m_eDialogMode;
-	std::unique_ptr<ObjectInterface<STUDENT>>	studentStore;
-	std::unique_ptr<ObjectInterface<CClass>>	classesStore;
-	STUDENT student;
+	DialogMode					m_eDialogMode;
+	StudentDatabaseInterface	m_studentStore;
+	ClassesDatabaseInterface	m_classesStore;
+	STUDENT						m_student;
 
 	DECLARE_MESSAGE_MAP()
 public:
-	CEdit studentNumber;
-	CEdit studentFirstName;
-	CEdit studentLastName;
-	CDateTimeCtrl studentBirthDate;
+	CEdit						m_studentNumber;
+	CEdit						m_studentFirstName;
+	CEdit						m_studentLastName;
+	CDateTimeCtrl				m_studentBirthDate;
+	int							m_studentNumberVal;
+	COleDateTime				m_studentBirthDateVal;
+	CComboBox					m_classList;
+	CEdit						m_numberInClassEditBox;
+
 	afx_msg void OnBnClickedOk();
-	int studentNumberVal;
-	COleDateTime studentBirthDateVal;
-	CComboBox classList;
-	CEdit numberInClassEditBox;
 };

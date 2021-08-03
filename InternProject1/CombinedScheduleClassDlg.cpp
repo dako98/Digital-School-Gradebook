@@ -13,10 +13,10 @@ IMPLEMENT_DYNAMIC(CombinedScheduleClassDlg, CDialog)
 
 CombinedScheduleClassDlg::CombinedScheduleClassDlg(DialogMode eMode, ScheduleClass& data)
 	: CDialog(IDD_COMBINED_SCHEDULED_CLASS, nullptr)
-	, dialogMode(eMode)
-	, subjectStore(new SubjectDatabaseInterface(_T("Subjects"), &databaseConnection))
-	, scheduledClassStore(new ScheduledClassDatabaseInterface(_T("Subjects"), &databaseConnection))
-	, data(data)
+	, m_dialogMode(eMode)
+	, m_scheduledClassStore(_T("Subjects"), &databaseConnection)
+	, m_subjectStore(_T("Subjects"), &databaseConnection)
+	, m_data(data)
 {
 
 }
@@ -31,12 +31,12 @@ BOOL CombinedScheduleClassDlg::OnInitDialog()
 
 	std::vector<SUBJECT> allSubjects;
 
-	switch (dialogMode)
+	switch (m_dialogMode)
 	{
 	case eDialogMode_Add:
 	{
 		CString text;
-		isOK = subjectStore->LoadAll(allSubjects);
+		isOK = m_subjectStore.LoadAll(allSubjects);
 
 		for (const auto& subject : allSubjects)
 		{
@@ -52,7 +52,7 @@ BOOL CombinedScheduleClassDlg::OnInitDialog()
 	case eDialogMode_Remove:
 	{
 		SUBJECT tmp;
-		subjectStore->Load(data.nSubjectID, tmp);
+		m_subjectStore.Load(m_data.nSubjectID, tmp);
 		subjectsList.AddString(tmp.szName);
 		subjectsList.SetCurSel(0);
 		subjectsList.EnableWindow(FALSE);
@@ -102,8 +102,8 @@ void CombinedScheduleClassDlg::OnBnClickedOk()
 	{
 		int id = subjectsList.GetItemData(subjectsList.GetCurSel());
 //		SUBJECT tmp;
-//		subjectStore->Load(id, tmp);
-		data.nSubjectID = id;
+//		m_subjectStore.Load(id, tmp);
+		m_data.nSubjectID = id;
 	}
 	CDialog::OnOK();
 }
@@ -112,6 +112,6 @@ void CombinedScheduleClassDlg::OnBnClickedOk()
 void CombinedScheduleClassDlg::OnBnClickedCancel()
 {
 	// TODO: Add your control notification handler code here
-	data.nSubjectID = -1;
+	m_data.nSubjectID = -1;
 	CDialog::OnCancel();
 }

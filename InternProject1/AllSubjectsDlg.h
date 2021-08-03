@@ -31,5 +31,5 @@ public:
 private:
 	BOOL PrintAll();
 
-	std::unique_ptr<ObjectInterface<SUBJECT>> store;
+	SubjectDatabaseInterface m_store;
 };

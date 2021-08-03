@@ -26,23 +26,23 @@ private:
 	BOOL PrintAllStudents();
 	BOOL PrintAllSubjects();
 
-	DialogMode m_eDialogMode;
+	DialogMode					m_eDialogMode;
 //	Storage<GRADE> store;
-	std::unique_ptr<ObjectInterface<GRADE>>		gradeStore;
-	std::unique_ptr<ObjectInterface<STUDENT>>	studentStore;
-	std::unique_ptr<ObjectInterface<SUBJECT>>	subjectStore;
-	GRADE tmp;
+	GradeDatabaseInterface		m_gradeStore;
+	StudentDatabaseInterface	m_studentStore;
+	SubjectDatabaseInterface	m_subjectStore;
+	GRADE						m_tmp;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 	DECLARE_MESSAGE_MAP()
 public:
-	int gradeIDVal;
-	CComboBox studentDropdown;
-	CComboBox subjectDropdown;
-	CComboBox gradeDropdown;
-	CDateTimeCtrl gradeDate;
-	COleDateTime gradeDateVal;
+	int							m_gradeIDVal;
+	CComboBox					m_studentDropdown;
+	CComboBox					m_subjectDropdown;
+	CComboBox					m_gradeDropdown;
+	CDateTimeCtrl				m_gradeDate;
+	COleDateTime				m_gradeDateVal;
 	afx_msg void OnBnClickedOk();
 };

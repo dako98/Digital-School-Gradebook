@@ -17,8 +17,8 @@ IMPLEMENT_DYNAMIC(BirthdayersDlg, CDialog)
 
 BirthdayersDlg::BirthdayersDlg(const DBTIMESTAMP& date)
 	: CDialog(IDD_BIRTHDAYERS, nullptr)
-	, date(date)
-	, studentStore(new StudentDatabaseInterface(_T("Students"), &databaseConnection))
+	, m_date(date)
+	, m_studentStore(_T("Students"), &databaseConnection)
 {
 }
 
@@ -31,7 +31,7 @@ BOOL BirthdayersDlg::OnInitDialog()
 
 	std::vector<STUDENT> allStudents;
 //	Storage<STUDENT> studentStore{ studentsPath };
-	isOK = studentStore->LoadAll(allStudents);
+	isOK = m_studentStore.LoadAll(allStudents);
 
 	if (isOK)
 	{
@@ -56,7 +56,7 @@ BOOL BirthdayersDlg::OnInitDialog()
 				CString{ student.szFirstName },
 				CString{ student.szLastName });
 
-			birthdayersList.AddString(currentRow);
+			m_birthdayersList.AddString(currentRow);
 		}
 	}
 	return isOK;
@@ -69,7 +69,7 @@ BirthdayersDlg::~BirthdayersDlg()
 void BirthdayersDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_LIST1, birthdayersList);
+	DDX_Control(pDX, IDC_LIST1, m_birthdayersList);
 }
 
 

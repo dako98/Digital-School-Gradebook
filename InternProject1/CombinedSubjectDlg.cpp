@@ -20,11 +20,11 @@ IMPLEMENT_DYNAMIC(CombinedSubjectDlg, CDialog)
 CombinedSubjectDlg::CombinedSubjectDlg(DialogMode eMode, const SUBJECT& data)
 	: CDialog(IDD_SUBJECT_COMBINED, nullptr)
 	, m_eDialogMode(eMode)
-	, subjectIDVal(0)
-	, subjectStore(new SubjectDatabaseInterface(_T("Subjects"), &databaseConnection))
-	, gradeStore(new GradeDatabaseInterface(_T("Grades"), &databaseConnection))
-	, teacherStore(new TeacherDatabaseInterface(_T("Teachers"), &databaseConnection))
-	, tmp(data)
+	, m_subjectIDVal(0)
+	, m_subjectStore(_T("Subjects"), &databaseConnection)
+	, m_gradeStore(_T("Grades"), &databaseConnection)
+	, m_teacherStore(_T("Teachers"), &databaseConnection)
+	, m_tmp(data)
 {
 }
 
@@ -33,23 +33,23 @@ BOOL CombinedSubjectDlg::OnInitDialog()
 	if (!CDialog::OnInitDialog())
 		return FALSE;
 
-	subjectIDVal = tmp.nID;
+	m_subjectIDVal = m_tmp.nID;
 
 	if (m_eDialogMode != DialogMode::eDialogMode_Add)
 	{
-		subjectName.SetWindowText(CString{ tmp.szName });
-		subjectRoom.SetWindowText(CString{ tmp.szRoom });
+		m_subjectName.SetWindowText(CString{ m_tmp.szName });
+		m_subjectRoom.SetWindowText(CString{ m_tmp.szRoom });
 	}
 	else
 	{
-//		subjectStore->NextID(subjectIDVal);
+//		m_subjectStore.NextID(m_subjectIDVal);
 	}
 
 	BOOL isOK = TRUE;
 
 	std::vector<TEACHER> allTeachers;
 //	Storage<TEACHER> te{ teachersPath };
-	isOK = teacherStore->LoadAll(allTeachers);
+	isOK = m_teacherStore.LoadAll(allTeachers);
 
 	if (isOK)
 	{
@@ -62,11 +62,11 @@ BOOL CombinedSubjectDlg::OnInitDialog()
 				CString{ teacher.szFirstName },
 				CString{ teacher.szLastName });
 
-			int index = teacherDropdown.AddString(currentRow);
-			teacherDropdown.SetItemData(index, teacher.nID);
+			int index = m_teacherDropdown.AddString(currentRow);
+			m_teacherDropdown.SetItemData(index, teacher.nID);
 		}
 
-		teacherDropdown.SetCurSel(GetIndexByData(tmp.nTeacherID, teacherDropdown));
+		m_teacherDropdown.SetCurSel(GetIndexByData(m_tmp.nTeacherID, m_teacherDropdown));
 	}
 	UpdateData(FALSE);
 
@@ -74,20 +74,20 @@ BOOL CombinedSubjectDlg::OnInitDialog()
 	{
 	case DialogMode::eDialogMode_Remove:
 
-		subjectID.EnableWindow(FALSE);
-		subjectName.EnableWindow(FALSE);
-		subjectRoom.EnableWindow(FALSE);
-		teacherDropdown.EnableWindow(FALSE);
+		m_subjectID.EnableWindow(FALSE);
+		m_subjectName.EnableWindow(FALSE);
+		m_subjectRoom.EnableWindow(FALSE);
+		m_teacherDropdown.EnableWindow(FALSE);
 
 		break;
 
 	case DialogMode::eDialogMode_Add:
 	case DialogMode::eDialogMode_Edit:
 
-		subjectID.EnableWindow(FALSE);
-		subjectName.EnableWindow(TRUE);
-		subjectRoom.EnableWindow(TRUE);
-		teacherDropdown.EnableWindow(TRUE);
+		m_subjectID.EnableWindow(FALSE);
+		m_subjectName.EnableWindow(TRUE);
+		m_subjectRoom.EnableWindow(TRUE);
+		m_teacherDropdown.EnableWindow(TRUE);
 		break;
 
 
@@ -106,11 +106,11 @@ CombinedSubjectDlg::~CombinedSubjectDlg()
 void CombinedSubjectDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_COMBO1, teacherDropdown);
-	DDX_Text(pDX, IDC_EDIT1, subjectIDVal);
-	DDX_Control(pDX, IDC_EDIT2, subjectName);
-	DDX_Control(pDX, IDC_EDIT3, subjectRoom);
-	DDX_Control(pDX, IDC_EDIT1, subjectID);
+	DDX_Control(pDX, IDC_COMBO1, m_teacherDropdown);
+	DDX_Text(pDX, IDC_EDIT1, m_subjectIDVal);
+	DDX_Control(pDX, IDC_EDIT2, m_subjectName);
+	DDX_Control(pDX, IDC_EDIT3, m_subjectRoom);
+	DDX_Control(pDX, IDC_EDIT1, m_subjectID);
 }
 
 
@@ -131,16 +131,16 @@ void CombinedSubjectDlg::OnBnClickedOk()
 	SUBJECT su;
 	CString buff;
 
-	su.nID = subjectIDVal;
+	su.nID = m_subjectIDVal;
 
 	if (m_eDialogMode != DialogMode::eDialogMode_Remove)
 	{
 		// Read data from window.
-		subjectName.GetWindowText(buff);
+		m_subjectName.GetWindowText(buff);
 
-		if (teacherDropdown.GetCurSel() != CB_ERR)
+		if (m_teacherDropdown.GetCurSel() != CB_ERR)
 		{
-			su.nTeacherID = teacherDropdown.GetItemData(teacherDropdown.GetCurSel());
+			su.nTeacherID = m_teacherDropdown.GetItemData(m_teacherDropdown.GetCurSel());
 
 			if (buff.GetLength() <= SUBJECT::MAX_NAME_SIZE)
 			{
@@ -153,7 +153,7 @@ void CombinedSubjectDlg::OnBnClickedOk()
 				su.szName = "";
 			}
 
-			subjectRoom.GetWindowTextW(buff);
+			m_subjectRoom.GetWindowTextW(buff);
 
 			if (buff.GetLength() <= SUBJECT::MAX_NAME_SIZE)
 			{
@@ -179,15 +179,15 @@ void CombinedSubjectDlg::OnBnClickedOk()
 	{
 	case DialogMode::eDialogMode_Add:
 
-		isOK = subjectStore->Add(su);
+		isOK = m_subjectStore.Add(su);
 		break;
 	case DialogMode::eDialogMode_Edit:
 
-		isOK = subjectStore->Edit(su);
+		isOK = m_subjectStore.Edit(su);
 		break;
 	case DialogMode::eDialogMode_Remove:
 	{
-		isOK = subjectStore->Delete(su.nID);
+		isOK = m_subjectStore.Delete(su.nID);
 
 /*
 		Storage<GRADE> gradeStore{ gradesPath };

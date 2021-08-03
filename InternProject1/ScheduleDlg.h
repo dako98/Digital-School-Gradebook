@@ -25,16 +25,16 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-	CListCtrl ScheduleListControl;
-	CComboBox classSelectDropList;
+	CListCtrl					m_ScheduleListControl;
+	CComboBox					m_classSelectDropList;
 
 
 private:
 	BOOL PrintSchedule();
 
-	std::unique_ptr<ObjectInterface<CSchedule>>	scheduleStore;
-	std::unique_ptr<ObjectInterface<CClass>>	classStore;
-	CSchedule									schedule;
+	ScheduleDatabaseInterface	m_scheduleStore;
+	ClassesDatabaseInterface	m_classStore;
+	CSchedule					m_schedule;
 public:
 	afx_msg void OnCbnSelchangeCombo1();
 	afx_msg void OnBnClickedButtonEdit();

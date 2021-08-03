@@ -25,8 +25,8 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-	CListBox excellentStudentsList;
+	CListBox					m_excellentStudentsList;
 private:
-	std::unique_ptr<ObjectInterface<STUDENT>>	studentStore;
-	std::unique_ptr<ObjectInterface<GRADE>>		gradeStore;
+	StudentDatabaseInterface	m_studentStore;
+	GradeDatabaseInterface		m_gradeStore;
 };

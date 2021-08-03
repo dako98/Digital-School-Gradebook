@@ -21,8 +21,8 @@ IMPLEMENT_DYNAMIC(ExcellentStudentsDlg, CDialog)
 
 ExcellentStudentsDlg::ExcellentStudentsDlg(CWnd* pParent /*=nullptr*/)
 	: CDialog(IDD_EXCELLENT_STUDENTS, pParent)
-	, studentStore(new StudentDatabaseInterface(_T("Students"), &databaseConnection))
-	, gradeStore(new GradeDatabaseInterface(_T("Grades"), &databaseConnection))
+	, m_studentStore(_T("Students"), &databaseConnection)
+	, m_gradeStore(_T("Grades"), &databaseConnection)
 {
 }
 
@@ -36,7 +36,7 @@ BOOL ExcellentStudentsDlg::OnInitDialog()
 	// Get all grades
 //	Storage<GRADE> gradeStore{ gradesPath };
 	std::vector<GRADE> allGrades;
-	isOK = gradeStore->LoadAll(allGrades);
+	isOK = m_gradeStore.LoadAll(allGrades);
 
 	if (isOK)
 	{
@@ -66,7 +66,7 @@ BOOL ExcellentStudentsDlg::OnInitDialog()
 
 		for (const auto& studentID : excellentStudentIDs)
 		{
-			isOK = studentStore->Load(studentID, tmp);
+			isOK = m_studentStore.Load(studentID, tmp);
 
 			if (!isOK)
 			{
@@ -78,7 +78,7 @@ BOOL ExcellentStudentsDlg::OnInitDialog()
 				CString{ tmp.szFirstName },
 				CString{ tmp.szLastName });
 
-			excellentStudentsList.AddString(currentRow);
+			m_excellentStudentsList.AddString(currentRow);
 		}
 	}
 	return isOK;
@@ -91,7 +91,7 @@ ExcellentStudentsDlg::~ExcellentStudentsDlg()
 void ExcellentStudentsDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_LIST1, excellentStudentsList);
+	DDX_Control(pDX, IDC_LIST1, m_excellentStudentsList);
 }
 
 

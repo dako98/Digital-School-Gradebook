@@ -15,14 +15,14 @@
 
 IMPLEMENT_DYNAMIC(CombinedStudentDlg, CDialog)
 
-CombinedStudentDlg::CombinedStudentDlg(DialogMode eDialogMode,const STUDENT& student)
+CombinedStudentDlg::CombinedStudentDlg(DialogMode eDialogMode,const STUDENT& m_student)
 	: CDialog(IDD_STUDENT_COMBINED, nullptr)
 	, m_eDialogMode(eDialogMode)
-	, studentNumberVal(0)
-	, studentBirthDateVal(COleDateTime::GetCurrentTime())
-	, student(student)
-	, studentStore(new StudentDatabaseInterface(_T("Students"), &databaseConnection))
-	, classesStore(new ClassesDatabaseInterface(_T("Classes"), &databaseConnection))
+	, m_studentNumberVal(0)
+	, m_studentBirthDateVal(COleDateTime::GetCurrentTime())
+	, m_student(m_student)
+	, m_studentStore(_T("Students"), &databaseConnection)
+	, m_classesStore(_T("Classes"), &databaseConnection)
 {
 }
 
@@ -36,22 +36,22 @@ BOOL CombinedStudentDlg::OnInitDialog()
 	//TODO: Fill list with classes.
 	isOK = LoadAllClasses();
 
-	studentNumberVal = student.nID;
+	m_studentNumberVal = m_student.nID;
 
 	if (m_eDialogMode != DialogMode::eDialogMode_Add)
 	{
-		studentBirthDateVal = student.dtBirthDate;
-		studentFirstName.SetWindowText(CString{ student.szFirstName });
-		studentLastName.SetWindowText(CString{ student.szLastName });
+		m_studentBirthDateVal = m_student.dtBirthDate;
+		m_studentFirstName.SetWindowText(CString{ m_student.szFirstName });
+		m_studentLastName.SetWindowText(CString{ m_student.szLastName });
 
 		CString tmp;
-		tmp.Format(_T("%d"), student.numberInClass);
-		numberInClassEditBox.SetWindowText(tmp);
+		tmp.Format(_T("%d"), m_student.numberInClass);
+		m_numberInClassEditBox.SetWindowText(tmp);
 
 	}
 	else
 	{
-//		studentStore->NextID(studentNumberVal);
+//		m_studentStore.NextID(m_studentNumberVal);
 	}
 	UpdateData(FALSE);
 
@@ -59,24 +59,24 @@ BOOL CombinedStudentDlg::OnInitDialog()
 	{
 	case DialogMode::eDialogMode_Remove:
 
-		studentBirthDate.EnableWindow(FALSE);
-		studentFirstName.EnableWindow(FALSE);
-		studentLastName.EnableWindow(FALSE);
-		studentNumber.EnableWindow(FALSE);
-		classList.EnableWindow(FALSE);
-		numberInClassEditBox.EnableWindow(FALSE);
+		m_studentBirthDate.EnableWindow(FALSE);
+		m_studentFirstName.EnableWindow(FALSE);
+		m_studentLastName.EnableWindow(FALSE);
+		m_studentNumber.EnableWindow(FALSE);
+		m_classList.EnableWindow(FALSE);
+		m_numberInClassEditBox.EnableWindow(FALSE);
 
 		break;
 
 	case DialogMode::eDialogMode_Add:
 	case DialogMode::eDialogMode_Edit:
 
-		studentBirthDate.EnableWindow(TRUE);
-		studentFirstName.EnableWindow(TRUE);
-		studentLastName.EnableWindow(TRUE);
-		studentNumber.EnableWindow(FALSE);
-		classList.EnableWindow(TRUE);
-		numberInClassEditBox.EnableWindow(TRUE);
+		m_studentBirthDate.EnableWindow(TRUE);
+		m_studentFirstName.EnableWindow(TRUE);
+		m_studentLastName.EnableWindow(TRUE);
+		m_studentNumber.EnableWindow(FALSE);
+		m_classList.EnableWindow(TRUE);
+		m_numberInClassEditBox.EnableWindow(TRUE);
 
 
 		break;
@@ -96,14 +96,14 @@ CombinedStudentDlg::~CombinedStudentDlg()
 void CombinedStudentDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_EDIT1, studentNumber);
-	DDX_Control(pDX, IDC_EDIT2, studentFirstName);
-	DDX_Control(pDX, IDC_EDIT3, studentLastName);
-	DDX_Control(pDX, IDC_DATETIMEPICKER1, studentBirthDate);
-	DDX_Text(pDX, IDC_EDIT1, studentNumberVal);
-	DDX_DateTimeCtrl(pDX, IDC_DATETIMEPICKER1, studentBirthDateVal);
-	DDX_Control(pDX, IDC_COMBO_CLASSES, classList);
-	DDX_Control(pDX, IDC_EDIT4, numberInClassEditBox);
+	DDX_Control(pDX, IDC_EDIT1, m_studentNumber);
+	DDX_Control(pDX, IDC_EDIT2, m_studentFirstName);
+	DDX_Control(pDX, IDC_EDIT3, m_studentLastName);
+	DDX_Control(pDX, IDC_DATETIMEPICKER1, m_studentBirthDate);
+	DDX_Text(pDX, IDC_EDIT1, m_studentNumberVal);
+	DDX_DateTimeCtrl(pDX, IDC_DATETIMEPICKER1, m_studentBirthDateVal);
+	DDX_Control(pDX, IDC_COMBO_CLASSES, m_classList);
+	DDX_Control(pDX, IDC_EDIT4, m_numberInClassEditBox);
 }
 
 BOOL CombinedStudentDlg::LoadAllClasses()
@@ -116,7 +116,7 @@ BOOL CombinedStudentDlg::LoadAllClasses()
 
 //	ClassesSetWrapper st(&sSet);
 
-	isOK = classesStore->LoadAll(classes);
+	isOK = m_classesStore.LoadAll(classes);
 
 
 	if (isOK)
@@ -129,11 +129,11 @@ BOOL CombinedStudentDlg::LoadAllClasses()
 				cClass.ID,
 				cClass.name);
 
-			int index = classList.AddString(currentRow);
-			classList.SetItemData(index, cClass.ID);
+			int index = m_classList.AddString(currentRow);
+			m_classList.SetItemData(index, cClass.ID);
 		}
 
-		classList.SetCurSel(GetIndexByData(student.classID, classList));
+		m_classList.SetCurSel(GetIndexByData(m_student.classID, m_classList));
 	}
 	UpdateData(FALSE);
 
@@ -157,12 +157,12 @@ void CombinedStudentDlg::OnBnClickedOk()
 	STUDENT st;
 	CString buff;
 
-	st.nID = studentNumberVal;
-	st.classID = classList.GetItemData(classList.GetCurSel());
+	st.nID = m_studentNumberVal;
+	st.classID = m_classList.GetItemData(m_classList.GetCurSel());
 
 	if (m_eDialogMode != DialogMode::eDialogMode_Remove)
 	{
-		studentFirstName.GetWindowTextW(buff);
+		m_studentFirstName.GetWindowTextW(buff);
 
 		if (buff.GetLength() <= STUDENT::MAX_NAME_SIZE)
 		{
@@ -173,7 +173,7 @@ void CombinedStudentDlg::OnBnClickedOk()
 			st.szFirstName = "";
 		}
 
-		studentLastName.GetWindowTextW(buff);
+		m_studentLastName.GetWindowTextW(buff);
 
 		if (buff.GetLength() <= STUDENT::MAX_NAME_SIZE)
 		{
@@ -184,11 +184,11 @@ void CombinedStudentDlg::OnBnClickedOk()
 			st.szLastName = "";
 		}
 
-		studentBirthDateVal.GetAsDBTIMESTAMP(st.dtBirthDate);
+		m_studentBirthDateVal.GetAsDBTIMESTAMP(st.dtBirthDate);
 
-		st.classID = classList.GetItemData(classList.GetCurSel());
+		st.classID = m_classList.GetItemData(m_classList.GetCurSel());
 
-		numberInClassEditBox.GetWindowText(buff);
+		m_numberInClassEditBox.GetWindowText(buff);
 		st.numberInClass = _wtoi(buff);
 	}
 
@@ -196,17 +196,17 @@ void CombinedStudentDlg::OnBnClickedOk()
 	{
 	case DialogMode::eDialogMode_Add:
 
-		isOK = studentStore->Add(st);
+		isOK = m_studentStore.Add(st);
 		break;
 
 	case DialogMode::eDialogMode_Edit:
 
-		isOK = studentStore->Edit(st);
+		isOK = m_studentStore.Edit(st);
 		break;
 
 	case DialogMode::eDialogMode_Remove:
 	
-		isOK = studentStore->Delete(st.nID);
+		isOK = m_studentStore.Delete(st.nID);
 		break;
 	
 	default:

@@ -27,8 +27,8 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-	CListBox failsList;
-	CListBox badGradesList;
+	CListBox					failsList;
+	CListBox					badGradesList;
 
 private:
 	
@@ -42,8 +42,8 @@ private:
 		};
 		std::unordered_map<int, subject> subject;
 	};
-	std::unique_ptr <ObjectInterface<STUDENT>>	studentStore;
-	std::unique_ptr <ObjectInterface<SUBJECT>>	subjectStore;
-	std::unique_ptr <ObjectInterface<GRADE>>	gradeStore;
+	StudentDatabaseInterface	m_studentStore;
+	SubjectDatabaseInterface	m_subjectStore;
+	GradeDatabaseInterface		m_gradeStore;
 
 };

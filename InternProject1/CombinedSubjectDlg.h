@@ -25,22 +25,23 @@ public:
 #endif
 
 private:
-	DialogMode m_eDialogMode;
+	DialogMode					m_eDialogMode;
 //	Storage<SUBJECT> store;
-	std::unique_ptr<ObjectInterface<SUBJECT>>	subjectStore;
-	std::unique_ptr<ObjectInterface<GRADE>>		gradeStore;
-	std::unique_ptr<ObjectInterface<TEACHER>>	teacherStore;
-	SUBJECT tmp;
+	SubjectDatabaseInterface	m_subjectStore;
+	GradeDatabaseInterface		m_gradeStore;
+	TeacherDatabaseInterface	m_teacherStore;
+	SUBJECT						m_tmp;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 	DECLARE_MESSAGE_MAP()
 public:
-	CComboBox teacherDropdown;
-	int subjectIDVal;
-	CEdit subjectName;
-	CEdit subjectRoom;
+	CComboBox					m_teacherDropdown;
+	int							m_subjectIDVal;
+	CEdit						m_subjectName;
+	CEdit						m_subjectRoom;
+	CEdit						m_subjectID;
+
 	afx_msg void OnBnClickedOk();
-	CEdit subjectID;
 };

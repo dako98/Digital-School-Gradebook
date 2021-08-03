@@ -18,9 +18,9 @@ IMPLEMENT_DYNAMIC(CombinedTeacherDlg, CDialog)
 CombinedTeacherDlg::CombinedTeacherDlg(DialogMode eMode, const TEACHER& data)
 	: CDialog(IDD_TEACHER_COMBINED, nullptr)
 	, m_eDialogMode(eMode)
-	, teacherNumberVal(0)
-	, store(new TeacherDatabaseInterface(_T("Teachers"), &databaseConnection))
-	, tmp(data)
+	, m_teacherNumberVal(0)
+	, m_store(_T("Teachers"), &databaseConnection)
+	, m_tmp(data)
 {
 }
 
@@ -29,16 +29,16 @@ BOOL CombinedTeacherDlg::OnInitDialog()
 	if (!CDialog::OnInitDialog())
 		return FALSE;
 
-	teacherNumberVal = tmp.nID;
+	m_teacherNumberVal = m_tmp.nID;
 
 	if (m_eDialogMode != DialogMode::eDialogMode_Add)
 	{
-		teacherFirstName.SetWindowText(CString{ tmp.szFirstName });
-		teacherLastName.SetWindowText(CString{ tmp.szLastName });
+		m_teacherFirstName.SetWindowText(CString{ m_tmp.szFirstName });
+		m_teacherLastName.SetWindowText(CString{ m_tmp.szLastName });
 	}
 	else
 	{
-//		store->NextID(teacherNumberVal);
+//		m_store.NextID(m_teacherNumberVal);
 	}
 	UpdateData(FALSE);
 
@@ -46,18 +46,18 @@ BOOL CombinedTeacherDlg::OnInitDialog()
 	{
 	case DialogMode::eDialogMode_Remove:
 
-		teacherFirstName.EnableWindow(FALSE);
-		teacherLastName.EnableWindow(FALSE);
-		teacherNum.EnableWindow(FALSE);
+		m_teacherFirstName.EnableWindow(FALSE);
+		m_teacherLastName.EnableWindow(FALSE);
+		m_teacherNum.EnableWindow(FALSE);
 
 		break;
 
 	case DialogMode::eDialogMode_Add:
 	case DialogMode::eDialogMode_Edit:
 
-		teacherFirstName.EnableWindow(TRUE);
-		teacherLastName.EnableWindow(TRUE);
-		teacherNum.EnableWindow(FALSE);
+		m_teacherFirstName.EnableWindow(TRUE);
+		m_teacherLastName.EnableWindow(TRUE);
+		m_teacherNum.EnableWindow(FALSE);
 		break;
 
 	case DialogMode::eDialogMode_None:
@@ -76,10 +76,10 @@ CombinedTeacherDlg::~CombinedTeacherDlg()
 void CombinedTeacherDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_EDIT1, teacherNum);
-	DDX_Control(pDX, IDC_EDIT2, teacherFirstName);
-	DDX_Control(pDX, IDC_EDIT3, teacherLastName);
-	DDX_Text(pDX, IDC_EDIT1, teacherNumberVal);
+	DDX_Control(pDX, IDC_EDIT1, m_teacherNum);
+	DDX_Control(pDX, IDC_EDIT2, m_teacherFirstName);
+	DDX_Control(pDX, IDC_EDIT3, m_teacherLastName);
+	DDX_Text(pDX, IDC_EDIT1, m_teacherNumberVal);
 }
 
 
@@ -99,11 +99,11 @@ void CombinedTeacherDlg::OnBnClickedOk()
 	TEACHER st;
 	CString buff;
 
-	st.nID = teacherNumberVal;
+	st.nID = m_teacherNumberVal;
 
 	if (m_eDialogMode != DialogMode::eDialogMode_Remove)
 	{
-		teacherFirstName.GetWindowText(buff);
+		m_teacherFirstName.GetWindowText(buff);
 
 		if (buff.GetLength() <= TEACHER::MAX_NAME_SIZE)
 		{
@@ -114,7 +114,7 @@ void CombinedTeacherDlg::OnBnClickedOk()
 			st.szFirstName = "";
 		}
 
-		teacherLastName.GetWindowTextW(buff);
+		m_teacherLastName.GetWindowTextW(buff);
 
 		if (buff.GetLength() <= TEACHER::MAX_NAME_SIZE)
 		{
@@ -130,15 +130,15 @@ void CombinedTeacherDlg::OnBnClickedOk()
 	{
 	case DialogMode::eDialogMode_Add:
 
-		isOK = store->Add(st);
+		isOK = m_store.Add(st);
 		break;
 	case DialogMode::eDialogMode_Edit:
 
-		isOK = store->Edit(st);
+		isOK = m_store.Edit(st);
 		break;
 	case DialogMode::eDialogMode_Remove:
 	
-		isOK = store->Delete(st.nID);
+		isOK = m_store.Delete(st.nID);
 
 
 		break;

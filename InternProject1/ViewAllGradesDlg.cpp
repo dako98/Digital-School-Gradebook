@@ -24,9 +24,9 @@ IMPLEMENT_DYNAMIC(ViewAllGradesDlg, CDialog)
 
 ViewAllGradesDlg::ViewAllGradesDlg(CWnd* pParent /*=nullptr*/)
 	: CDialog(IDD_ALL_GRADES, pParent)
-	, gradeStore(new GradeDatabaseInterface(_T("Grades"), &databaseConnection))
-	, studentStore(new StudentDatabaseInterface(_T("Students"), &databaseConnection))
-	, subjectStore(new SubjectDatabaseInterface(_T("Subjects"), &databaseConnection))
+	, m_gradeStore(_T("Grades"), &databaseConnection)
+	, m_studentStore(_T("Students"), &databaseConnection)
+	, m_subjectStore(_T("Subjects"), &databaseConnection)
 {
 
 }
@@ -49,7 +49,7 @@ ViewAllGradesDlg::~ViewAllGradesDlg()
 
 BOOL ViewAllGradesDlg::PrintAllGrades()
 {
-	gradesList.ResetContent();
+	m_gradesList.ResetContent();
 
 	BOOL isOK;
 
@@ -61,15 +61,15 @@ BOOL ViewAllGradesDlg::PrintAllGrades()
 //	Storage<STUDENT> st{ studentsPath };
 //	Storage<SUBJECT> su{ subjectsPath };
 
-	isOK = gradeStore->LoadAll(allGrades);
+	isOK = m_gradeStore.LoadAll(allGrades);
 
 	if (isOK)
 	{
-		isOK = studentStore->LoadAll(allStudents);
+		isOK = m_studentStore.LoadAll(allStudents);
 
 		if (isOK)
 		{
-			subjectStore->LoadAll(allSubjects);
+			m_subjectStore.LoadAll(allSubjects);
 		}
 	}
 
@@ -97,8 +97,8 @@ BOOL ViewAllGradesDlg::PrintAllGrades()
 				subjectNameMap[grade.nSubjectID],
 				MapGradeName(grade.value));
 
-			int index = gradesList.AddString(currentRow);
-			gradesList.SetItemData(index, grade.nID);
+			int index = m_gradesList.AddString(currentRow);
+			m_gradesList.SetItemData(index, grade.nID);
 		}
 	}
 
@@ -108,7 +108,7 @@ BOOL ViewAllGradesDlg::PrintAllGrades()
 void ViewAllGradesDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_GRADES_LIST, gradesList);
+	DDX_Control(pDX, IDC_GRADES_LIST, m_gradesList);
 }
 
 
@@ -145,14 +145,14 @@ void ViewAllGradesDlg::OnBnClickedButtonAdd()
 
 void ViewAllGradesDlg::OnBnClickedButtonEdit()
 {
-	if (gradesList.GetCurSel() != LB_ERR)
+	if (m_gradesList.GetCurSel() != LB_ERR)
 	{
 		BOOL isOK = TRUE;
 
 		GRADE tmp;
 //		Storage<GRADE> studentStore{ gradesPath };
-		tmp.nID = gradesList.GetItemData(gradesList.GetCurSel());
-		isOK = gradeStore->Load(tmp.nID, tmp);
+		tmp.nID = m_gradesList.GetItemData(m_gradesList.GetCurSel());
+		isOK = m_gradeStore.Load(tmp.nID, tmp);
 
 		if (!isOK)
 		{
@@ -170,15 +170,15 @@ void ViewAllGradesDlg::OnBnClickedButtonEdit()
 
 void ViewAllGradesDlg::OnBnClickedButtonRemove()
 {
-	if (gradesList.GetCurSel() != LB_ERR)
+	if (m_gradesList.GetCurSel() != LB_ERR)
 	{
 		BOOL isOK = TRUE;
 
 		GRADE tmp;
 //		Storage<GRADE> studentStore{ gradesPath };
-		tmp.nID = gradesList.GetItemData(gradesList.GetCurSel());
+		tmp.nID = m_gradesList.GetItemData(m_gradesList.GetCurSel());
 
-		isOK = gradeStore->Load(tmp.nID, tmp);
+		isOK = m_gradeStore.Load(tmp.nID, tmp);
 
 		if (!isOK)
 		{

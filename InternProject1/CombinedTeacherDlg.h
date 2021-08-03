@@ -23,18 +23,19 @@ public:
 #endif
 
 private:
-	DialogMode m_eDialogMode;
-	std::unique_ptr<ObjectInterface<TEACHER>> store;
-	TEACHER tmp;
+	DialogMode					m_eDialogMode;
+	TeacherDatabaseInterface	m_store;
+	TEACHER						m_tmp;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 	DECLARE_MESSAGE_MAP()
 public:
-	CEdit teacherNum;
-	CEdit teacherFirstName;
-	CEdit teacherLastName;
-	int teacherNumberVal;
+	CEdit						m_teacherNum;
+	CEdit						m_teacherFirstName;
+	CEdit						m_teacherLastName;
+	int							m_teacherNumberVal;
+
 	afx_msg void OnBnClickedOk();
 };

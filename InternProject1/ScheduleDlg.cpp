@@ -19,9 +19,9 @@ IMPLEMENT_DYNAMIC(ScheduleDlg, CDialog)
 
 ScheduleDlg::ScheduleDlg(CWnd* pParent /*=nullptr*/)
 	: CDialog(IDD_SCHEDULE, pParent)
-	, scheduleStore(new ScheduleDatabaseInterface(_T("Schedule"), &databaseConnection))
-	, classStore(new ClassesDatabaseInterface(_T("Classes"), &databaseConnection))
-	, schedule()
+	, m_scheduleStore(_T("Schedule"), &databaseConnection)
+	, m_classStore(_T("Classes"), &databaseConnection)
+	, m_schedule()
 {
 
 }
@@ -34,28 +34,28 @@ BOOL ScheduleDlg::PrintSchedule()
 {
 	BOOL isOK = TRUE;
 
-	int nCount = ScheduleListControl.GetItemCount();
+	int nCount = m_ScheduleListControl.GetItemCount();
 
 	// Delete all of the items from the list view control.
 	for (int i = 0; i < nCount; i++)
 	{
-		ScheduleListControl.DeleteItem(0);
+		m_ScheduleListControl.DeleteItem(0);
 	}
 
-	int nColumnCount = ScheduleListControl.GetHeaderCtrl()->GetItemCount();
+	int nColumnCount = m_ScheduleListControl.GetHeaderCtrl()->GetItemCount();
 
 	// Delete all of the columns.
 	for (int i = 0; i < nColumnCount; i++)
 	{
-		ScheduleListControl.DeleteColumn(0);
+		m_ScheduleListControl.DeleteColumn(0);
 	}
 
 //	Storage<CSchedule> scheduleStore(databaseConnectionString);
 	
-	isOK = scheduleStore->Load(classSelectDropList.GetItemData(classSelectDropList.GetCurSel()), schedule);
-	ListView_SetExtendedListViewStyle(ScheduleListControl, LVS_EX_GRIDLINES);
+	isOK = m_scheduleStore.Load(m_classSelectDropList.GetItemData(m_classSelectDropList.GetCurSel()), m_schedule);
+	ListView_SetExtendedListViewStyle(m_ScheduleListControl, LVS_EX_GRIDLINES);
 
-	/*	ScheduleListControl.InsertColumn(
+	/*	m_ScheduleListControl.InsertColumn(
 			0,              // Rank/order of item
 			_T("Day 1"),          // Caption for this header
 			LVCFMT_LEFT,    // Relative position of items under header
@@ -63,38 +63,38 @@ BOOL ScheduleDlg::PrintSchedule()
 */
 
 /*	
-	ScheduleListControl.SetColumnWidth(0, 200);
-	ScheduleListControl.SetColumnWidth(1, 200);
-	ScheduleListControl.SetColumnWidth(2, 200);
-	ScheduleListControl.SetColumnWidth(3, 200);
-	ScheduleListControl.SetColumnWidth(4, 200);
-	ScheduleListControl.SetColumnWidth(5, 200);
-	ScheduleListControl.SetColumnWidth(6, 200);
+	m_ScheduleListControl.SetColumnWidth(0, 200);
+	m_ScheduleListControl.SetColumnWidth(1, 200);
+	m_ScheduleListControl.SetColumnWidth(2, 200);
+	m_ScheduleListControl.SetColumnWidth(3, 200);
+	m_ScheduleListControl.SetColumnWidth(4, 200);
+	m_ScheduleListControl.SetColumnWidth(5, 200);
+	m_ScheduleListControl.SetColumnWidth(6, 200);
 */
 
 	CString text;
 
 	unsigned int maxRows = 0;
-	unsigned int days = schedule.days.size();
+	unsigned int days = m_schedule.days.size();
 	unsigned int currentDay = 0;
-	for (const auto& day : schedule.days)
+	for (const auto& day : m_schedule.days)
 	{
 		maxRows = ((maxRows < day.classes.size()) ? day.classes.size() : maxRows);
 		text.Format(_T("Day %d"), currentDay + 1);
 
-		ScheduleListControl.InsertColumn(currentDay + 1, text, LVCFMT_CENTER, 80);
+		m_ScheduleListControl.InsertColumn(currentDay + 1, text, LVCFMT_CENTER, 80);
 		currentDay++;
 	}
 
 	for (size_t i = 0; i < maxRows; i++)
 	{
 		text.Format(_T("%d"), i + 1);
-		ScheduleListControl.InsertItem(0, text);
+		m_ScheduleListControl.InsertItem(0, text);
 	}
 
 	std::set<int> uniqueIDs;
 
-	for (const auto& day : schedule.days)
+	for (const auto& day : m_schedule.days)
 	{
 		for (const auto& _class : day.classes)
 		{
@@ -103,19 +103,19 @@ BOOL ScheduleDlg::PrintSchedule()
 	}
 
 	std::vector<int> ids(uniqueIDs.begin(), uniqueIDs.end());
-	std::unordered_map<int, CString> subjectNames;
+	std::unordered_map<int, CString> m_subjectNames;
 
-	isOK = IDtoNameMapper(&databaseConnection, CString{ "Subjects" }, CString{ "ID" }, CString{ "Name" }, ids, subjectNames);
+	isOK = IDtoNameMapper(&databaseConnection, CString{ "Subjects" }, CString{ "ID" }, CString{ "Name" }, ids, m_subjectNames);
 
 	if (isOK)
 	{
 		for (size_t col = 0; col < days; col++)
 		{
 			int row = 0;
-			for (const auto& _class : schedule.days[col].classes)
+			for (const auto& _class : m_schedule.days[col].classes)
 			{
-				text.Format(_T("%s"), subjectNames[_class.nSubjectID]);
-				ScheduleListControl.SetItemText(row, col, text);
+				text.Format(_T("%s"), m_subjectNames[_class.nSubjectID]);
+				m_ScheduleListControl.SetItemText(row, col, text);
 				row++;
 			}
 		}
@@ -133,7 +133,7 @@ BOOL ScheduleDlg::OnInitDialog()
 //	Storage<CClass> classStorage(databaseConnectionString);
 	std::vector<CClass> allClasses;
 
-	isOK = classStore->LoadAll(allClasses);
+	isOK = m_classStore.LoadAll(allClasses);
 
 	if (isOK)
 	{
@@ -145,13 +145,13 @@ BOOL ScheduleDlg::OnInitDialog()
 				cClass.ID,
 				cClass.name);
 
-			int index = classSelectDropList.AddString(currentRow);
-			classSelectDropList.SetItemData(index, cClass.ID);
+			int index = m_classSelectDropList.AddString(currentRow);
+			m_classSelectDropList.SetItemData(index, cClass.ID);
 		}
 
-		classSelectDropList.SetCurSel(allClasses.size() > 0 ? 0 : CB_ERR);
+		m_classSelectDropList.SetCurSel(allClasses.size() > 0 ? 0 : CB_ERR);
 
-		if (classSelectDropList.GetCurSel() != CB_ERR)
+		if (m_classSelectDropList.GetCurSel() != CB_ERR)
 		{
 			isOK = PrintSchedule();
 		}
@@ -163,8 +163,8 @@ BOOL ScheduleDlg::OnInitDialog()
 void ScheduleDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_LIST1, ScheduleListControl);
-	DDX_Control(pDX, IDC_COMBO1, classSelectDropList);
+	DDX_Control(pDX, IDC_LIST1, m_ScheduleListControl);
+	DDX_Control(pDX, IDC_COMBO1, m_classSelectDropList);
 }
 
 
@@ -189,7 +189,7 @@ void ScheduleDlg::OnCbnSelchangeCombo1()
 void ScheduleDlg::OnBnClickedButtonEdit()
 {
 	// TODO: Add your control notification handler code here
-	ScheduledClassEditDlg dlg(schedule);
+	ScheduledClassEditDlg dlg(m_schedule);
 	dlg.DoModal();
 	PrintSchedule();
 }

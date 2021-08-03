@@ -21,9 +21,9 @@ IMPLEMENT_DYNAMIC(AllStudentsDlg, CDialog)
 
 AllStudentsDlg::AllStudentsDlg(CWnd* pParent /*=nullptr*/)
 	: CDialog(IDD_ALL_STUDENTS, pParent)
-	, allStudentsListVal(_T(""))
-	, studentStore(new StudentDatabaseInterface(_T("Students"), &databaseConnection))
-	, teacherStore(new TeacherDatabaseInterface(_T("Teachers"), &databaseConnection))
+	, m_allStudentsListVal(_T(""))
+	, m_studentStore(_T("Students"), &databaseConnection)
+	, m_teacherStore(_T("Teachers"), &databaseConnection)
 {
 }
 
@@ -33,9 +33,9 @@ AllStudentsDlg::~AllStudentsDlg()
 
 BOOL AllStudentsDlg::PrintAll()
 {
-	allStudentsList.ResetContent();
+	m_allStudentsList.ResetContent();
 
-	if (studentsRadioBtn.GetCheck() == BST_CHECKED)
+	if (m_studentsRadioBtn.GetCheck() == BST_CHECKED)
 	{
 		return PrintAllStudents();
 	}
@@ -51,7 +51,7 @@ BOOL AllStudentsDlg::PrintAllStudents()
 
 	std::vector<STUDENT> allStudents;
 
-	isOK = studentStore->LoadAll(allStudents);
+	isOK = m_studentStore.LoadAll(allStudents);
 	if (isOK)
 	{
 		CString currentRow;
@@ -64,8 +64,8 @@ BOOL AllStudentsDlg::PrintAllStudents()
 				CString{ student.szLastName },
 				COleDateTime{ student.dtBirthDate }.Format());
 
-			int index = allStudentsList.AddString(currentRow);
-			allStudentsList.SetItemData(index, student.nID);
+			int index = m_allStudentsList.AddString(currentRow);
+			m_allStudentsList.SetItemData(index, student.nID);
 		}
 	}
 	return isOK;
@@ -75,7 +75,7 @@ BOOL AllStudentsDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
-	studentsRadioBtn.SetCheck(true);
+	m_studentsRadioBtn.SetCheck(true);
 
 	BOOL isOK = TRUE;
 
@@ -87,9 +87,9 @@ BOOL AllStudentsDlg::OnInitDialog()
 void AllStudentsDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_LIST2, allStudentsList);
-	DDX_LBString(pDX, IDC_LIST2, allStudentsListVal);
-	DDX_Control(pDX, IDC_RADIO4, studentsRadioBtn);
+	DDX_Control(pDX, IDC_LIST2, m_allStudentsList);
+	DDX_LBString(pDX, IDC_LIST2, m_allStudentsListVal);
+	DDX_Control(pDX, IDC_RADIO4, m_studentsRadioBtn);
 }
 
 
@@ -107,7 +107,7 @@ END_MESSAGE_MAP()
 
 void AllStudentsDlg::OnBnClickedRadio4()
 {
-	allStudentsList.ResetContent();
+	m_allStudentsList.ResetContent();
 	BOOL isOK = PrintAll();
 
 	if (!isOK)
@@ -119,7 +119,7 @@ void AllStudentsDlg::OnBnClickedRadio4()
 
 void AllStudentsDlg::OnBnClickedRadio5()
 {
-	allStudentsList.ResetContent();
+	m_allStudentsList.ResetContent();
 	BOOL isOK = PrintAll();
 	
 	if (!isOK)
@@ -135,7 +135,7 @@ BOOL AllStudentsDlg::PrintAllTeachers()
 
 	std::vector<TEACHER> all;
 
-	isOK = teacherStore->LoadAll(all);
+	isOK = m_teacherStore.LoadAll(all);
 
 	if (isOK)
 	{
@@ -148,8 +148,8 @@ BOOL AllStudentsDlg::PrintAllTeachers()
 				CString{ student.szFirstName },
 				CString{ student.szLastName });
 
-			int index = allStudentsList.AddString(currentRow);
-			allStudentsList.SetItemData(index, student.nID);
+			int index = m_allStudentsList.AddString(currentRow);
+			m_allStudentsList.SetItemData(index, student.nID);
 		}
 	}
 	return isOK;
@@ -158,15 +158,15 @@ BOOL AllStudentsDlg::PrintAllTeachers()
 
 void AllStudentsDlg::OnBnClickedButtonEdit()
 {
-	if (allStudentsList.GetCurSel() != LB_ERR)
+	if (m_allStudentsList.GetCurSel() != LB_ERR)
 	{
 		BOOL isOK = TRUE;
 
-		if (studentsRadioBtn.GetCheck() == BST_CHECKED)
+		if (m_studentsRadioBtn.GetCheck() == BST_CHECKED)
 		{
 			STUDENT tmp;
 
-			isOK = studentStore->Load(allStudentsList.GetItemData(allStudentsList.GetCurSel()), tmp);
+			isOK = m_studentStore.Load(m_allStudentsList.GetItemData(m_allStudentsList.GetCurSel()), tmp);
 
 			if (!isOK)
 			{
@@ -181,7 +181,7 @@ void AllStudentsDlg::OnBnClickedButtonEdit()
 		{
 			TEACHER tmp;
 
-			isOK = teacherStore->Load(allStudentsList.GetItemData(allStudentsList.GetCurSel()), tmp);
+			isOK = m_teacherStore.Load(m_allStudentsList.GetItemData(m_allStudentsList.GetCurSel()), tmp);
 
 			if (!isOK)
 			{
@@ -201,10 +201,10 @@ void AllStudentsDlg::OnBnClickedButtonEdit()
 void AllStudentsDlg::OnBnClickedButtonAdd()
 {
 	BOOL isOK = TRUE;
-	if (studentsRadioBtn.GetCheck() == BST_CHECKED)
+	if (m_studentsRadioBtn.GetCheck() == BST_CHECKED)
 	{
 		STUDENT tmp;
-//		isOK = studentStore->NextID(tmp.nID);
+//		isOK = m_studentStore->NextID(tmp.nID);
 
 		if (!isOK)
 		{
@@ -219,7 +219,7 @@ void AllStudentsDlg::OnBnClickedButtonAdd()
 	{
 		TEACHER tmp;
 
-//		isOK = teacherStore->NextID(tmp.nID);
+//		isOK = m_teacherStore->NextID(tmp.nID);
 
 		if (!isOK)
 		{
@@ -237,15 +237,15 @@ void AllStudentsDlg::OnBnClickedButtonAdd()
 
 void AllStudentsDlg::OnBnClickedButtonRemove()
 {
-	if (allStudentsList.GetCurSel() != LB_ERR)
+	if (m_allStudentsList.GetCurSel() != LB_ERR)
 	{
 		BOOL isOK = TRUE;
 
-		if (studentsRadioBtn.GetCheck() == BST_CHECKED)
+		if (m_studentsRadioBtn.GetCheck() == BST_CHECKED)
 		{
 			STUDENT tmp;
 
-			isOK = studentStore->Load(allStudentsList.GetItemData(allStudentsList.GetCurSel()), tmp);
+			isOK = m_studentStore.Load(m_allStudentsList.GetItemData(m_allStudentsList.GetCurSel()), tmp);
 
 			if (!isOK)
 			{
@@ -260,7 +260,7 @@ void AllStudentsDlg::OnBnClickedButtonRemove()
 		{
 			TEACHER tmp;
 
-			isOK = teacherStore->Load(allStudentsList.GetItemData(allStudentsList.GetCurSel()), tmp);
+			isOK = m_teacherStore.Load(m_allStudentsList.GetItemData(m_allStudentsList.GetCurSel()), tmp);
 
 			if (!isOK)
 			{

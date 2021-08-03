@@ -25,10 +25,10 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 private:
-	std::unique_ptr<ObjectInterface<ScheduleClass>> scheduledClassStore;
-	std::unique_ptr<ObjectInterface<SUBJECT>> subjectStore;
-	DialogMode dialogMode;
-	ScheduleClass& data;
+	SubjectDatabaseInterface	m_scheduledClassStore;
+	SubjectDatabaseInterface	m_subjectStore;
+	DialogMode					m_dialogMode;
+	ScheduleClass&				m_data;
 
 
 	DECLARE_MESSAGE_MAP()

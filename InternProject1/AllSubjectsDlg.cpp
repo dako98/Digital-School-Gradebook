@@ -19,7 +19,7 @@ IMPLEMENT_DYNAMIC(AllSubjectsDlg, CDialog)
 
 AllSubjectsDlg::AllSubjectsDlg(CWnd* pParent /*=nullptr*/)
 	: CDialog(IDD_ALL_SUBJECTS, pParent)
-	, store(new SubjectDatabaseInterface(_T("Subjects"), &databaseConnection))
+	, m_store(_T("Subjects"), &databaseConnection)
 {
 
 }
@@ -36,7 +36,7 @@ BOOL AllSubjectsDlg::PrintAll()
 
 	std::vector<SUBJECT> all;
 //	Storage<SUBJECT> su{ subjectsPath };
-	isOK = store->LoadAll(all);
+	isOK = m_store.LoadAll(all);
 
 	if (isOK)
 	{
@@ -91,7 +91,7 @@ void AllSubjectsDlg::OnBnClickedButtonAdd()
 //	Storage<SUBJECT> store{ subjectsPath };
 	BOOL isOK = TRUE;
 
-//	isOK = store->NextID(tmp.nID);
+//	isOK = m_store.NextID(tmp.nID);
 
 	if (!isOK)
 	{
@@ -114,7 +114,7 @@ void AllSubjectsDlg::OnBnClickedButtonEdit()
 //		Storage<SUBJECT> store{ subjectsPath };
 		BOOL isOK = TRUE;
 
-		isOK = store->Load(subjectsList.GetItemData(subjectsList.GetCurSel()), tmp);
+		isOK = m_store.Load(subjectsList.GetItemData(subjectsList.GetCurSel()), tmp);
 
 		if (!isOK)
 		{
@@ -138,7 +138,7 @@ void AllSubjectsDlg::OnBnClickedButtonRemove()
 //		Storage<SUBJECT> store{ subjectsPath };
 		BOOL isOK = TRUE;
 
-		isOK = store->Load(subjectsList.GetItemData(subjectsList.GetCurSel()), tmp);
+		isOK = m_store.Load(subjectsList.GetItemData(subjectsList.GetCurSel()), tmp);
 
 		if (!isOK)
 		{
