@@ -1132,7 +1132,6 @@ BOOL StudentDatabaseInterface::Add(STUDENT& recStudent)
         return FALSE;
     }
     
-    recordSet.m_strFilter.Format(_T("[NumberInClass] = %d AND [ClassID] = %d"), recStudent.numberInClass, recStudent.classID);
     try
     {
         recordSet.Open(CRecordset::dynaset, table, CRecordset::none);
@@ -1146,7 +1145,7 @@ BOOL StudentDatabaseInterface::Add(STUDENT& recStudent)
     {
         return FALSE;
     }
-
+   
 
     db->BeginTrans();
 
