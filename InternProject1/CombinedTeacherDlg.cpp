@@ -15,12 +15,12 @@
 
 IMPLEMENT_DYNAMIC(CombinedTeacherDlg, CDialog)
 
-CombinedTeacherDlg::CombinedTeacherDlg(DialogMode eMode, const TEACHER& data)
+CombinedTeacherDlg::CombinedTeacherDlg(DialogMode eMode, TEACHER& data)
 	: CDialog(IDD_TEACHER_COMBINED, nullptr)
 	, m_eDialogMode(eMode)
 	, m_teacherNumberVal(0)
 	, m_store(_T("Teachers"), &databaseConnection)
-	, m_tmp(data)
+	, m_data(data)
 {
 }
 
@@ -29,12 +29,12 @@ BOOL CombinedTeacherDlg::OnInitDialog()
 	if (!CDialog::OnInitDialog())
 		return FALSE;
 
-	m_teacherNumberVal = m_tmp.nID;
+	m_teacherNumberVal = m_data.nID;
 
 	if (m_eDialogMode != DialogMode::eDialogMode_Add)
 	{
-		m_teacherFirstName.SetWindowText(CString{ m_tmp.szFirstName });
-		m_teacherLastName.SetWindowText(CString{ m_tmp.szLastName });
+		m_teacherFirstName.SetWindowText(CString{ m_data.szFirstName });
+		m_teacherLastName.SetWindowText(CString{ m_data.szLastName });
 	}
 	else
 	{
@@ -125,7 +125,7 @@ void CombinedTeacherDlg::OnBnClickedOk()
 			st.szLastName = "";
 		}
 	}
-
+	/*
 	switch (m_eDialogMode)
 	{
 	case DialogMode::eDialogMode_Add:
@@ -147,12 +147,14 @@ void CombinedTeacherDlg::OnBnClickedOk()
 		throw std::exception{ "Invalid window state." };
 		break;
 	}
-
-	if (!isOK)
+	*/
+	if (st.Validate())
+	{
+		m_data = st;
+		CDialog::OnOK();
+	}
+	else
 	{
 		int errorBox = MessageBox((LPCWSTR)L"Error! Check your input.", NULL, MB_OK | MB_ICONWARNING);
-		return;
 	}
-
-	CDialog::OnOK();
 }

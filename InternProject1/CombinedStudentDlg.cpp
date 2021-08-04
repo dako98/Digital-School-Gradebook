@@ -15,14 +15,15 @@
 
 IMPLEMENT_DYNAMIC(CombinedStudentDlg, CDialog)
 
-CombinedStudentDlg::CombinedStudentDlg(DialogMode eDialogMode,const STUDENT& m_student)
+CombinedStudentDlg::CombinedStudentDlg(DialogMode eDialogMode, STUDENT& m_student)
 	: CDialog(IDD_STUDENT_COMBINED, nullptr)
 	, m_eDialogMode(eDialogMode)
 	, m_studentNumberVal(0)
 	, m_studentBirthDateVal(COleDateTime::GetCurrentTime())
-	, m_student(m_student)
-	, m_studentStore(_T("Students"), &databaseConnection)
+	, m_data(m_student)
+//	, m_studentStore(_T("Students"), &databaseConnection)
 	, m_classesStore(_T("Classes"), &databaseConnection)
+	, m_tmp(m_data)
 {
 }
 
@@ -36,16 +37,16 @@ BOOL CombinedStudentDlg::OnInitDialog()
 	//TODO: Fill list with classes.
 	isOK = LoadAllClasses();
 
-	m_studentNumberVal = m_student.nID;
+	m_studentNumberVal = m_data.nID;
 
 	if (m_eDialogMode != DialogMode::eDialogMode_Add)
 	{
-		m_studentBirthDateVal = m_student.dtBirthDate;
-		m_studentFirstName.SetWindowText(CString{ m_student.szFirstName });
-		m_studentLastName.SetWindowText(CString{ m_student.szLastName });
+		m_studentBirthDateVal = m_data.dtBirthDate;
+		m_studentFirstName.SetWindowText(CString{ m_data.szFirstName });
+		m_studentLastName.SetWindowText(CString{ m_data.szLastName });
 
 		CString tmp;
-		tmp.Format(_T("%d"), m_student.numberInClass);
+		tmp.Format(_T("%d"), m_data.numberInClass);
 		m_numberInClassEditBox.SetWindowText(tmp);
 
 	}
@@ -133,7 +134,7 @@ BOOL CombinedStudentDlg::LoadAllClasses()
 			m_classList.SetItemData(index, cClass.ID);
 		}
 
-		m_classList.SetCurSel(GetIndexByData(m_student.classID, m_classList));
+		m_classList.SetCurSel(GetIndexByData(m_data.classID, m_classList));
 	}
 	UpdateData(FALSE);
 
@@ -154,11 +155,11 @@ void CombinedStudentDlg::OnBnClickedOk()
 	UpdateData();
 	
 	BOOL isOK = TRUE;
-	STUDENT st;
+
 	CString buff;
 
-	st.nID = m_studentNumberVal;
-	st.classID = m_classList.GetItemData(m_classList.GetCurSel());
+	m_tmp.nID = m_studentNumberVal;
+	m_tmp.classID = m_classList.GetItemData(m_classList.GetCurSel());
 
 	if (m_eDialogMode != DialogMode::eDialogMode_Remove)
 	{
@@ -166,32 +167,32 @@ void CombinedStudentDlg::OnBnClickedOk()
 
 		if (buff.GetLength() <= STUDENT::MAX_NAME_SIZE)
 		{
-			st.szFirstName = buff;
+			m_tmp.szFirstName = buff;
 		}
 		else
 		{
-			st.szFirstName = "";
+			m_tmp.szFirstName = "";
 		}
 
 		m_studentLastName.GetWindowTextW(buff);
 
 		if (buff.GetLength() <= STUDENT::MAX_NAME_SIZE)
 		{
-			st.szLastName = buff;
+			m_tmp.szLastName = buff;
 		}
 		else
 		{
-			st.szLastName = "";
+			m_tmp.szLastName = "";
 		}
 
-		m_studentBirthDateVal.GetAsDBTIMESTAMP(st.dtBirthDate);
+		m_studentBirthDateVal.GetAsDBTIMESTAMP(m_tmp.dtBirthDate);
 
-		st.classID = m_classList.GetItemData(m_classList.GetCurSel());
+		m_tmp.classID = m_classList.GetItemData(m_classList.GetCurSel());
 
 		m_numberInClassEditBox.GetWindowText(buff);
-		st.numberInClass = _wtoi(buff);
+		m_tmp.numberInClass = _wtoi(buff);
 	}
-
+/*
 	switch (m_eDialogMode)
 	{
 	case DialogMode::eDialogMode_Add:
@@ -213,12 +214,14 @@ void CombinedStudentDlg::OnBnClickedOk()
 		throw std::exception{ "Invalid window state." };
 		break;
 	}
-	
-	if (!isOK)
+	*/
+	if (m_tmp.Validate())
+	{
+		m_data = m_tmp;
+		CDialog::OnOK();
+	}
+	else
 	{
 		int errorBox = MessageBox((LPCWSTR)L"Error! Check your input.", NULL, MB_OK | MB_ICONWARNING);
-		return;
 	}
-
-	CDialog::OnOK();
 }

@@ -15,12 +15,12 @@
 
 IMPLEMENT_DYNAMIC(CombinedGradeDlg, CDialog)
 
-CombinedGradeDlg::CombinedGradeDlg(DialogMode eMode, const GRADE& data)
+CombinedGradeDlg::CombinedGradeDlg(DialogMode eMode, GRADE& data)
 	: CDialog(IDD_GRADES_COMBINED, nullptr)
 	, m_eDialogMode(eMode)
 	, m_gradeIDVal(0)
-	, m_tmp(data)
-	, m_gradeStore(_T("Grades"), &databaseConnection)
+	, m_data(data)
+//	, m_gradeStore(_T("Grades"), &databaseConnection)
 	, m_studentStore(_T("Students"), &databaseConnection)
 	, m_subjectStore(_T("Subjects"), &databaseConnection)
 {
@@ -87,7 +87,7 @@ BOOL CombinedGradeDlg::OnInitDialog()
 
 	if (m_eDialogMode != DialogMode::eDialogMode_Add)
 	{
-		m_gradeIDVal = m_tmp.nID;
+		m_gradeIDVal = m_data.nID;
 	}
 	else
 	{
@@ -100,7 +100,7 @@ BOOL CombinedGradeDlg::OnInitDialog()
 	if (isOK)
 	{
 		// Select student
-		m_studentDropdown.SetCurSel(GetIndexByData(m_tmp.nStudentID, m_studentDropdown));
+		m_studentDropdown.SetCurSel(GetIndexByData(m_data.nStudentID, m_studentDropdown));
 
 		// Load all subjects
 		isOK = PrintAllSubjects();
@@ -109,7 +109,7 @@ BOOL CombinedGradeDlg::OnInitDialog()
 	if (isOK)
 	{
 		// Select subject
-		m_subjectDropdown.SetCurSel(GetIndexByData(m_tmp.nSubjectID, m_subjectDropdown));
+		m_subjectDropdown.SetCurSel(GetIndexByData(m_data.nSubjectID, m_subjectDropdown));
 
 
 		// Load all grade values
@@ -120,10 +120,10 @@ BOOL CombinedGradeDlg::OnInitDialog()
 		}
 
 		// Select grade value
-		m_gradeDropdown.SetCurSel(GetIndexByData(m_tmp.value, m_gradeDropdown));
+		m_gradeDropdown.SetCurSel(GetIndexByData(m_data.value, m_gradeDropdown));
 
 		// Select date
-		m_gradeDateVal = m_tmp.dtDate;
+		m_gradeDateVal = m_data.dtDate;
 	}
 
 	UpdateData(FALSE);
@@ -197,12 +197,31 @@ void CombinedGradeDlg::OnBnClickedOk()
 	GRADE st;
 
 	st.nID = m_gradeIDVal;
-	st.nStudentID = m_studentDropdown.GetItemData(m_studentDropdown.GetCurSel());
-	st.nSubjectID = m_subjectDropdown.GetItemData(m_subjectDropdown.GetCurSel());
-	st.value = m_gradeDropdown.GetItemData(m_gradeDropdown.GetCurSel());
-	m_gradeDateVal.GetAsDBTIMESTAMP(st.dtDate);
 
+	if (m_eDialogMode != DialogMode::eDialogMode_Remove)
+	{
+		st.nStudentID = m_studentDropdown.GetItemData(m_studentDropdown.GetCurSel());
+		st.nSubjectID = m_subjectDropdown.GetItemData(m_subjectDropdown.GetCurSel());
+		st.value = m_gradeDropdown.GetItemData(m_gradeDropdown.GetCurSel());
+		m_gradeDateVal.GetAsDBTIMESTAMP(st.dtDate);
 
+		if (st.Validate())
+		{
+			m_data = st;
+			CDialog::OnOK();
+		}
+		else
+		{
+			int errorBox = MessageBox((LPCWSTR)L"Error! Check your input.", NULL, MB_OK | MB_ICONWARNING);
+		}
+	}
+	else
+	{
+		m_data = st;
+		CDialog::OnOK();
+	}
+
+/*
 	switch (m_eDialogMode)
 	{
 	case DialogMode::eDialogMode_Add:
@@ -224,6 +243,7 @@ void CombinedGradeDlg::OnBnClickedOk()
 
 		break;
 	}
+	
 
 	if (!isOK)
 	{
@@ -231,4 +251,5 @@ void CombinedGradeDlg::OnBnClickedOk()
 		return;
 	}
 	CDialog::OnOK();
+	*/
 }

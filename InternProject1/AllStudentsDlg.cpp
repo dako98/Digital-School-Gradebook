@@ -167,7 +167,6 @@ void AllStudentsDlg::OnBnClickedButtonEdit()
 			STUDENT tmp;
 
 			isOK = m_studentStore.Load(m_allStudentsList.GetItemData(m_allStudentsList.GetCurSel()), tmp);
-
 			if (!isOK)
 			{
 				int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
@@ -175,14 +174,22 @@ void AllStudentsDlg::OnBnClickedButtonEdit()
 			}
 
 			CombinedStudentDlg dlg{ eDialogMode_Edit, tmp };
-			dlg.DoModal();
+			if (dlg.DoModal() == IDOK)
+			{
+				isOK = m_studentStore.Edit(tmp);
+			}
+			if (!isOK)
+			{
+				int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
+				return;
+			}
+
 		}
 		else
 		{
 			TEACHER tmp;
 
 			isOK = m_teacherStore.Load(m_allStudentsList.GetItemData(m_allStudentsList.GetCurSel()), tmp);
-
 			if (!isOK)
 			{
 				int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
@@ -190,7 +197,15 @@ void AllStudentsDlg::OnBnClickedButtonEdit()
 			}
 
 			CombinedTeacherDlg dlg{ eDialogMode_Edit, tmp };
-			dlg.DoModal();
+			if (dlg.DoModal() == IDOK)
+			{
+				isOK = m_teacherStore.Edit(tmp);
+			}
+			if (!isOK)
+			{
+				int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
+				return;
+			}
 		}
 
 		PrintAll();
@@ -206,14 +221,16 @@ void AllStudentsDlg::OnBnClickedButtonAdd()
 		STUDENT tmp;
 //		isOK = m_studentStore->NextID(tmp.nID);
 
+		CombinedStudentDlg dlg{ eDialogMode_Add, tmp };
+		if (dlg.DoModal() == IDOK)
+		{
+			isOK = m_studentStore.Add(tmp);
+		}
 		if (!isOK)
 		{
 			int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
 			return;
 		}
-
-		CombinedStudentDlg dlg{ eDialogMode_Add, tmp };
-		dlg.DoModal();
 	}
 	else
 	{
@@ -221,14 +238,17 @@ void AllStudentsDlg::OnBnClickedButtonAdd()
 
 //		isOK = m_teacherStore->NextID(tmp.nID);
 
+
+		CombinedTeacherDlg dlg{ eDialogMode_Add, tmp };
+		if (dlg.DoModal() == IDOK)
+		{
+			isOK = m_teacherStore.Add(tmp);
+		}
 		if (!isOK)
 		{
 			int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
 			return;
 		}
-
-		CombinedTeacherDlg dlg{ eDialogMode_Add, tmp };
-		dlg.DoModal();
 	}
 
 	PrintAll();
@@ -246,7 +266,6 @@ void AllStudentsDlg::OnBnClickedButtonRemove()
 			STUDENT tmp;
 
 			isOK = m_studentStore.Load(m_allStudentsList.GetItemData(m_allStudentsList.GetCurSel()), tmp);
-
 			if (!isOK)
 			{
 				int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
@@ -254,14 +273,21 @@ void AllStudentsDlg::OnBnClickedButtonRemove()
 			}
 
 			CombinedStudentDlg dlg{ eDialogMode_Remove, tmp };
-			dlg.DoModal();
+			if (dlg.DoModal() == IDOK)
+			{
+				isOK = m_studentStore.Delete(tmp.nID);
+			}
+			if (!isOK)
+			{
+				int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
+				return;
+			}
 		}
 		else
 		{
 			TEACHER tmp;
 
 			isOK = m_teacherStore.Load(m_allStudentsList.GetItemData(m_allStudentsList.GetCurSel()), tmp);
-
 			if (!isOK)
 			{
 				int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
@@ -269,7 +295,15 @@ void AllStudentsDlg::OnBnClickedButtonRemove()
 			}
 
 			CombinedTeacherDlg dlg{ eDialogMode_Remove, tmp };
-			dlg.DoModal();
+			if (dlg.DoModal() == IDOK)
+			{
+				isOK = m_teacherStore.Delete(tmp.nID);
+			}
+			if (!isOK)
+			{
+				int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
+				return;
+			}
 		}
 		PrintAll();
 	}

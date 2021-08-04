@@ -19,7 +19,7 @@ IMPLEMENT_DYNAMIC(AllSubjectsDlg, CDialog)
 
 AllSubjectsDlg::AllSubjectsDlg(CWnd* pParent /*=nullptr*/)
 	: CDialog(IDD_ALL_SUBJECTS, pParent)
-	, m_store(_T("Subjects"), &databaseConnection)
+	, m_subjectStore(_T("Subjects"), &databaseConnection)
 {
 
 }
@@ -36,7 +36,7 @@ BOOL AllSubjectsDlg::PrintAll()
 
 	std::vector<SUBJECT> all;
 //	Storage<SUBJECT> su{ subjectsPath };
-	isOK = m_store.LoadAll(all);
+	isOK = m_subjectStore.LoadAll(all);
 
 	if (isOK)
 	{
@@ -93,15 +93,18 @@ void AllSubjectsDlg::OnBnClickedButtonAdd()
 
 //	isOK = m_store.NextID(tmp.nID);
 
+
+
+	CombinedSubjectDlg dlg{ eDialogMode_Add, tmp };
+	if (dlg.DoModal() == IDOK)
+	{
+		isOK = m_subjectStore.Add(tmp);
+	}
 	if (!isOK)
 	{
 		int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
 		return;
 	}
-
-	CombinedSubjectDlg dlg{ eDialogMode_Add, tmp };
-	dlg.DoModal();
-
 	PrintAll();
 }
 
@@ -114,8 +117,7 @@ void AllSubjectsDlg::OnBnClickedButtonEdit()
 //		Storage<SUBJECT> store{ subjectsPath };
 		BOOL isOK = TRUE;
 
-		isOK = m_store.Load(subjectsList.GetItemData(subjectsList.GetCurSel()), tmp);
-
+		isOK = m_subjectStore.Load(subjectsList.GetItemData(subjectsList.GetCurSel()), tmp);
 		if (!isOK)
 		{
 			int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
@@ -123,7 +125,15 @@ void AllSubjectsDlg::OnBnClickedButtonEdit()
 		}
 
 		CombinedSubjectDlg dlg{ eDialogMode_Edit, tmp };
-		dlg.DoModal();
+		if (dlg.DoModal() == IDOK)
+		{
+			isOK = m_subjectStore.Edit(tmp);
+		}
+		if (!isOK)
+		{
+			int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
+			return;
+		}
 
 		PrintAll();
 	}
@@ -138,8 +148,7 @@ void AllSubjectsDlg::OnBnClickedButtonRemove()
 //		Storage<SUBJECT> store{ subjectsPath };
 		BOOL isOK = TRUE;
 
-		isOK = m_store.Load(subjectsList.GetItemData(subjectsList.GetCurSel()), tmp);
-
+		isOK = m_subjectStore.Load(subjectsList.GetItemData(subjectsList.GetCurSel()), tmp);
 		if (!isOK)
 		{
 			int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
@@ -147,7 +156,15 @@ void AllSubjectsDlg::OnBnClickedButtonRemove()
 		}
 
 		CombinedSubjectDlg dlg{ eDialogMode_Remove, tmp };
-		dlg.DoModal();
+		if (dlg.DoModal() == IDOK)
+		{
+			isOK = m_subjectStore.Delete(tmp.nID);
+		}
+		if (!isOK)
+		{
+			int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
+			return;
+		}
 
 		PrintAll();
 	}

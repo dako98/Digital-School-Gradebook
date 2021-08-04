@@ -17,14 +17,14 @@
 
 IMPLEMENT_DYNAMIC(CombinedSubjectDlg, CDialog)
 
-CombinedSubjectDlg::CombinedSubjectDlg(DialogMode eMode, const SUBJECT& data)
+CombinedSubjectDlg::CombinedSubjectDlg(DialogMode eMode, SUBJECT& data)
 	: CDialog(IDD_SUBJECT_COMBINED, nullptr)
 	, m_eDialogMode(eMode)
 	, m_subjectIDVal(0)
 	, m_subjectStore(_T("Subjects"), &databaseConnection)
-	, m_gradeStore(_T("Grades"), &databaseConnection)
+//	, m_gradeStore(_T("Grades"), &databaseConnection)
 	, m_teacherStore(_T("Teachers"), &databaseConnection)
-	, m_tmp(data)
+	, m_data(data)
 {
 }
 
@@ -33,12 +33,12 @@ BOOL CombinedSubjectDlg::OnInitDialog()
 	if (!CDialog::OnInitDialog())
 		return FALSE;
 
-	m_subjectIDVal = m_tmp.nID;
+	m_subjectIDVal = m_data.nID;
 
 	if (m_eDialogMode != DialogMode::eDialogMode_Add)
 	{
-		m_subjectName.SetWindowText(CString{ m_tmp.szName });
-		m_subjectRoom.SetWindowText(CString{ m_tmp.szRoom });
+		m_subjectName.SetWindowText(CString{ m_data.szName });
+		m_subjectRoom.SetWindowText(CString{ m_data.szRoom });
 	}
 	else
 	{
@@ -66,7 +66,7 @@ BOOL CombinedSubjectDlg::OnInitDialog()
 			m_teacherDropdown.SetItemData(index, teacher.nID);
 		}
 
-		m_teacherDropdown.SetCurSel(GetIndexByData(m_tmp.nTeacherID, m_teacherDropdown));
+		m_teacherDropdown.SetCurSel(GetIndexByData(m_data.nTeacherID, m_teacherDropdown));
 	}
 	UpdateData(FALSE);
 
@@ -144,12 +144,12 @@ void CombinedSubjectDlg::OnBnClickedOk()
 
 			if (buff.GetLength() <= SUBJECT::MAX_NAME_SIZE)
 			{
-//				strcpy_s(su.szName, SUBJECT::MAX_NAME_SIZE, CT2A(buff));
+				//				strcpy_s(su.szName, SUBJECT::MAX_NAME_SIZE, CT2A(buff));
 				su.szName = buff;
 			}
 			else
 			{
-//				strcpy_s(su.szName, SUBJECT::MAX_NAME_SIZE, "");
+				//				strcpy_s(su.szName, SUBJECT::MAX_NAME_SIZE, "");
 				su.szName = "";
 			}
 
@@ -157,13 +157,13 @@ void CombinedSubjectDlg::OnBnClickedOk()
 
 			if (buff.GetLength() <= SUBJECT::MAX_NAME_SIZE)
 			{
-//				strcpy_s(su.szRoom, SUBJECT::MAX_NAME_SIZE, CT2A(buff));
+				//				strcpy_s(su.szRoom, SUBJECT::MAX_NAME_SIZE, CT2A(buff));
 				su.szRoom = buff;
 
 			}
 			else
 			{
-//				strcpy_s(su.szRoom, SUBJECT::MAX_NAME_SIZE, "");
+				//				strcpy_s(su.szRoom, SUBJECT::MAX_NAME_SIZE, "");
 				su.szRoom = "";
 
 			}
@@ -172,9 +172,24 @@ void CombinedSubjectDlg::OnBnClickedOk()
 		{
 			isOK = FALSE;
 		}
+
+		if (su.Validate())
+		{
+			m_data = su;
+			CDialog::OnOK();
+		}
+		else
+		{
+			int errorBox = MessageBox((LPCWSTR)L"Error! Check your input.", NULL, MB_OK | MB_ICONWARNING);
+		}
+	}// !!eDialogMode_Remove
+	else
+	{
+		m_data = su;
+		CDialog::OnOK();
 	}
 
-
+/*
 	switch (m_eDialogMode)
 	{
 	case DialogMode::eDialogMode_Add:
@@ -189,7 +204,7 @@ void CombinedSubjectDlg::OnBnClickedOk()
 	{
 		isOK = m_subjectStore.Delete(su.nID);
 
-/*
+
 		Storage<GRADE> gradeStore{ gradesPath };
 		std::vector<GRADE> allGrades;
 		isOK = gradeStore->LoadAll(allGrades);
@@ -209,7 +224,7 @@ void CombinedSubjectDlg::OnBnClickedOk()
 				}
 			}
 		}
-		*/
+		
 	}
 	break;
 
@@ -217,12 +232,7 @@ void CombinedSubjectDlg::OnBnClickedOk()
 		throw std::exception{ "Invalid window state." };
 		break;
 	}
-	
-	if (!isOK)
-	{
-		int errorBox = MessageBox((LPCWSTR)L"Error! Check your input.", NULL, MB_OK | MB_ICONWARNING);
-		return;
-	}
+	*/
 
-	CDialog::OnOK();
+
 }
