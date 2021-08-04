@@ -50,6 +50,7 @@ public:
     void DoBulkFieldExchange(CFieldExchange* pFX) override;
 
 };
+/*
 class StudentSetWrapper
 {
 public:
@@ -69,7 +70,7 @@ private:
     StudentSet* blk;
 
 };
-
+*/
 class TeacherSet : public CRecordset
 {
 public:
@@ -91,6 +92,7 @@ public:
     void DoFieldExchange(CFieldExchange* pFX) override;
     void DoBulkFieldExchange(CFieldExchange* pFX) override;
 };
+/*
 class TeacherSetWrapper
 {
 public:
@@ -109,7 +111,7 @@ private:
 
     TeacherSet* blk;
 };
-
+*/
 class GradeSet : public CRecordset
 {
 public:
@@ -139,7 +141,7 @@ public:
     void DoFieldExchange(CFieldExchange* pFX) override;
     void DoBulkFieldExchange(CFieldExchange* pFX) override;
 };
-class GradeSetWrapper
+/*class GradeSetWrapper
 {
 public:
 
@@ -157,7 +159,7 @@ private:
 
     GradeSet* blk;
 };
-
+*/
 class SubjectSet : public CRecordset
 {
 public:
@@ -183,6 +185,7 @@ public:
     void DoFieldExchange(CFieldExchange* pFX) override;
     void DoBulkFieldExchange(CFieldExchange* pFX) override;
 };
+/*
 class SubjectSetWrapper
 {
 public:
@@ -201,7 +204,7 @@ private:
 
     SubjectSet* blk;
 };
-
+*/
 class ClassesSet : public CRecordset
 {
 public:
@@ -223,6 +226,7 @@ public:
     void DoFieldExchange(CFieldExchange* pFX) override;
     void DoBulkFieldExchange(CFieldExchange* pFX) override;
 };
+/*
 class ClassesSetWrapper
 {
 public:
@@ -241,7 +245,7 @@ private:
 
     ClassesSet* blk;
 };
-
+*/
 
 class IDtoNameSet : public CRecordset
 {
@@ -278,7 +282,7 @@ BOOL IDtoNameMapper(CDatabase* db,
 
 BOOL    ValidateUniqueStudentNumber(const STUDENT& recStudent, CDatabase* db);
 DBTIME  CStringToDBTIME(const CString& time);
-CString DBTimeToCString(const DBTIME& time);
+CString DBTIMEToCString(const DBTIME& time);
 
 
 template<class T>

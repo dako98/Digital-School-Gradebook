@@ -1,4 +1,4 @@
-
+/*
 template<class T>
 Storage<T>::Storage(const std::string& path)
 	:path(path)
@@ -251,3 +251,4 @@ BOOL Storage<T>::_LoadAll(std::vector<T>& allStudents, std::fstream& file)
 	return isGood;
 }
 
+*/

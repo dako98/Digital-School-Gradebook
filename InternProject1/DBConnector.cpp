@@ -7,26 +7,15 @@
 CString DBTIMEToCString(const DBTIME& time)
 {
     CString result;
-//    result.Format(_T("%d-%d-%d %d:%d:%d:%d"), time.year, time.month, time.day, time.hour, time.minute, time.second, time.fraction);
     result.Format(_T("%d:%d:%d"), time.hour, time.minute, time.second);
     return result;
 }
-
 
 DBTIME CStringToDBTIME(const CString& time)
 {
     DBTIME result;
     std::wstringstream ss(time.GetString());
-/*
-    ss >> result.year;
-    ss.ignore();
 
-    ss >> result.month;
-    ss.ignore();
-
-    ss >> result.day;
-    ss.ignore();
-    */
     ss >> result.hour;
     ss.ignore();
 
@@ -34,9 +23,6 @@ DBTIME CStringToDBTIME(const CString& time)
     ss.ignore();
 
     ss >> result.second;
-//    ss.ignore();
-
-//    ss >> result.fraction;
 
     return result;
 }
@@ -124,7 +110,7 @@ void StudentSet::DoFieldExchange(CFieldExchange* pFX)
 
 }
 
-
+/*
 //FIXME: Add number field from database.
 StudentSetWrapper::StudentSetWrapper(StudentSet *pDB)
     :blk(&*pDB)
@@ -186,7 +172,9 @@ BOOL StudentSetWrapper::NextID(int& id) const
 
     try
     {
-        blk->Open(AFX_DB_USE_DEFAULT_TYPE, sSQL /*, CRecordset::useMultiRowFetch*/);
+        blk->Open(AFX_DB_USE_DEFAULT_TYPE, sSQL
+        //, CRecordset::useMultiRowFetch
+        );
     }
     catch (const std::exception&)
     {
@@ -217,8 +205,12 @@ BOOL StudentSetWrapper::LoadAll(std::vector<STUDENT>& out)
 
     try
     {
-//        blk->Open(AFX_DB_USE_DEFAULT_TYPE, sSQL, CRecordset::none/*, CRecordset::useMultiRowFetch*/);
-        blk->Open(CRecordset::dynaset, sSQL, CRecordset::none/*, CRecordset::useMultiRowFetch*/);
+//        blk->Open(AFX_DB_USE_DEFAULT_TYPE, sSQL, CRecordset::none
+//, CRecordset::useMultiRowFetch
+        );
+        blk->Open(CRecordset::dynaset, sSQL, CRecordset::none
+        //, CRecordset::useMultiRowFetch
+        );
 //        blk->Open
     }
     catch (const std::exception&)
@@ -234,8 +226,8 @@ BOOL StudentSetWrapper::LoadAll(std::vector<STUDENT>& out)
         for (int nPosInRowset = 0; nPosInRowset < rowsFetched; nPosInRowset++)
         {
             //Check if value is null
-/*            if (blk->m_rgFirstName[nPosInRowset] == SQL_NULL_DATA)
-                continue;*/
+//            if (blk->m_rgFirstName[nPosInRowset] == SQL_NULL_DATA)
+//                continue;
 //            blk->m_strFilter = "ID = 1";
             blk->Delete();
 
@@ -285,7 +277,7 @@ BOOL StudentSetWrapper::LoadAll(std::vector<STUDENT>& out)
 
     return isOK;
 }
-
+*/
 
 TeacherSet::TeacherSet(CDatabase* pDB)
     : CRecordset(pDB)
@@ -308,6 +300,7 @@ TeacherSet::TeacherSet(CDatabase* pDB)
 
     m_nFields               = count;
 }
+
 void TeacherSet::DoBulkFieldExchange(CFieldExchange* pFX)
 {
     pFX->SetFieldType(CFieldExchange::outputColumn);
@@ -316,7 +309,6 @@ void TeacherSet::DoBulkFieldExchange(CFieldExchange* pFX)
     RFX_Text_Bulk   (pFX, _T("[FirstName]"),   &m_rgFirstName, &m_rgFirstNameLengths, 20);
     RFX_Text_Bulk   (pFX, _T("[LastName]"),    &m_rgLastName, &m_rgLastNameLengths, 20);
 }
-
 void TeacherSet::DoFieldExchange(CFieldExchange* pFX)
 {
     pFX->SetFieldType(CFieldExchange::outputColumn);
@@ -326,6 +318,7 @@ void TeacherSet::DoFieldExchange(CFieldExchange* pFX)
     RFX_Text    (pFX, _T("[LastName]"),     lastName);
 }
 
+/*
 TeacherSetWrapper::TeacherSetWrapper(TeacherSet* pDB)
     :blk(&*pDB)
 {
@@ -445,7 +438,7 @@ BOOL TeacherSetWrapper::LoadAll(std::vector<TEACHER>& out)
 
     return isOK;
 }
-
+*/
 
 GradeSet::GradeSet(CDatabase* pDB)
     : CRecordset(pDB)
@@ -499,6 +492,7 @@ void GradeSet::DoFieldExchange(CFieldExchange* pFX)
     RFX_Int     (pFX, _T("[Value]"),        value);
 }
 
+/*
 GradeSetWrapper::GradeSetWrapper(GradeSet* pDB)
     :blk(&*pDB)
 {
@@ -625,7 +619,7 @@ BOOL GradeSetWrapper::LoadAll(std::vector<GRADE>& out)
 
     return isOK;
 }
-
+*/
 
 SubjectSet::SubjectSet(CDatabase* pDB)
     : CRecordset(pDB)
@@ -672,6 +666,7 @@ void SubjectSet::DoFieldExchange(CFieldExchange* pFX)
     RFX_Text    (pFX, _T("[RoomName]"),     roomName);
 }
 
+/*
 SubjectSetWrapper::SubjectSetWrapper(SubjectSet* pDB)
     :blk(&*pDB)
 {
@@ -787,7 +782,7 @@ BOOL SubjectSetWrapper::LoadAll(std::vector<SUBJECT>& out)
 
     return isOK;
 }
-
+*/
 
 ClassesSet::ClassesSet(CDatabase* pDB)
     : CRecordset(pDB)
@@ -828,6 +823,7 @@ void ClassesSet::DoFieldExchange(CFieldExchange* pFX)
     RFX_Int     (pFX, _T("[ClassTeacherID]"),   teacherID);
 }
 
+/*
 ClassesSetWrapper::ClassesSetWrapper(ClassesSet* pDB)
     :blk(&*pDB)
 {
@@ -856,15 +852,15 @@ BOOL ClassesSetWrapper::Load(const int nStudentID, CClass& recStudent)
         tmp.name        =   CString{ blk->m_rgName};
         tmp.teacherID   =   *(blk->m_rgTeacherID);
 
-        /*
-        tmp.nID = *(blk->m_rgID);
+        
+//        tmp.nID = *(blk->m_rgID);
 
-        strcpy_s(tmp.szName, tmp.MAX_NAME_SIZE, blk->m_rgName);
+//        strcpy_s(tmp.szName, tmp.MAX_NAME_SIZE, blk->m_rgName);
 
-        tmp.nTeacherID = *(blk->m_rgTeacherID);
+//        tmp.nTeacherID = *(blk->m_rgTeacherID);
 
-        strcpy_s(tmp.szRoom, tmp.MAX_NAME_SIZE, blk->m_rgRoomName);
-        */
+//        strcpy_s(tmp.szRoom, tmp.MAX_NAME_SIZE, blk->m_rgRoomName);
+        
         recStudent = tmp;
     }
 
@@ -941,6 +937,7 @@ BOOL ClassesSetWrapper::LoadAll(std::vector<CClass>& out)
 
     return isOK;
 }
+*/
 
 IDtoNameSet::IDtoNameSet(CDatabase* pDB)
     : CRecordset(pDB)
@@ -967,7 +964,6 @@ void IDtoNameSet::DoFieldExchange(CFieldExchange* pFX)
     RFX_Int (pFX, _T("[ID]"),   ID);
     RFX_Text(pFX, _T("[Name]"), name);
 }
-
 void IDtoNameSet::DoBulkFieldExchange(CFieldExchange* pFX)
 {
     pFX->SetFieldType(CFieldExchange::outputColumn);
