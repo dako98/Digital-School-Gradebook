@@ -13,7 +13,7 @@ class CombinedSubjectDlg : public CDialog
 	DECLARE_DYNAMIC(CombinedSubjectDlg)
 
 public:
-	CombinedSubjectDlg(DialogMode eMode, const SUBJECT& data);
+	CombinedSubjectDlg(DialogMode eMode, SUBJECT& data);
 
 	BOOL OnInitDialog() override;
 
@@ -28,9 +28,9 @@ private:
 	DialogMode					m_eDialogMode;
 //	Storage<SUBJECT> store;
 	SubjectDatabaseInterface	m_subjectStore;
-	GradeDatabaseInterface		m_gradeStore;
+//	GradeDatabaseInterface		m_gradeStore;
 	TeacherDatabaseInterface	m_teacherStore;
-	SUBJECT						m_tmp;
+	SUBJECT&					m_data;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support

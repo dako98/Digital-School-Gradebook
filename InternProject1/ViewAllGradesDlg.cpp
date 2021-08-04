@@ -130,14 +130,17 @@ void ViewAllGradesDlg::OnBnClickedButtonAdd()
 
 //	isOK = gradeStore->NextID(tmp.nID);
 
+
+	CombinedGradeDlg dlg{ eDialogMode_Add, tmp };
+	if (dlg.DoModal() == IDOK)
+	{
+		isOK = m_gradeStore.Add(tmp);
+	}
 	if (!isOK)
 	{
 		int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
 		return;
 	}
-
-	CombinedGradeDlg dlg{ eDialogMode_Add, tmp };
-	dlg.DoModal();
 
 	PrintAllGrades();
 }
@@ -152,8 +155,8 @@ void ViewAllGradesDlg::OnBnClickedButtonEdit()
 		GRADE tmp;
 //		Storage<GRADE> studentStore{ gradesPath };
 		tmp.nID = m_gradesList.GetItemData(m_gradesList.GetCurSel());
-		isOK = m_gradeStore.Load(tmp.nID, tmp);
 
+		isOK = m_gradeStore.Load(tmp.nID, tmp);
 		if (!isOK)
 		{
 			int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
@@ -161,7 +164,15 @@ void ViewAllGradesDlg::OnBnClickedButtonEdit()
 		}
 
 		CombinedGradeDlg dlg{ eDialogMode_Edit, tmp };
-		dlg.DoModal();
+		if (dlg.DoModal() == IDOK)
+		{
+			isOK = m_gradeStore.Edit(tmp);
+		}
+		if (!isOK)
+		{
+			int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
+			return;
+		}
 
 		PrintAllGrades();
 	}
@@ -179,7 +190,6 @@ void ViewAllGradesDlg::OnBnClickedButtonRemove()
 		tmp.nID = m_gradesList.GetItemData(m_gradesList.GetCurSel());
 
 		isOK = m_gradeStore.Load(tmp.nID, tmp);
-
 		if (!isOK)
 		{
 			int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
@@ -187,7 +197,15 @@ void ViewAllGradesDlg::OnBnClickedButtonRemove()
 		}
 
 		CombinedGradeDlg dlg{ eDialogMode_Remove, tmp };
-		dlg.DoModal();
+		if (dlg.DoModal() == IDOK)
+		{
+			isOK = m_gradeStore.Delete(tmp.nID);
+		}
+		if (!isOK)
+		{
+			int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
+			return;
+		}
 
 		PrintAllGrades();
 	}

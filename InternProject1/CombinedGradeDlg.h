@@ -11,7 +11,7 @@ class CombinedGradeDlg : public CDialog
 	DECLARE_DYNAMIC(CombinedGradeDlg)
 
 public:
-	CombinedGradeDlg(DialogMode eMode, const GRADE& data);
+	CombinedGradeDlg(DialogMode eMode, GRADE& data);
 
 	BOOL OnInitDialog() override;
 
@@ -28,10 +28,10 @@ private:
 
 	DialogMode					m_eDialogMode;
 //	Storage<GRADE> store;
-	GradeDatabaseInterface		m_gradeStore;
+//	GradeDatabaseInterface		m_gradeStore;
 	StudentDatabaseInterface	m_studentStore;
 	SubjectDatabaseInterface	m_subjectStore;
-	GRADE						m_tmp;
+	GRADE&						m_data;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support

@@ -23,4 +23,7 @@ protected:
 public:
 	afx_msg void OnBnClickedButton1();
 	afx_msg void OnBnClickedButton2();
+
+private:
+	SubjectDatabaseInterface m_subjectStore;
 };

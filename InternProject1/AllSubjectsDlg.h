@@ -31,5 +31,5 @@ public:
 private:
 	BOOL PrintAll();
 
-	SubjectDatabaseInterface m_store;
+	SubjectDatabaseInterface m_subjectStore;
 };

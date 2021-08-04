@@ -23,9 +23,10 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-	CListBox	m_allStudentsList;
-	CString		m_allStudentsListVal;
-	CButton		m_studentsRadioBtn;
+	CListBox					m_allStudentsList;
+	CString						m_allStudentsListVal;
+	CButton						m_studentsRadioBtn;
+
 	afx_msg void OnBnClickedRadio4();
 
 private:

@@ -27,4 +27,7 @@ public:
 	afx_msg void OnBnClickedButtonExcellents();
 	afx_msg void OnBnClickedButtonBirthdayers();
 	afx_msg void OnBnClickedButtonFails();
+
+private:
+	StudentDatabaseInterface m_studentStore;
 };

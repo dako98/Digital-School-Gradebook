@@ -10,7 +10,7 @@ class CombinedStudentDlg : public CDialog
 	DECLARE_DYNAMIC(CombinedStudentDlg)
 
 public:
-	CombinedStudentDlg(DialogMode eMode, const STUDENT& data);
+	CombinedStudentDlg(DialogMode eMode, STUDENT& data);
 
 	BOOL OnInitDialog() override;
 
@@ -29,9 +29,10 @@ private:
 	BOOL LoadAllClasses();
 
 	DialogMode					m_eDialogMode;
-	StudentDatabaseInterface	m_studentStore;
+//	StudentDatabaseInterface	m_studentStore;
 	ClassesDatabaseInterface	m_classesStore;
-	STUDENT						m_student;
+	STUDENT&					m_data;
+	STUDENT						m_tmp;
 
 	DECLARE_MESSAGE_MAP()
 public:

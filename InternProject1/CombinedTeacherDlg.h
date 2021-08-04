@@ -11,7 +11,7 @@ class CombinedTeacherDlg : public CDialog
 	DECLARE_DYNAMIC(CombinedTeacherDlg)
 
 public:
-	CombinedTeacherDlg(DialogMode eMode, const TEACHER& data);
+	CombinedTeacherDlg(DialogMode eMode, TEACHER& data);
 
 	BOOL OnInitDialog() override;
 
@@ -25,7 +25,7 @@ public:
 private:
 	DialogMode					m_eDialogMode;
 	TeacherDatabaseInterface	m_store;
-	TEACHER						m_tmp;
+	TEACHER&					m_data;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support

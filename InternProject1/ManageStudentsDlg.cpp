@@ -24,6 +24,7 @@ IMPLEMENT_DYNAMIC(ManageStudentsDlg, CDialog)
 
 ManageStudentsDlg::ManageStudentsDlg(CWnd* pParent /*=nullptr*/)
 	: CDialog(IDD_MANAGESTUDENTS, pParent)
+	, m_studentStore(_T("Students"), &databaseConnection)
 {
 
 }
@@ -53,20 +54,22 @@ END_MESSAGE_MAP()
 
 void ManageStudentsDlg::OnBnClickedButton2()
 {
-	STUDENT tmp;
-/*	Storage<STUDENT> store{studentsPath};
 	BOOL isOK = TRUE;
 
-	isOK = store.NextID(tmp.nID);
-	
+	STUDENT tmp;
+	//		isOK = m_studentStore->NextID(tmp.nID);
+
+
+	CombinedStudentDlg dlg{ eDialogMode_Add, tmp };
+	if (dlg.DoModal() == IDOK)
+	{
+		isOK = m_studentStore.Add(tmp);
+	}
 	if (!isOK)
 	{
 		int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
 		return;
 	}
-	*/
-	CombinedStudentDlg dlg{ eDialogMode_Add, tmp };
-	dlg.DoModal();
 }
 
 void ManageStudentsDlg::OnBnClickedAllStudents()

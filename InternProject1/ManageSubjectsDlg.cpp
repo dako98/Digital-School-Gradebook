@@ -18,6 +18,7 @@ IMPLEMENT_DYNAMIC(ManageSubjectsDlg, CDialog)
 
 ManageSubjectsDlg::ManageSubjectsDlg(CWnd* pParent /*=nullptr*/)
 	: CDialog(IDD_MANAGE_SUBJECTS_DIALOG, pParent)
+	, m_subjectStore(_T("Subjects"), &databaseConnection)
 {
 
 }
@@ -50,19 +51,23 @@ void ManageSubjectsDlg::OnBnClickedButton1()
 
 void ManageSubjectsDlg::OnBnClickedButton2()
 {
-	SUBJECT tmp;
-/*	Storage<SUBJECT> store{subjectsPath};
+
 	BOOL isOK = TRUE;
 
-	isOK = store.NextID(tmp.nID);
+	SUBJECT tmp;
+//			isOK = m_subjectStore.LastID(tmp.nID);
 
+
+
+	CombinedSubjectDlg dlg{ eDialogMode_Add, tmp };
+	if (dlg.DoModal() == IDOK)
+	{
+		isOK = m_subjectStore.Add(tmp);
+	}
 	if (!isOK)
 	{
 		int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
 		return;
 	}
-*/
-	CombinedSubjectDlg dlg{ eDialogMode_Add, tmp };
-	dlg.DoModal();
 }
 
