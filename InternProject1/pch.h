@@ -10,6 +10,8 @@
 // add headers that you want to pre-compile here
 #include "framework.h"
 #include "Storage.h"
+#include "Utility.h"
+#include "sortedVector.h"
 
 extern CDatabase databaseConnection;
 #endif //PCH_H

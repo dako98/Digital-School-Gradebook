@@ -4,6 +4,8 @@
 #include "CGrade.h"
 #include <limits>
 
+const char* const databaseConnectionString = "Driver={ODBC Driver 17 for SQL Server}; Server=(localdb)\\MSSQLLocalDB; Database=Test1;";
+
 inline int GetIndexByData(const int target, const CComboBox& comboBox)
 {
 	int result = CB_ERR;
@@ -92,4 +94,18 @@ inline unsigned short DigitsCount(INT32 x)
     if (x >= 10)
         return 2;
     return 1;
+}
+
+template <class T>
+unsigned int DigitsCount(T number, unsigned short radix = 10)
+{
+	assert(radix > 2, "Only positive radixes greater than 1 are supported.");
+
+	unsigned int digits = 1;
+	while (number /= radix)
+	{
+		++digits;
+	}
+
+	return digits;
 }
