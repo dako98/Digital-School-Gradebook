@@ -57,10 +57,6 @@ BOOL ViewAllGradesDlg::PrintAllGrades()
 	std::vector<STUDENT> allStudents;
 	std::vector<SUBJECT> allSubjects;
 
-//	Storage<GRADE> gr{ gradesPath };
-//	Storage<STUDENT> st{ studentsPath };
-//	Storage<SUBJECT> su{ subjectsPath };
-
 	isOK = m_gradeStore.LoadAll(allGrades);
 
 	if (isOK)
@@ -125,11 +121,7 @@ END_MESSAGE_MAP()
 void ViewAllGradesDlg::OnBnClickedButtonAdd()
 {
 	GRADE tmp;
-//	Storage<GRADE> store{ gradesPath };
 	BOOL isOK = TRUE;
-
-//	isOK = gradeStore->NextID(tmp.nID);
-
 
 	CombinedGradeDlg dlg{ eDialogMode_Add, tmp };
 	if (dlg.DoModal() == IDOK)
@@ -153,7 +145,6 @@ void ViewAllGradesDlg::OnBnClickedButtonEdit()
 		BOOL isOK = TRUE;
 
 		GRADE tmp;
-//		Storage<GRADE> studentStore{ gradesPath };
 		tmp.nID = m_gradesList.GetItemData(m_gradesList.GetCurSel());
 
 		isOK = m_gradeStore.Load(tmp.nID, tmp);
@@ -186,7 +177,6 @@ void ViewAllGradesDlg::OnBnClickedButtonRemove()
 		BOOL isOK = TRUE;
 
 		GRADE tmp;
-//		Storage<GRADE> studentStore{ gradesPath };
 		tmp.nID = m_gradesList.GetItemData(m_gradesList.GetCurSel());
 
 		isOK = m_gradeStore.Load(tmp.nID, tmp);

@@ -36,10 +36,7 @@ BOOL CombinedTeacherDlg::OnInitDialog()
 		m_teacherFirstName.SetWindowText(CString{ m_data.szFirstName });
 		m_teacherLastName.SetWindowText(CString{ m_data.szLastName });
 	}
-	else
-	{
-//		m_store.NextID(m_teacherNumberVal);
-	}
+
 	UpdateData(FALSE);
 
 	switch (m_eDialogMode)
@@ -124,37 +121,20 @@ void CombinedTeacherDlg::OnBnClickedOk()
 		{
 			st.szLastName = "";
 		}
-	}
-	/*
-	switch (m_eDialogMode)
-	{
-	case DialogMode::eDialogMode_Add:
 
-		isOK = m_store.Add(st);
-		break;
-	case DialogMode::eDialogMode_Edit:
-
-		isOK = m_store.Edit(st);
-		break;
-	case DialogMode::eDialogMode_Remove:
-	
-		isOK = m_store.Delete(st.nID);
-
-
-		break;
-
-	default:
-		throw std::exception{ "Invalid window state." };
-		break;
-	}
-	*/
-	if (st.Validate())
-	{
-		m_data = st;
-		CDialog::OnOK();
+		if (st.Validate())
+		{
+			m_data = st;
+			CDialog::OnOK();
+		}
+		else
+		{
+			int errorBox = MessageBox((LPCWSTR)L"Error! Check your input.", NULL, MB_OK | MB_ICONWARNING);
+		}
 	}
 	else
 	{
-		int errorBox = MessageBox((LPCWSTR)L"Error! Check your input.", NULL, MB_OK | MB_ICONWARNING);
+		m_data = st;
+		CDialog::OnOK();
 	}
 }

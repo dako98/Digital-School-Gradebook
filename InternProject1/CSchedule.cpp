@@ -2,132 +2,6 @@
 #include "CSchedule.h"
 
 
-
-ScheduleClassSetWrapper::ScheduleClassSetWrapper(ScheduleClassSet* pDB)
-    :blk(&*pDB)
-{
-}
-BOOL ScheduleClassSetWrapper::Load(const int nStudentID, std::vector<ScheduleClass>& out)
-{
-    BOOL isOK = TRUE;
-    ScheduleClass tmp;
-
-
-    CString sSQL;
-    sSQL.Format(_T("SELECT * FROM [Schedule] WHERE [ClassID] = %d"), nStudentID);
-
-    try
-    {
-        blk->Open(AFX_DB_USE_DEFAULT_TYPE, sSQL, CRecordset::useMultiRowFetch);
-    }
-    catch (const std::exception&)
-    {
-        isOK = FALSE;
-    }
-
-    if (isOK)
-    {
-
-        int rowsFetched = blk->GetRowsFetched();
-
-        for (int nPosInRowset = 0; nPosInRowset < rowsFetched; nPosInRowset++)
-        {
-            /*
-            tmp.nID             =   *(blk->m_rgID + nPosInRowset);
-            tmp.nSubjectID      =   *(blk->m_rgSubjectID + nPosInRowset);
-            tmp.begin.hour      =   (blk->m_rgBeginTime + nPosInRowset)->hour;
-            tmp.begin.minute    =   (blk->m_rgBeginTime + nPosInRowset)->minute;
-            tmp.begin.second    =   (blk->m_rgBeginTime + nPosInRowset)->second;
-            tmp.duration.hour   =   (blk->m_rgDuration + nPosInRowset)->hour;
-            tmp.duration.minute =   (blk->m_rgDuration + nPosInRowset)->minute;
-            tmp.duration.second =   (blk->m_rgDuration + nPosInRowset)->second;
-            */
-            ASSERT(FALSE);
-            out.push_back(tmp);
-        }
-    }
-
-    blk->Close();
-
-    return isOK;
-}
-BOOL ScheduleClassSetWrapper::NextID(int& id) const
-{
-    BOOL isOK = TRUE;
-    GRADE tmp;
-
-    CString sSQL;
-    sSQL.Format(_T("SELECT TOP 1 * FROM [Schedule] ORDER BY [ID] DESC"));
-
-    try
-    {
-        blk->Open(AFX_DB_USE_DEFAULT_TYPE, sSQL, CRecordset::useMultiRowFetch);
-    }
-    catch (const std::exception&)
-    {
-        isOK = FALSE;
-    }
-
-    if (isOK)
-    {
-        CString csComboString;
-
-        tmp.nID = *(blk->m_rgID);
-
-        id = tmp.nID + 1;
-    }
-
-    blk->Close();
-
-    return isOK;
-}
-BOOL ScheduleClassSetWrapper::LoadAll(std::vector<ScheduleClass>& out)
-{
-    out.clear();
-    BOOL isOK = TRUE;
-    ScheduleClass tmp;
-
-    CString sSQL;
-    sSQL.Format(_T("SELECT * FROM [Schedule]"));
-
-    try
-    {
-        blk->Open(AFX_DB_USE_DEFAULT_TYPE, sSQL, CRecordset::useMultiRowFetch);
-    }
-    catch (const std::exception&)
-    {
-        isOK = FALSE;
-    }
-
-    if (isOK)
-    {
-
-        int rowsFetched = blk->GetRowsFetched();
-
-        for (int nPosInRowset = 0; nPosInRowset < rowsFetched; nPosInRowset++)
-        {
-            /*
-            tmp.nID                 =   *(blk->m_rgID + nPosInRowset);
-            tmp.nSubjectID          =   *(blk->m_rgSubjectID + nPosInRowset);
-
-            tmp.begin.hour          =   (blk->m_rgBeginTime + nPosInRowset)->hour;
-            tmp.begin.minute        =   (blk->m_rgBeginTime + nPosInRowset)->minute;
-            tmp.begin.second        =   (blk->m_rgBeginTime + nPosInRowset)->second;
-
-            tmp.duration.hour       =   (blk->m_rgDuration + nPosInRowset)->hour;
-            tmp.duration.minute     =   (blk->m_rgDuration + nPosInRowset)->minute;
-            tmp.duration.second     =   (blk->m_rgDuration + nPosInRowset)->second;
-            out.push_back(tmp);
-            */
-            ASSERT(FALSE);
-        }
-    }
-
-    blk->Close();
-
-    return isOK;
-}
-
 ScheduleClassSet::ScheduleClassSet(CDatabase* pDB)
     : CRecordset(pDB)
 {
@@ -137,12 +11,10 @@ ScheduleClassSet::ScheduleClassSet(CDatabase* pDB)
     m_rgID                      =   NULL;
     m_rgIDLengths               =   NULL;
 
-//    beginTime                   =   { 0, }; __COUNTER__;
     beginTime                   =   "";     __COUNTER__;
     m_rgBeginTime               =   NULL;
     m_rgBeginTimeLengths        =   NULL;
 
-//    duration                    =   { 0, }; __COUNTER__;
     duration                    =   "";     __COUNTER__;
     m_rgDuration                =   NULL;
     m_rgDurationLengths         =   NULL;
@@ -169,8 +41,6 @@ void ScheduleClassSet::DoFieldExchange(CFieldExchange* pFX)
 
     RFX_Int     (pFX, _T("[ID]"),           ID);
 
-//    RFX_Date    (pFX, _T("[Begin]"),        beginTime);
-//    RFX_Date    (pFX, _T("[Begin]"),        beginTime);
     RFX_Text    (pFX, _T("[Begin]"),        beginTime);
     RFX_Text    (pFX, _T("[Duration]"),     duration);
     RFX_Int     (pFX, _T("[SubjectID]"),    subjectID);
@@ -182,9 +52,6 @@ void ScheduleClassSet::DoBulkFieldExchange(CFieldExchange* pFX)
     pFX->SetFieldType(CFieldExchange::outputColumn);
 
     RFX_Int_Bulk    (pFX, _T("[ID]"),           &m_rgID, &m_rgIDLengths);
-
-//    RFX_Date_Bulk   (pFX, _T("[Begin]"),        &m_rgBeginTime, &m_rgBeginTimeLengths);
-//    RFX_Date_Bulk   (pFX, _T("[Duration]"),     &m_rgDuration, &m_rgDurationLengths);
 
     RFX_Text_Bulk   (pFX, _T("[Begin]"),        &m_rgBeginTime, &m_rgBeginTimeLengths,50);
     RFX_Text_Bulk   (pFX, _T("[Duration]"),     &m_rgDuration, &m_rgDurationLengths,50);
@@ -200,9 +67,5 @@ ScheduleDay::ScheduleDay()
 
 BOOL ScheduleClass::Validate() const
 {
-    return 
-//        (
-//        !(begin.hour == 0 && begin.minute == 0 && begin.second == 0) ||
-//        !(duration.hour == 0 && duration.minute == 0 && duration.second == 0)) &&
-        nSubjectID != -1;
+    return nSubjectID != -1;
 }

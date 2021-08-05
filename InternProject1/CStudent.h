@@ -15,9 +15,6 @@ struct STUDENT : public PERSON
 
     virtual BOOL Validate() const override;
 
-    friend std::ostream& operator<<(std::ostream& out, const STUDENT& obj);
-    friend std::istream& operator>>(std::istream& in, STUDENT& obj);
-
 protected:
     void Read(std::istream& in);
 };

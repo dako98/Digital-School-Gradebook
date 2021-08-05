@@ -68,10 +68,6 @@ BOOL CombinedScheduleClassDlg::OnInitDialog()
 		break;
 	}
 
-
-
-
-
 	return isOK;
 }
 
@@ -101,8 +97,6 @@ void CombinedScheduleClassDlg::OnBnClickedOk()
 	if (subjectsList.GetCurSel() != CB_ERR)
 	{
 		int id = subjectsList.GetItemData(subjectsList.GetCurSel());
-//		SUBJECT tmp;
-//		m_subjectStore.Load(id, tmp);
 		m_data.nSubjectID = id;
 	}
 	CDialog::OnOK();

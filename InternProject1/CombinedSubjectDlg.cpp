@@ -144,12 +144,10 @@ void CombinedSubjectDlg::OnBnClickedOk()
 
 			if (buff.GetLength() <= SUBJECT::MAX_NAME_SIZE)
 			{
-				//				strcpy_s(su.szName, SUBJECT::MAX_NAME_SIZE, CT2A(buff));
 				su.szName = buff;
 			}
 			else
 			{
-				//				strcpy_s(su.szName, SUBJECT::MAX_NAME_SIZE, "");
 				su.szName = "";
 			}
 
@@ -157,15 +155,11 @@ void CombinedSubjectDlg::OnBnClickedOk()
 
 			if (buff.GetLength() <= SUBJECT::MAX_NAME_SIZE)
 			{
-				//				strcpy_s(su.szRoom, SUBJECT::MAX_NAME_SIZE, CT2A(buff));
 				su.szRoom = buff;
-
 			}
 			else
 			{
-				//				strcpy_s(su.szRoom, SUBJECT::MAX_NAME_SIZE, "");
 				su.szRoom = "";
-
 			}
 		}
 		else
@@ -188,51 +182,4 @@ void CombinedSubjectDlg::OnBnClickedOk()
 		m_data = su;
 		CDialog::OnOK();
 	}
-
-/*
-	switch (m_eDialogMode)
-	{
-	case DialogMode::eDialogMode_Add:
-
-		isOK = m_subjectStore.Add(su);
-		break;
-	case DialogMode::eDialogMode_Edit:
-
-		isOK = m_subjectStore.Edit(su);
-		break;
-	case DialogMode::eDialogMode_Remove:
-	{
-		isOK = m_subjectStore.Delete(su.nID);
-
-
-		Storage<GRADE> gradeStore{ gradesPath };
-		std::vector<GRADE> allGrades;
-		isOK = gradeStore->LoadAll(allGrades);
-
-		if (isOK)
-		{
-			for (const auto& grade : allGrades)
-			{
-				if (grade.nSubjectID == su.nID)
-				{
-					isOK = gradeStore->Delete(grade.nID);
-
-					if (!isOK)
-					{
-						break;
-					}
-				}
-			}
-		}
-		
-	}
-	break;
-
-	default:
-		throw std::exception{ "Invalid window state." };
-		break;
-	}
-	*/
-
-
 }

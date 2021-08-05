@@ -55,9 +55,6 @@ void ManageSubjectsDlg::OnBnClickedButton2()
 	BOOL isOK = TRUE;
 
 	SUBJECT tmp;
-//			isOK = m_subjectStore.LastID(tmp.nID);
-
-
 
 	CombinedSubjectDlg dlg{ eDialogMode_Add, tmp };
 	if (dlg.DoModal() == IDOK)

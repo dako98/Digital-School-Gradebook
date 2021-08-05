@@ -26,9 +26,7 @@ public:
 
 private:
 	DialogMode					m_eDialogMode;
-//	Storage<SUBJECT> store;
 	SubjectDatabaseInterface	m_subjectStore;
-//	GradeDatabaseInterface		m_gradeStore;
 	TeacherDatabaseInterface	m_teacherStore;
 	SUBJECT&					m_data;
 

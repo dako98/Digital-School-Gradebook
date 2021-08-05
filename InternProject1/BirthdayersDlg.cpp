@@ -30,7 +30,6 @@ BOOL BirthdayersDlg::OnInitDialog()
 	BOOL isOK = TRUE;
 
 	std::vector<STUDENT> allStudents;
-//	Storage<STUDENT> studentStore{ studentsPath };
 	isOK = m_studentStore.LoadAll(allStudents);
 
 	if (isOK)

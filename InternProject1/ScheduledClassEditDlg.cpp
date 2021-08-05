@@ -42,7 +42,7 @@ void ScheduledClassEditDlg::MoveScheduledClass(int id, int up, int tomorrow)
 {
 	unsigned int daysInWeek = m_schedule.days.size();
 	unsigned int dayLength = 0;
-	unsigned int day, indexInDay;
+	unsigned int day, indexInDay = 0;
 
 	bool found = false;
 
@@ -254,7 +254,7 @@ void ScheduledClassEditDlg::OnBnClickedButton4()
 	
 	unsigned int daysInWeek = m_schedule.days.size();
 	unsigned int dayLength = 0;
-	unsigned int day, indexInDay;
+	unsigned int day, indexInDay = 0;
 	bool found = false;;
 
 	for (day = 0; day < daysInWeek; day++)

@@ -34,7 +34,6 @@ BOOL StudentAverageDlg::PrintAllStudents()
 	BOOL isOK;
 
 	std::vector<STUDENT> allStudents;
-//	Storage<STUDENT> st{ studentsPath };
 	isOK = m_studentStore.LoadAll(allStudents);
 
 	CString currentRow;
@@ -59,7 +58,6 @@ BOOL StudentAverageDlg::PrintAllSubjects()
 {
 	BOOL isOK;
 	std::vector<SUBJECT> allSubjects;
-//	Storage<SUBJECT> st{ subjectsPath };
 	isOK = m_subjectStore.LoadAll(allSubjects);
 
 	CString currentRow;
@@ -89,7 +87,6 @@ BOOL StudentAverageDlg::UpdateAverage()
 	if (index != CB_ERR)
 	{
 		std::vector<GRADE> grades;
-//		Storage<GRADE> gradeStore{ gradesPath };
 		isOK = m_gradeStore.LoadAll(grades);
 		std::vector<GRADE> studentGrades;
 

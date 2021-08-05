@@ -21,7 +21,6 @@ CombinedStudentDlg::CombinedStudentDlg(DialogMode eDialogMode, STUDENT& m_studen
 	, m_studentNumberVal(0)
 	, m_studentBirthDateVal(COleDateTime::GetCurrentTime())
 	, m_data(m_student)
-//	, m_studentStore(_T("Students"), &databaseConnection)
 	, m_classesStore(_T("Classes"), &databaseConnection)
 	, m_tmp(m_data)
 {
@@ -50,10 +49,7 @@ BOOL CombinedStudentDlg::OnInitDialog()
 		m_numberInClassEditBox.SetWindowText(tmp);
 
 	}
-	else
-	{
-//		m_studentStore.NextID(m_studentNumberVal);
-	}
+
 	UpdateData(FALSE);
 
 	switch (m_eDialogMode)
@@ -111,11 +107,6 @@ BOOL CombinedStudentDlg::LoadAllClasses()
 {
 	std::vector<CClass> classes;
 	BOOL isOK = TRUE;
-
-
-//	ClassesSet sSet(&databaseConnection);
-
-//	ClassesSetWrapper st(&sSet);
 
 	isOK = m_classesStore.LoadAll(classes);
 
@@ -191,37 +182,21 @@ void CombinedStudentDlg::OnBnClickedOk()
 
 		m_numberInClassEditBox.GetWindowText(buff);
 		m_tmp.numberInClass = _wtoi(buff);
+
+		if (m_tmp.Validate())
+		{
+			m_data = m_tmp;
+			CDialog::OnOK();
+		}
+		else
+		{
+			int errorBox = MessageBox((LPCWSTR)L"Error! Check your input.", NULL, MB_OK | MB_ICONWARNING);
+		}
 	}
-/*
-	switch (m_eDialogMode)
-	{
-	case DialogMode::eDialogMode_Add:
-
-		isOK = m_studentStore.Add(st);
-		break;
-
-	case DialogMode::eDialogMode_Edit:
-
-		isOK = m_studentStore.Edit(st);
-		break;
-
-	case DialogMode::eDialogMode_Remove:
-	
-		isOK = m_studentStore.Delete(st.nID);
-		break;
-	
-	default:
-		throw std::exception{ "Invalid window state." };
-		break;
-	}
-	*/
-	if (m_tmp.Validate())
+	else
 	{
 		m_data = m_tmp;
 		CDialog::OnOK();
 	}
-	else
-	{
-		int errorBox = MessageBox((LPCWSTR)L"Error! Check your input.", NULL, MB_OK | MB_ICONWARNING);
-	}
+
 }

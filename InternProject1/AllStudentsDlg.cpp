@@ -219,7 +219,6 @@ void AllStudentsDlg::OnBnClickedButtonAdd()
 	if (m_studentsRadioBtn.GetCheck() == BST_CHECKED)
 	{
 		STUDENT tmp;
-//		isOK = m_studentStore->NextID(tmp.nID);
 
 		CombinedStudentDlg dlg{ eDialogMode_Add, tmp };
 		if (dlg.DoModal() == IDOK)
@@ -235,9 +234,6 @@ void AllStudentsDlg::OnBnClickedButtonAdd()
 	else
 	{
 		TEACHER tmp;
-
-//		isOK = m_teacherStore->NextID(tmp.nID);
-
 
 		CombinedTeacherDlg dlg{ eDialogMode_Add, tmp };
 		if (dlg.DoModal() == IDOK)

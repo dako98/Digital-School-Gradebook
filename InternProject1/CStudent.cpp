@@ -20,34 +20,3 @@ BOOL STUDENT::Validate() const
 		classID >= 0 &&
 		numberInClass > 0;
 }
-
-void STUDENT::Read(std::istream& in)
-{
-	PERSON::Read(in);
-	
-	if (in.good())
-	{
-		// Birth date
-		in >> dtBirthDate.year >> dtBirthDate.month >> dtBirthDate.day >>
-			classID >>
-			numberInClass;
-	}
-
-}
-
-std::ostream& operator<<(std::ostream& out, const STUDENT& obj)
-{
-	out << (PERSON)obj << ' ' <<
-		obj.dtBirthDate.year << ' ' << obj.dtBirthDate.month << ' ' << obj.dtBirthDate.day << ' ' <<
-		obj.classID << ' ' <<
-		obj.numberInClass;
-
-	return out;
-}
-
-std::istream& operator>>(std::istream& in, STUDENT& obj)
-{
-	obj.Read(in);
-
-	return in;
-}

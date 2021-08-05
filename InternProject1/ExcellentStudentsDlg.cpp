@@ -10,7 +10,6 @@
 
 #include "Utility.h"
 
-//#include "Storage.h"
 #include "CGrade.h"
 #include "CStudent.h"
 
@@ -34,7 +33,6 @@ BOOL ExcellentStudentsDlg::OnInitDialog()
 	BOOL isOK;
 
 	// Get all grades
-//	Storage<GRADE> gradeStore{ gradesPath };
 	std::vector<GRADE> allGrades;
 	isOK = m_gradeStore.LoadAll(allGrades);
 
@@ -61,7 +59,6 @@ BOOL ExcellentStudentsDlg::OnInitDialog()
 
 		// Print student names
 		CString currentRow;
-//		Storage<STUDENT> studentStore{ studentsPath };
 		STUDENT tmp;
 
 		for (const auto& studentID : excellentStudentIDs)

@@ -57,8 +57,6 @@ void ManageStudentsDlg::OnBnClickedButton2()
 	BOOL isOK = TRUE;
 
 	STUDENT tmp;
-	//		isOK = m_studentStore->NextID(tmp.nID);
-
 
 	CombinedStudentDlg dlg{ eDialogMode_Add, tmp };
 	if (dlg.DoModal() == IDOK)

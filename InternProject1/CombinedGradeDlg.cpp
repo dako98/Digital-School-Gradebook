@@ -20,7 +20,6 @@ CombinedGradeDlg::CombinedGradeDlg(DialogMode eMode, GRADE& data)
 	, m_eDialogMode(eMode)
 	, m_gradeIDVal(0)
 	, m_data(data)
-//	, m_gradeStore(_T("Grades"), &databaseConnection)
 	, m_studentStore(_T("Students"), &databaseConnection)
 	, m_subjectStore(_T("Subjects"), &databaseConnection)
 {
@@ -31,7 +30,6 @@ BOOL CombinedGradeDlg::PrintAllStudents()
 	BOOL isOK;
 
 	std::vector<STUDENT> allStudents;
-//	Storage<STUDENT> st{ studentsPath };
 	isOK = m_studentStore.LoadAll(allStudents);
 
 	if (isOK)
@@ -57,7 +55,6 @@ BOOL CombinedGradeDlg::PrintAllSubjects()
 	BOOL isOK;
 
 	std::vector<SUBJECT> allStudents;
-//	Storage<SUBJECT> st{ subjectsPath };
 	isOK = m_subjectStore.LoadAll(allStudents);
 
 	if (isOK)
@@ -88,10 +85,6 @@ BOOL CombinedGradeDlg::OnInitDialog()
 	if (m_eDialogMode != DialogMode::eDialogMode_Add)
 	{
 		m_gradeIDVal = m_data.nID;
-	}
-	else
-	{
-//		m_gradeStore.NextID(m_gradeIDVal);
 	}
 
 	// Load all students
@@ -220,36 +213,4 @@ void CombinedGradeDlg::OnBnClickedOk()
 		m_data = st;
 		CDialog::OnOK();
 	}
-
-/*
-	switch (m_eDialogMode)
-	{
-	case DialogMode::eDialogMode_Add:
-
-		isOK = m_gradeStore.Add(st);
-		break;
-
-	case DialogMode::eDialogMode_Edit:
-
-		isOK = m_gradeStore.Edit(st);
-		break;
-
-	case DialogMode::eDialogMode_Remove:
-
-		isOK = m_gradeStore.Delete(st.nID);
-		break;
-
-	default:
-
-		break;
-	}
-	
-
-	if (!isOK)
-	{
-		int errorBox = MessageBox((LPCWSTR)L"Error! Check your input.", NULL, MB_OK | MB_ICONWARNING);
-		return;
-	}
-	CDialog::OnOK();
-	*/
 }

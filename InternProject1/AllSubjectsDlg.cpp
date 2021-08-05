@@ -35,7 +35,6 @@ BOOL AllSubjectsDlg::PrintAll()
 	BOOL isOK = TRUE;
 
 	std::vector<SUBJECT> all;
-//	Storage<SUBJECT> su{ subjectsPath };
 	isOK = m_subjectStore.LoadAll(all);
 
 	if (isOK)
@@ -88,12 +87,7 @@ END_MESSAGE_MAP()
 void AllSubjectsDlg::OnBnClickedButtonAdd()
 {
 	SUBJECT tmp;
-//	Storage<SUBJECT> store{ subjectsPath };
 	BOOL isOK = TRUE;
-
-//	isOK = m_store.NextID(tmp.nID);
-
-
 
 	CombinedSubjectDlg dlg{ eDialogMode_Add, tmp };
 	if (dlg.DoModal() == IDOK)
@@ -114,7 +108,6 @@ void AllSubjectsDlg::OnBnClickedButtonEdit()
 	if (subjectsList.GetCurSel() != LB_ERR)
 	{
 		SUBJECT tmp;
-//		Storage<SUBJECT> store{ subjectsPath };
 		BOOL isOK = TRUE;
 
 		isOK = m_subjectStore.Load(subjectsList.GetItemData(subjectsList.GetCurSel()), tmp);
@@ -145,7 +138,6 @@ void AllSubjectsDlg::OnBnClickedButtonRemove()
 	if (subjectsList.GetCurSel() != LB_ERR)
 	{
 		SUBJECT tmp;
-//		Storage<SUBJECT> store{ subjectsPath };
 		BOOL isOK = TRUE;
 
 		isOK = m_subjectStore.Load(subjectsList.GetItemData(subjectsList.GetCurSel()), tmp);

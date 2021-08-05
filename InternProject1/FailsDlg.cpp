@@ -38,7 +38,6 @@ BOOL FailsDlg::OnInitDialog()
 	BOOL isOK;
 
 	// Load all grades
-//	Storage<GRADE> gradeStore{ gradesPath };
 	std::vector<GRADE> allGrades;
 	isOK = m_gradeStore.LoadAll(allGrades);
 

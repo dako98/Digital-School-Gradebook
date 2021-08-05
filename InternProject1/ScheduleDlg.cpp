@@ -50,27 +50,9 @@ BOOL ScheduleDlg::PrintSchedule()
 		m_ScheduleListControl.DeleteColumn(0);
 	}
 
-//	Storage<CSchedule> scheduleStore(databaseConnectionString);
 	
 	isOK = m_scheduleStore.Load(m_classSelectDropList.GetItemData(m_classSelectDropList.GetCurSel()), m_schedule);
 	ListView_SetExtendedListViewStyle(m_ScheduleListControl, LVS_EX_GRIDLINES);
-
-	/*	m_ScheduleListControl.InsertColumn(
-			0,              // Rank/order of item
-			_T("Day 1"),          // Caption for this header
-			LVCFMT_LEFT,    // Relative position of items under header
-			100);           // Width of items under header
-*/
-
-/*	
-	m_ScheduleListControl.SetColumnWidth(0, 200);
-	m_ScheduleListControl.SetColumnWidth(1, 200);
-	m_ScheduleListControl.SetColumnWidth(2, 200);
-	m_ScheduleListControl.SetColumnWidth(3, 200);
-	m_ScheduleListControl.SetColumnWidth(4, 200);
-	m_ScheduleListControl.SetColumnWidth(5, 200);
-	m_ScheduleListControl.SetColumnWidth(6, 200);
-*/
 
 	CString text;
 
@@ -130,7 +112,6 @@ BOOL ScheduleDlg::OnInitDialog()
 
 	BOOL isOK = TRUE;
 
-//	Storage<CClass> classStorage(databaseConnectionString);
 	std::vector<CClass> allClasses;
 
 	isOK = m_classStore.LoadAll(allClasses);
@@ -180,8 +161,6 @@ END_MESSAGE_MAP()
 void ScheduleDlg::OnCbnSelchangeCombo1()
 {
 	// TODO: Add your control notification handler code here
-
-
 	PrintSchedule();
 }
 

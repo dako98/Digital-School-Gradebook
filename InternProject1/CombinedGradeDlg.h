@@ -27,8 +27,6 @@ private:
 	BOOL PrintAllSubjects();
 
 	DialogMode					m_eDialogMode;
-//	Storage<GRADE> store;
-//	GradeDatabaseInterface		m_gradeStore;
 	StudentDatabaseInterface	m_studentStore;
 	SubjectDatabaseInterface	m_subjectStore;
 	GRADE&						m_data;

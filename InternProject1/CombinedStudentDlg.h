@@ -29,7 +29,6 @@ private:
 	BOOL LoadAllClasses();
 
 	DialogMode					m_eDialogMode;
-//	StudentDatabaseInterface	m_studentStore;
 	ClassesDatabaseInterface	m_classesStore;
 	STUDENT&					m_data;
 	STUDENT						m_tmp;

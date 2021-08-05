@@ -14,9 +14,6 @@ struct PERSON
 
 	virtual BOOL Validate() const;
 
-	friend std::ostream& operator<<(std::ostream& out, const PERSON& obj);
-	friend std::istream& operator>>(std::istream& in, PERSON& obj);
-
 protected:
 	void Read(std::istream& in);
 };

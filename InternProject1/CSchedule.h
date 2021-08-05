@@ -9,11 +9,13 @@
 
 struct ScheduleClass
 {
-	ScheduleClass()
-		:nID(-1)
+    ScheduleClass()
+        :nID(-1)
         , begin()
-		, duration()
-		, nSubjectID(-1)
+        , duration()
+        , nSubjectID(-1)
+        , dayOfWeek(-1)
+        , classID(-1)
 	{}
 
     int nID;
@@ -44,7 +46,6 @@ private:
     };
 public:
     sorted_vector<ScheduleClass> classes;
-//    std::set<ScheduleClass, cmp> classes;
 };
 
 struct CSchedule
@@ -69,14 +70,10 @@ public:
     int* m_rgID;
     long* m_rgIDLengths;
 
-//    TIMESTAMP_STRUCT beginTime;
-//    TIMESTAMP_STRUCT* m_rgBeginTime;
     CString beginTime;
     LPSTR m_rgBeginTime;
     long* m_rgBeginTimeLengths;
 
-//    TIMESTAMP_STRUCT duration;
-//    TIMESTAMP_STRUCT* m_rgDuration;
     CString duration;
     LPSTR m_rgDuration;
     long* m_rgDurationLengths;
@@ -97,23 +94,4 @@ public:
 
     void DoFieldExchange(CFieldExchange* pFX) override;
     void DoBulkFieldExchange(CFieldExchange* pFX) override;
-};
-class ScheduleClassSetWrapper
-{
-public:
-
-    ScheduleClassSetWrapper(ScheduleClassSet* sSet);
-
-    BOOL Add(ScheduleClass& recStudent);
-    BOOL Edit(ScheduleClass& recStudent);
-    BOOL Delete(const int nID);
-    BOOL Load(const int nStudentID, std::vector<ScheduleClass>& recStudent);
-    BOOL Load(const int nStudentID, ScheduleClass& recStudent);
-
-    BOOL NextID(int& id) const;
-    BOOL LoadAll(std::vector<ScheduleClass>& out);
-
-private:
-
-    ScheduleClassSet* blk;
 };
