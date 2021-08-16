@@ -7,16 +7,16 @@
 
 struct SUBJECT
 {
-    static const int MAX_NAME_SIZE = 50;
+    static const int MAX_NAME_SIZE = 20;
 
     SUBJECT();
 
     int nID;
     int nTeacherID;
-    CString szName;
-    CString szRoom;
+    wchar_t szName[MAX_NAME_SIZE + 1];
+    wchar_t szRoom[MAX_NAME_SIZE + 1];
 
-    virtual BOOL Validate() const;
+    BOOL Validate() const;
 
 protected:
     void Read(std::istream& in);

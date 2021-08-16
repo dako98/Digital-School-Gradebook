@@ -3,7 +3,6 @@
 #include <fstream>
 
 
-
 struct GRADE
 {
 	enum GRADES
@@ -24,10 +23,10 @@ struct GRADE
 	int nID;
 	int nStudentID;
 	int nSubjectID;
-	DBTIMESTAMP dtDate;
+	TIMESTAMP_STRUCT dtDate;
 	int value;
 
-	virtual BOOL Validate() const;
+	BOOL Validate() const;
 
 	friend std::ostream& operator<<(std::ostream& out, const GRADE& obj);
 	friend std::istream& operator>>(std::istream& in, GRADE& obj);

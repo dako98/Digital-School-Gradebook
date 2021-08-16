@@ -9,11 +9,11 @@ struct STUDENT : public PERSON
 {
     STUDENT();
 
-    DBTIMESTAMP dtBirthDate;
+    TIMESTAMP_STRUCT dtBirthDate;
     int classID;
     int numberInClass;
 
-    virtual BOOL Validate() const override;
+    BOOL Validate() const;
 
 protected:
     void Read(std::istream& in);

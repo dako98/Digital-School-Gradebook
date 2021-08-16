@@ -5,10 +5,13 @@
 #include <array>
 
 #include "sortedVector.h"
+#include "Utility.h"
 
 
 struct ScheduleClass
 {
+    static const int MAX_LEN_CHAR_TIME = 8;
+
     ScheduleClass()
         :nID(-1)
         , begin()
@@ -16,18 +19,21 @@ struct ScheduleClass
         , nSubjectID(-1)
         , dayOfWeek(-1)
         , classID(-1)
-	{}
+	{
+        Clear(*this);
+    }
 
     int nID;
-	DBTIME begin;
-	DBTIME duration;
+
+    wchar_t begin[MAX_LEN_CHAR_TIME + 1];
+    wchar_t duration[MAX_LEN_CHAR_TIME + 1];
 	int nSubjectID;
     int dayOfWeek;
     int classID;
 
     bool operator< (const ScheduleClass& second) const
     {
-        return (this->begin.hour < second.begin.hour) || this->begin.hour == second.begin.hour && this->begin.minute < second.begin.minute;
+        return StrCmpW(this->begin, second.begin) < 0;
     }
     BOOL Validate() const;
 };
@@ -40,8 +46,7 @@ private:
     struct cmp {
         bool operator() (const ScheduleClass& first, const ScheduleClass& second) const
         {
-            return (first.begin.hour < second.begin.hour) ||
-                first.begin.hour == second.begin.hour && first.begin.minute < second.begin.minute;
+            return StrCmpW(first.begin, second.begin) < 0;
         }
     };
 public:
@@ -52,46 +57,13 @@ struct CSchedule
 {
     CSchedule()
         :classID(-1)
-    {}
+    {
+//        Clear(*this);
+    }
 private:
     static const int DAYS_IN_WEEK = 7;
 public:
 
     int classID;
 	std::array<ScheduleDay, DAYS_IN_WEEK> days;
-};
-
-
-class ScheduleClassSet : public CRecordset
-{
-public:
-
-    int ID;
-    int* m_rgID;
-    long* m_rgIDLengths;
-
-    CString beginTime;
-    LPSTR m_rgBeginTime;
-    long* m_rgBeginTimeLengths;
-
-    CString duration;
-    LPSTR m_rgDuration;
-    long* m_rgDurationLengths;
-
-    int subjectID;
-    int* m_rgSubjectID;
-    long* m_rgSubjectIDLengths;
-
-    int dayOfWeek;
-    int* m_rgDayOfWeek;
-    long* m_rgDayOfWeekLengths;
-
-    int classID;
-    int* m_rgClassID;
-    long* m_rgClassIDLengths;
-
-    ScheduleClassSet(CDatabase* pDB);
-
-    void DoFieldExchange(CFieldExchange* pFX) override;
-    void DoBulkFieldExchange(CFieldExchange* pFX) override;
 };

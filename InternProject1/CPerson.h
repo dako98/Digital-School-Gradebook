@@ -1,18 +1,20 @@
 #pragma once
 
 #include <fstream>
+#include "Utility.h"
 
 struct PERSON
 {
-	static const int MAX_NAME_SIZE = 50;
+	static const int MAX_NAME_SIZE = 20;
 
 	PERSON();
 
 	int nID;
-	CString szFirstName;
-	CString szLastName;
 
-	virtual BOOL Validate() const;
+	wchar_t szFirstName[MAX_NAME_SIZE + 1];
+	wchar_t szLastName[MAX_NAME_SIZE + 1];
+	
+	BOOL Validate() const;
 
 protected:
 	void Read(std::istream& in);

@@ -5,6 +5,7 @@
 TEACHER::TEACHER()
 	:PERSON()
 {
+	Clear(*this);
 }
 
 BOOL TEACHER::Validate() const

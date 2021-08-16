@@ -3,13 +3,14 @@
 #include <fstream>
 
 #include "CPerson.h"
+#include "Utility.h"
 
 
 struct TEACHER : public PERSON
 {
 	TEACHER();
 
-	virtual BOOL Validate() const override;
+	BOOL Validate() const;
 
 protected:
 	void Read(std::istream& in);

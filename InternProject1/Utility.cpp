@@ -40,7 +40,7 @@ inline int GetIndexByData(const int target, const CListBox& listBox)
 	return result;
 }
 
-CString MapGradeName(const int value)
+CString MapGradeName(const int value) noexcept
 {
 	CString name;
 
@@ -61,7 +61,7 @@ CString MapGradeName(const int value)
 	return name;
 }
 
-inline unsigned short DigitsCount(INT32 x)
+inline unsigned short DigitsCount(INT32 x) noexcept
 {
     /**
     * Source: https://stackoverflow.com/questions/1489830/efficient-way-to-determine-number-of-digits-in-an-integer

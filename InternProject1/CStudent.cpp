@@ -3,6 +3,7 @@
 
 #include <fstream>
 #include <vector>
+#include "Utility.h"
 
 
 STUDENT::STUDENT()
@@ -11,6 +12,7 @@ STUDENT::STUDENT()
 	, classID(-1)
 	, numberInClass(-1)
 {
+	Clear(*this);
 }
 
 BOOL STUDENT::Validate() const
