@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="DatabaseConnectors">
+      <UniqueIdentifier>{d8e4fcf1-acd4-4185-8ebb-0fa3167a76db}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="InternProject1.h">
@@ -117,6 +120,30 @@
     <ClInclude Include="CombinedScheduleClassDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CBaseRecordSet.h">
+      <Filter>DatabaseConnectors</Filter>
+    </ClInclude>
+    <ClInclude Include="CStudentDatabaseInterface.h">
+      <Filter>DatabaseConnectors</Filter>
+    </ClInclude>
+    <ClInclude Include="CTeacherDatabaseInterface.h">
+      <Filter>DatabaseConnectors</Filter>
+    </ClInclude>
+    <ClInclude Include="CSubjectDatabaseInterface.h">
+      <Filter>DatabaseConnectors</Filter>
+    </ClInclude>
+    <ClInclude Include="CGradeDatabaseInterface.h">
+      <Filter>DatabaseConnectors</Filter>
+    </ClInclude>
+    <ClInclude Include="CClassesDatabaseInterface.h">
+      <Filter>DatabaseConnectors</Filter>
+    </ClInclude>
+    <ClInclude Include="CScheduledClassDatabaseInterface.h">
+      <Filter>DatabaseConnectors</Filter>
+    </ClInclude>
+    <ClInclude Include="CScheduleDatabaseInterface.h">
+      <Filter>DatabaseConnectors</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="InternProject1.cpp">
@@ -208,6 +235,30 @@
     </ClCompile>
     <ClCompile Include="CombinedScheduleClassDlg.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CBaseRecordSet.cpp">
+      <Filter>DatabaseConnectors</Filter>
+    </ClCompile>
+    <ClCompile Include="CStudentDatabaseInterface.cpp">
+      <Filter>DatabaseConnectors</Filter>
+    </ClCompile>
+    <ClCompile Include="CTeacherDatabaseInterface.cpp">
+      <Filter>DatabaseConnectors</Filter>
+    </ClCompile>
+    <ClCompile Include="CSubjectDatabaseInterface.cpp">
+      <Filter>DatabaseConnectors</Filter>
+    </ClCompile>
+    <ClCompile Include="CGradeDatabaseInterface.cpp">
+      <Filter>DatabaseConnectors</Filter>
+    </ClCompile>
+    <ClCompile Include="CClassesDatabaseInterface.cpp">
+      <Filter>DatabaseConnectors</Filter>
+    </ClCompile>
+    <ClCompile Include="CScheduledClassDatabaseInterface.cpp">
+      <Filter>DatabaseConnectors</Filter>
+    </ClCompile>
+    <ClCompile Include="CScheduleDatabaseInterface.cpp">
+      <Filter>DatabaseConnectors</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

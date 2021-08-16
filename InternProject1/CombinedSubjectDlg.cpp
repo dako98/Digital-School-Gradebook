@@ -21,9 +21,8 @@ CombinedSubjectDlg::CombinedSubjectDlg(DialogMode eMode, SUBJECT& data)
 	: CDialog(IDD_SUBJECT_COMBINED, nullptr)
 	, m_eDialogMode(eMode)
 	, m_subjectIDVal(0)
-	, m_subjectStore(_T("Subjects"), &databaseConnection)
-//	, m_gradeStore(_T("Grades"), &databaseConnection)
-	, m_teacherStore(_T("Teachers"), &databaseConnection)
+	, m_subjectStore(&databaseConnection)
+	, m_teacherStore(&databaseConnection)
 	, m_data(data)
 {
 }
@@ -40,15 +39,11 @@ BOOL CombinedSubjectDlg::OnInitDialog()
 		m_subjectName.SetWindowText(CString{ m_data.szName });
 		m_subjectRoom.SetWindowText(CString{ m_data.szRoom });
 	}
-	else
-	{
-//		m_subjectStore.NextID(m_subjectIDVal);
-	}
+
 
 	BOOL isOK = TRUE;
 
 	std::vector<TEACHER> allTeachers;
-//	Storage<TEACHER> te{ teachersPath };
 	isOK = m_teacherStore.LoadAll(allTeachers);
 
 	if (isOK)
@@ -144,22 +139,22 @@ void CombinedSubjectDlg::OnBnClickedOk()
 
 			if (buff.GetLength() <= SUBJECT::MAX_NAME_SIZE)
 			{
-				su.szName = buff;
+				StrCpyW(su.szName, buff);
 			}
 			else
 			{
-				su.szName = "";
+				StrCpyW(su.szName, _T(""));
 			}
 
 			m_subjectRoom.GetWindowTextW(buff);
 
 			if (buff.GetLength() <= SUBJECT::MAX_NAME_SIZE)
 			{
-				su.szRoom = buff;
+				StrCpyW(su.szRoom, buff);
 			}
 			else
 			{
-				su.szRoom = "";
+				StrCpyW(su.szRoom, _T(""));
 			}
 		}
 		else

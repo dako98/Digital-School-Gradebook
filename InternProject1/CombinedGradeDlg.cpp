@@ -20,8 +20,8 @@ CombinedGradeDlg::CombinedGradeDlg(DialogMode eMode, GRADE& data)
 	, m_eDialogMode(eMode)
 	, m_gradeIDVal(0)
 	, m_data(data)
-	, m_studentStore(_T("Students"), &databaseConnection)
-	, m_subjectStore(_T("Subjects"), &databaseConnection)
+	, m_studentStore(&databaseConnection)
+	, m_subjectStore(&databaseConnection)
 {
 }
 
@@ -116,7 +116,12 @@ BOOL CombinedGradeDlg::OnInitDialog()
 		m_gradeDropdown.SetCurSel(GetIndexByData(m_data.value, m_gradeDropdown));
 
 		// Select date
-		m_gradeDateVal = m_data.dtDate;
+		m_gradeDateVal.SetDateTime(m_data.dtDate.year
+			, m_data.dtDate.month
+			, m_data.dtDate.day
+			, m_data.dtDate.hour
+			, m_data.dtDate.minute
+			, m_data.dtDate.second);
 	}
 
 	UpdateData(FALSE);
@@ -196,8 +201,16 @@ void CombinedGradeDlg::OnBnClickedOk()
 		st.nStudentID = m_studentDropdown.GetItemData(m_studentDropdown.GetCurSel());
 		st.nSubjectID = m_subjectDropdown.GetItemData(m_subjectDropdown.GetCurSel());
 		st.value = m_gradeDropdown.GetItemData(m_gradeDropdown.GetCurSel());
-		m_gradeDateVal.GetAsDBTIMESTAMP(st.dtDate);
 
+		DBTIMESTAMP date;
+		m_gradeDateVal.GetAsDBTIMESTAMP(date);
+		st.dtDate.year		= date.year;
+		st.dtDate.month		= date.month;
+		st.dtDate.day		= date.day;
+		st.dtDate.hour		= date.hour;
+		st.dtDate.minute	= date.minute;
+		st.dtDate.second	= date.second;
+		
 		if (st.Validate())
 		{
 			m_data = st;

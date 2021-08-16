@@ -21,7 +21,7 @@ CombinedStudentDlg::CombinedStudentDlg(DialogMode eDialogMode, STUDENT& m_studen
 	, m_studentNumberVal(0)
 	, m_studentBirthDateVal(COleDateTime::GetCurrentTime())
 	, m_data(m_student)
-	, m_classesStore(_T("Classes"), &databaseConnection)
+	, m_classesStore(&databaseConnection)
 	, m_tmp(m_data)
 {
 }
@@ -40,7 +40,12 @@ BOOL CombinedStudentDlg::OnInitDialog()
 
 	if (m_eDialogMode != DialogMode::eDialogMode_Add)
 	{
-		m_studentBirthDateVal = m_data.dtBirthDate;
+		m_studentBirthDateVal.SetDateTime(m_data.dtBirthDate.year
+			, m_data.dtBirthDate.month
+			, m_data.dtBirthDate.day
+			, m_data.dtBirthDate.hour
+			, m_data.dtBirthDate.minute
+			, m_data.dtBirthDate.second);
 		m_studentFirstName.SetWindowText(CString{ m_data.szFirstName });
 		m_studentLastName.SetWindowText(CString{ m_data.szLastName });
 
@@ -118,11 +123,11 @@ BOOL CombinedStudentDlg::LoadAllClasses()
 		for (const auto& cClass : classes)
 		{
 			currentRow.Format(_T("%d %s"),
-				cClass.ID,
-				cClass.name);
+				cClass.nID,
+				cClass.szName);
 
 			int index = m_classList.AddString(currentRow);
-			m_classList.SetItemData(index, cClass.ID);
+			m_classList.SetItemData(index, cClass.nID);
 		}
 
 		m_classList.SetCurSel(GetIndexByData(m_data.classID, m_classList));
@@ -158,25 +163,37 @@ void CombinedStudentDlg::OnBnClickedOk()
 
 		if (buff.GetLength() <= STUDENT::MAX_NAME_SIZE)
 		{
-			m_tmp.szFirstName = buff;
+			StrCpyW(m_tmp.szFirstName, buff);
+//			m_tmp.szFirstName = buff;
 		}
 		else
 		{
-			m_tmp.szFirstName = "";
+			StrCpyW(m_tmp.szFirstName, _T(""));
+//			m_tmp.szFirstName = "";
 		}
 
 		m_studentLastName.GetWindowTextW(buff);
 
 		if (buff.GetLength() <= STUDENT::MAX_NAME_SIZE)
 		{
-			m_tmp.szLastName = buff;
+			StrCpyW(m_tmp.szLastName, buff);
+//			m_tmp.szLastName = buff;
 		}
 		else
 		{
-			m_tmp.szLastName = "";
+			StrCpyW(m_tmp.szLastName, _T(""));
+//			m_tmp.szLastName = "";
 		}
 
-		m_studentBirthDateVal.GetAsDBTIMESTAMP(m_tmp.dtBirthDate);
+		DBTIMESTAMP date;
+		m_studentBirthDateVal.GetAsDBTIMESTAMP(date);
+
+		m_tmp.dtBirthDate.year		= date.year;
+		m_tmp.dtBirthDate.month		= date.month;
+		m_tmp.dtBirthDate.day		= date.day;
+		m_tmp.dtBirthDate.hour		= date.hour;
+		m_tmp.dtBirthDate.minute	= date.minute;
+		m_tmp.dtBirthDate.second	= date.second;
 
 		m_tmp.classID = m_classList.GetItemData(m_classList.GetCurSel());
 

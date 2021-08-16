@@ -23,9 +23,9 @@ IMPLEMENT_DYNAMIC(FailsDlg, CDialog)
 
 FailsDlg::FailsDlg(CWnd* pParent /*=nullptr*/)
 	: CDialog(IDD_FAILS, pParent)
-	, m_studentStore(_T("Students"), &databaseConnection)
-	, m_subjectStore(_T("Subjects"), &databaseConnection)
-	, m_gradeStore(_T("Grades"), &databaseConnection)
+	, m_studentStore(&databaseConnection)
+	, m_subjectStore(&databaseConnection)
+	, m_gradeStore(&databaseConnection)
 {
 
 }

@@ -19,7 +19,7 @@ IMPLEMENT_DYNAMIC(AllSubjectsDlg, CDialog)
 
 AllSubjectsDlg::AllSubjectsDlg(CWnd* pParent /*=nullptr*/)
 	: CDialog(IDD_ALL_SUBJECTS, pParent)
-	, m_subjectStore(_T("Subjects"), &databaseConnection)
+	, m_subjectStore(&databaseConnection)
 {
 
 }

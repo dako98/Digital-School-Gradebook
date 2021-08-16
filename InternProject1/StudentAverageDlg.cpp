@@ -23,9 +23,9 @@ StudentAverageDlg::StudentAverageDlg(CWnd* pParent /*=nullptr*/)
 	: CDialog(IDD_STUDENT_AVERAGE_GRADE, pParent)
 	, m_studentAverageVal(0)
 	, m_subjectAverageVal(0)
-	, m_studentStore(_T("Students"), &databaseConnection)
-	, m_gradeStore(_T("Grades"), &databaseConnection)
-	, m_subjectStore(_T("Subjects"), &databaseConnection)
+	, m_studentStore(&databaseConnection)
+	, m_gradeStore(&databaseConnection)
+	, m_subjectStore(&databaseConnection)
 {
 }
 

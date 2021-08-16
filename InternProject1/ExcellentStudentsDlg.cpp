@@ -20,8 +20,8 @@ IMPLEMENT_DYNAMIC(ExcellentStudentsDlg, CDialog)
 
 ExcellentStudentsDlg::ExcellentStudentsDlg(CWnd* pParent /*=nullptr*/)
 	: CDialog(IDD_EXCELLENT_STUDENTS, pParent)
-	, m_studentStore(_T("Students"), &databaseConnection)
-	, m_gradeStore(_T("Grades"), &databaseConnection)
+	, m_studentStore(&databaseConnection)
+	, m_gradeStore(&databaseConnection)
 {
 }
 

@@ -18,7 +18,7 @@ IMPLEMENT_DYNAMIC(ManageSubjectsDlg, CDialog)
 
 ManageSubjectsDlg::ManageSubjectsDlg(CWnd* pParent /*=nullptr*/)
 	: CDialog(IDD_MANAGE_SUBJECTS_DIALOG, pParent)
-	, m_subjectStore(_T("Subjects"), &databaseConnection)
+	, m_subjectStore(&databaseConnection)
 {
 
 }

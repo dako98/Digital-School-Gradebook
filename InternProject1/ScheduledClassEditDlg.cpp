@@ -17,9 +17,9 @@ IMPLEMENT_DYNAMIC(ScheduledClassEditDlg, CDialog)
 
 ScheduledClassEditDlg::ScheduledClassEditDlg(const CSchedule& m_schedule)
 	: CDialog(IDD_EDIT_SCHEDULE, nullptr)
-	, m_subjectStore(_T("Subjects"), &databaseConnection)
-	, m_scheduledClassStore(_T("Schedule"), &databaseConnection)
-	, m_scheduleStore( _T("Schedule"), &databaseConnection)
+	, m_subjectStore(&databaseConnection)
+	, m_scheduledClassStore(&databaseConnection)
+	, m_scheduleStore(&databaseConnection)
 	, m_schedule(m_schedule)
 {
 }
@@ -226,9 +226,16 @@ void ScheduledClassEditDlg::OnBnClickedButton1()
 	ScheduleClass tmp;
 	if (classesinDayCount > 0)
 	{
-		tmp.duration = m_schedule.days[day].classes[classesinDayCount - 1].duration;
-		tmp.begin.hour += (m_schedule.days[day].classes[classesinDayCount - 1].begin.minute + 40 + 10) / 60;
-		tmp.begin.minute += (m_schedule.days[day].classes[classesinDayCount - 1].begin.minute + 40 + 10) % 60;
+		StrCpyW(tmp.duration, m_schedule.days[day].classes[classesinDayCount - 1].duration);
+
+		DBTIME tmpTime = CStringToDBTIME(m_schedule.days[day].classes[classesinDayCount - 1].begin);
+		tmpTime.hour += (tmpTime.minute + CStringToDBTIME(tmp.duration).minute + 10) / 60;
+
+		StrCpyW(tmp.begin, DBTIMEToCString(tmpTime));
+
+		tmpTime.minute = (tmpTime.minute + CStringToDBTIME(tmp.duration).minute + 10) % 60;
+
+		StrCpyW(tmp.begin, DBTIMEToCString(tmpTime));
 	}
 
 	CombinedScheduleClassDlg subjectPicker(eDialogMode_Add, tmp);

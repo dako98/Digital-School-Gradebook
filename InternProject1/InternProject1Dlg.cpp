@@ -48,7 +48,10 @@ END_MESSAGE_MAP()
 
 BOOL CInternProject1Dlg::OnInitDialog()
 {
-	CDialogEx::OnInitDialog();
+	if (!CDialogEx::OnInitDialog())
+	{
+		return FALSE;
+	}
 
 	// Set the icon for this dialog.  The framework does this automatically
 	//  when the application's main window is not a dialog

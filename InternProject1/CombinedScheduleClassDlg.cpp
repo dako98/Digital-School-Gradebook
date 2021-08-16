@@ -14,8 +14,8 @@ IMPLEMENT_DYNAMIC(CombinedScheduleClassDlg, CDialog)
 CombinedScheduleClassDlg::CombinedScheduleClassDlg(DialogMode eMode, ScheduleClass& data)
 	: CDialog(IDD_COMBINED_SCHEDULED_CLASS, nullptr)
 	, m_dialogMode(eMode)
-	, m_scheduledClassStore(_T("Subjects"), &databaseConnection)
-	, m_subjectStore(_T("Subjects"), &databaseConnection)
+	, m_scheduledClassStore(&databaseConnection)
+	, m_subjectStore(&databaseConnection)
 	, m_data(data)
 {
 

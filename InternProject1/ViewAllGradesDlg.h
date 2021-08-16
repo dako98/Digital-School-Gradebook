@@ -16,7 +16,7 @@ public:
 
 // Dialog Data
 #ifdef AFX_DESIGN_TIME
-	enum { IDD = IDD_ALL_GRADES };
+	enum { IDD = IDD_ALL_GRADES_DLG };
 #endif
 private:
 	BOOL PrintAllGrades();
@@ -35,4 +35,5 @@ public:
 	afx_msg void OnBnClickedButtonAdd();
 	afx_msg void OnBnClickedButtonEdit();
 	afx_msg void OnBnClickedButtonRemove();
+	CListBox m_lsGrades;
 };

@@ -19,8 +19,8 @@ IMPLEMENT_DYNAMIC(ScheduleDlg, CDialog)
 
 ScheduleDlg::ScheduleDlg(CWnd* pParent /*=nullptr*/)
 	: CDialog(IDD_SCHEDULE, pParent)
-	, m_scheduleStore(_T("Schedule"), &databaseConnection)
-	, m_classStore(_T("Classes"), &databaseConnection)
+	, m_scheduleStore(&databaseConnection)
+	, m_classStore(&databaseConnection)
 	, m_schedule()
 {
 
@@ -123,11 +123,11 @@ BOOL ScheduleDlg::OnInitDialog()
 		for (const auto& cClass : allClasses)
 		{
 			currentRow.Format(_T("%d %s"),
-				cClass.ID,
-				cClass.name);
+				cClass.nID,
+				cClass.szName);
 
 			int index = m_classSelectDropList.AddString(currentRow);
-			m_classSelectDropList.SetItemData(index, cClass.ID);
+			m_classSelectDropList.SetItemData(index, cClass.nID);
 		}
 
 		m_classSelectDropList.SetCurSel(allClasses.size() > 0 ? 0 : CB_ERR);

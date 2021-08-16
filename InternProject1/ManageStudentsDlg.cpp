@@ -22,9 +22,9 @@
 
 IMPLEMENT_DYNAMIC(ManageStudentsDlg, CDialog)
 
-ManageStudentsDlg::ManageStudentsDlg(CWnd* pParent /*=nullptr*/)
-	: CDialog(IDD_MANAGESTUDENTS, pParent)
-	, m_studentStore(_T("Students"), &databaseConnection)
+ManageStudentsDlg::ManageStudentsDlg()
+	: CDialog(IDD_MANAGESTUDENTS)
+	, m_studentStore(&databaseConnection)
 {
 
 }

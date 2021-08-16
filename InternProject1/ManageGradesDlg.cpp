@@ -19,7 +19,7 @@ IMPLEMENT_DYNAMIC(ManageGradesDlg, CDialog)
 
 ManageGradesDlg::ManageGradesDlg(CWnd* pParent /*=nullptr*/)
 	: CDialog(IDD_MANAGE_GRADES, pParent)
-	, m_gradeStore(_T("Grades"), &databaseConnection)
+	, m_gradeStore(&databaseConnection)
 
 {
 
@@ -53,6 +53,14 @@ void ManageGradesDlg::OnBnClickedButton1()
 void ManageGradesDlg::OnBnClickedButton2()
 {
 	GRADE tmp;
+	DBTIMESTAMP now;
+	COleDateTime::GetCurrentTime().GetAsDBTIMESTAMP(now);
+	tmp.dtDate.year		= now.year;
+	tmp.dtDate.month	= now.month;
+	tmp.dtDate.day		= now.day;
+	tmp.dtDate.hour		= now.hour;
+	tmp.dtDate.minute	= now.minute;
+	tmp.dtDate.second	= now.second;
 	BOOL isOK = TRUE;
 
 	CombinedGradeDlg dlg{ eDialogMode_Add, tmp };

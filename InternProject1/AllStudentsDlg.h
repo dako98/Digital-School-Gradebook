@@ -25,12 +25,12 @@ protected:
 public:
 	CListBox					m_allStudentsList;
 	CString						m_allStudentsListVal;
-	CButton						m_studentsRadioBtn;
+	CButton						m_rbnStudents;
 
 	afx_msg void OnBnClickedRadio4();
 
 private:
-
+	// няма да са мембъри след новия дизайн.
 	StudentDatabaseInterface	m_studentStore;
 	TeacherDatabaseInterface	m_teacherStore;
 

@@ -8,7 +8,7 @@ class ManageStudentsDlg : public CDialog
 	DECLARE_DYNAMIC(ManageStudentsDlg)
 
 public:
-	ManageStudentsDlg(CWnd* pParent = nullptr);   // standard constructor
+	ManageStudentsDlg();   // standard constructor
 	virtual ~ManageStudentsDlg();
 
 // Dialog Data

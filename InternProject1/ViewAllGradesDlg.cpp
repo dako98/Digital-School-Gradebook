@@ -22,11 +22,11 @@
 
 IMPLEMENT_DYNAMIC(ViewAllGradesDlg, CDialog)
 
-ViewAllGradesDlg::ViewAllGradesDlg(CWnd* pParent /*=nullptr*/)
-	: CDialog(IDD_ALL_GRADES, pParent)
-	, m_gradeStore(_T("Grades"), &databaseConnection)
-	, m_studentStore(_T("Students"), &databaseConnection)
-	, m_subjectStore(_T("Subjects"), &databaseConnection)
+ViewAllGradesDlg::ViewAllGradesDlg(CWnd* pParent)
+	: CDialog(IDD_ALL_GRADES_DLG, pParent)
+	, m_gradeStore(&databaseConnection)
+	, m_studentStore(&databaseConnection)
+	, m_subjectStore(&databaseConnection)
 {
 
 }
@@ -50,7 +50,8 @@ ViewAllGradesDlg::~ViewAllGradesDlg()
 BOOL ViewAllGradesDlg::PrintAllGrades()
 {
 	m_gradesList.ResetContent();
-
+//	m_lsGrades.ResetContent();
+	
 	BOOL isOK;
 
 	std::vector<GRADE> allGrades;
@@ -94,7 +95,9 @@ BOOL ViewAllGradesDlg::PrintAllGrades()
 				MapGradeName(grade.value));
 
 			int index = m_gradesList.AddString(currentRow);
+//			int index = m_lsGrades.AddString(currentRow);
 			m_gradesList.SetItemData(index, grade.nID);
+//			m_lsGrades.SetItemData(index, grade.nID);
 		}
 	}
 
@@ -104,7 +107,9 @@ BOOL ViewAllGradesDlg::PrintAllGrades()
 void ViewAllGradesDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
+	//DDX_Control(pDX, IDC_GRADES_LIST, m_gradesList);
 	DDX_Control(pDX, IDC_GRADES_LIST, m_gradesList);
+	DDX_Control(pDX, IDC_LIST1, m_lsGrades);
 }
 
 
@@ -121,6 +126,15 @@ END_MESSAGE_MAP()
 void ViewAllGradesDlg::OnBnClickedButtonAdd()
 {
 	GRADE tmp;
+	DBTIMESTAMP now;
+	COleDateTime::GetCurrentTime().GetAsDBTIMESTAMP(now);
+	tmp.dtDate.year		= now.year;
+	tmp.dtDate.month	= now.month;
+	tmp.dtDate.day		= now.day;
+	tmp.dtDate.hour		= now.hour;
+	tmp.dtDate.minute	= now.minute;
+	tmp.dtDate.second	= now.second;
+
 	BOOL isOK = TRUE;
 
 	CombinedGradeDlg dlg{ eDialogMode_Add, tmp };

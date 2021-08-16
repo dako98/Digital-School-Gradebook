@@ -18,7 +18,7 @@ IMPLEMENT_DYNAMIC(BirthdayersDlg, CDialog)
 BirthdayersDlg::BirthdayersDlg(const DBTIMESTAMP& date)
 	: CDialog(IDD_BIRTHDAYERS, nullptr)
 	, m_date(date)
-	, m_studentStore(_T("Students"), &databaseConnection)
+	, m_studentStore(&databaseConnection)
 {
 }
 

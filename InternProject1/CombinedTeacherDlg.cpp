@@ -19,7 +19,7 @@ CombinedTeacherDlg::CombinedTeacherDlg(DialogMode eMode, TEACHER& data)
 	: CDialog(IDD_TEACHER_COMBINED, nullptr)
 	, m_eDialogMode(eMode)
 	, m_teacherNumberVal(0)
-	, m_store(_T("Teachers"), &databaseConnection)
+	, m_store(&databaseConnection)
 	, m_data(data)
 {
 }
@@ -104,22 +104,22 @@ void CombinedTeacherDlg::OnBnClickedOk()
 
 		if (buff.GetLength() <= TEACHER::MAX_NAME_SIZE)
 		{
-			st.szFirstName = buff;
+			StrCpyW(st.szFirstName, buff);
 		}
 		else
 		{
-			st.szFirstName = "";
+			StrCpyW(st.szFirstName, _T(""));
 		}
 
 		m_teacherLastName.GetWindowTextW(buff);
 
 		if (buff.GetLength() <= TEACHER::MAX_NAME_SIZE)
 		{
-			st.szLastName = buff;
+			StrCpyW(st.szLastName, buff);
 		}
 		else
 		{
-			st.szLastName = "";
+			StrCpyW(st.szLastName, _T(""));
 		}
 
 		if (st.Validate())
