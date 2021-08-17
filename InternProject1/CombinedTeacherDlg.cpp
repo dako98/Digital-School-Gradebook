@@ -41,6 +41,7 @@ BOOL CombinedTeacherDlg::OnInitDialog()
 
 	switch (m_eDialogMode)
 	{
+	case DialogMode::eDialogMode_View:
 	case DialogMode::eDialogMode_Remove:
 
 		m_teacherFirstName.EnableWindow(FALSE);
@@ -60,7 +61,7 @@ BOOL CombinedTeacherDlg::OnInitDialog()
 	case DialogMode::eDialogMode_None:
 
 	default:
-		throw std::exception{ "Invalid window state." };
+		throw std::invalid_argument{ "Invalid window state." };
 		break;
 	}
 	return 0;

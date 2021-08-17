@@ -59,6 +59,7 @@ BOOL CombinedStudentDlg::OnInitDialog()
 
 	switch (m_eDialogMode)
 	{
+	case DialogMode::eDialogMode_View:
 	case DialogMode::eDialogMode_Remove:
 
 		m_studentBirthDate.EnableWindow(FALSE);
@@ -84,7 +85,7 @@ BOOL CombinedStudentDlg::OnInitDialog()
 		break;
 
 	default:
-		throw std::exception{ "Invalid window state." };
+		throw std::invalid_argument{ "Invalid window state." };
 		break;
 	}
 

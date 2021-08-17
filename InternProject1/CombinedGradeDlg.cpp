@@ -128,6 +128,7 @@ BOOL CombinedGradeDlg::OnInitDialog()
 
 	switch (m_eDialogMode)
 	{
+	case DialogMode::eDialogMode_View:
 	case DialogMode::eDialogMode_Remove:
 
 		m_studentDropdown.EnableWindow(FALSE);
@@ -157,7 +158,7 @@ BOOL CombinedGradeDlg::OnInitDialog()
 		break;
 
 	default:
-		throw std::exception{ "Invalid window state." };
+		throw std::invalid_argument{ "Invalid window state." };
 		break;
 	}
 	return isOK;

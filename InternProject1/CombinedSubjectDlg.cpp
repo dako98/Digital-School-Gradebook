@@ -67,6 +67,7 @@ BOOL CombinedSubjectDlg::OnInitDialog()
 
 	switch (m_eDialogMode)
 	{
+	case DialogMode::eDialogMode_View:
 	case DialogMode::eDialogMode_Remove:
 
 		m_subjectID.EnableWindow(FALSE);
@@ -83,11 +84,11 @@ BOOL CombinedSubjectDlg::OnInitDialog()
 		m_subjectName.EnableWindow(TRUE);
 		m_subjectRoom.EnableWindow(TRUE);
 		m_teacherDropdown.EnableWindow(TRUE);
+
 		break;
 
-
 	default:
-		throw std::exception{ "Invalid window state." };
+		throw std::invalid_argument{ "Invalid window state." };
 		break;
 	}
 
