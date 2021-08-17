@@ -21,9 +21,6 @@ public:
 private:
 	BOOL PrintAllGrades();
 
-	GradeDatabaseInterface		m_gradeStore;
-	StudentDatabaseInterface	m_studentStore;
-	SubjectDatabaseInterface	m_subjectStore;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
@@ -36,4 +33,5 @@ public:
 	afx_msg void OnBnClickedButtonEdit();
 	afx_msg void OnBnClickedButtonRemove();
 	CListBox m_lsGrades;
+	afx_msg void OnContextMenu(CWnd* /*pWnd*/, CPoint /*point*/);
 };

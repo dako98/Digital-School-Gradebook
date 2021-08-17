@@ -19,7 +19,6 @@ IMPLEMENT_DYNAMIC(AllSubjectsDlg, CDialog)
 
 AllSubjectsDlg::AllSubjectsDlg(CWnd* pParent /*=nullptr*/)
 	: CDialog(IDD_ALL_SUBJECTS, pParent)
-	, m_subjectStore(&databaseConnection)
 {
 
 }
@@ -35,7 +34,9 @@ BOOL AllSubjectsDlg::PrintAll()
 	BOOL isOK = TRUE;
 
 	std::vector<SUBJECT> all;
-	isOK = m_subjectStore.LoadAll(all);
+	SubjectDatabaseInterface subjectStore{ &databaseConnection };
+
+	isOK = subjectStore.LoadAll(all);
 
 	if (isOK)
 	{
@@ -60,11 +61,7 @@ BOOL AllSubjectsDlg::OnInitDialog()
 	if(!CDialog::OnInitDialog())
 		return FALSE;
 
-	BOOL isOK = TRUE;
-
-	isOK = PrintAll();
-
-	return isOK;
+	return PrintAll();
 }
 
 void AllSubjectsDlg::DoDataExchange(CDataExchange* pDX)
@@ -78,6 +75,7 @@ BEGIN_MESSAGE_MAP(AllSubjectsDlg, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON1, &AllSubjectsDlg::OnBnClickedButtonAdd)
 	ON_BN_CLICKED(IDC_BUTTON2, &AllSubjectsDlg::OnBnClickedButtonEdit)
 	ON_BN_CLICKED(IDC_BUTTON3, &AllSubjectsDlg::OnBnClickedButtonRemove)
+	ON_WM_CONTEXTMENU()
 END_MESSAGE_MAP()
 
 
@@ -88,11 +86,12 @@ void AllSubjectsDlg::OnBnClickedButtonAdd()
 {
 	SUBJECT tmp;
 	BOOL isOK = TRUE;
+	SubjectDatabaseInterface subjectStore{ &databaseConnection };
 
 	CombinedSubjectDlg dlg{ eDialogMode_Add, tmp };
 	if (dlg.DoModal() == IDOK)
 	{
-		isOK = m_subjectStore.Add(tmp);
+		isOK = subjectStore.Add(tmp);
 	}
 	if (!isOK)
 	{
@@ -109,8 +108,9 @@ void AllSubjectsDlg::OnBnClickedButtonEdit()
 	{
 		SUBJECT tmp;
 		BOOL isOK = TRUE;
+		SubjectDatabaseInterface subjectStore{ &databaseConnection };
 
-		isOK = m_subjectStore.Load(subjectsList.GetItemData(subjectsList.GetCurSel()), tmp);
+		isOK = subjectStore.Load(subjectsList.GetItemData(subjectsList.GetCurSel()), tmp);
 		if (!isOK)
 		{
 			int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
@@ -120,7 +120,7 @@ void AllSubjectsDlg::OnBnClickedButtonEdit()
 		CombinedSubjectDlg dlg{ eDialogMode_Edit, tmp };
 		if (dlg.DoModal() == IDOK)
 		{
-			isOK = m_subjectStore.Edit(tmp);
+			isOK = subjectStore.Edit(tmp);
 		}
 		if (!isOK)
 		{
@@ -139,8 +139,9 @@ void AllSubjectsDlg::OnBnClickedButtonRemove()
 	{
 		SUBJECT tmp;
 		BOOL isOK = TRUE;
+		SubjectDatabaseInterface subjectStore{ &databaseConnection };
 
-		isOK = m_subjectStore.Load(subjectsList.GetItemData(subjectsList.GetCurSel()), tmp);
+		isOK = subjectStore.Load(subjectsList.GetItemData(subjectsList.GetCurSel()), tmp);
 		if (!isOK)
 		{
 			int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
@@ -150,7 +151,7 @@ void AllSubjectsDlg::OnBnClickedButtonRemove()
 		CombinedSubjectDlg dlg{ eDialogMode_Remove, tmp };
 		if (dlg.DoModal() == IDOK)
 		{
-			isOK = m_subjectStore.Delete(tmp.nID);
+			isOK = subjectStore.Delete(tmp.nID);
 		}
 		if (!isOK)
 		{
@@ -159,5 +160,73 @@ void AllSubjectsDlg::OnBnClickedButtonRemove()
 		}
 
 		PrintAll();
+	}
+}
+
+void AllSubjectsDlg::OnContextMenu(CWnd* pWnd, CPoint point)
+{
+	if ((point.x == -1) && (point.y == -1))
+	{
+		// Keystroke invocation
+		CRect rect;
+
+		GetClientRect(rect);
+		ClientToScreen(rect);
+
+		point = rect.TopLeft();
+		point.Offset(5, 5);
+	}
+
+	CMenu menu;
+	VERIFY(menu.LoadMenu(IDR_SUBJECT));
+
+	CMenu* pPopup = menu.GetSubMenu(0);
+	ASSERT(pPopup != NULL);
+	CWnd* pWndPopupOwner = this;
+
+	while (pWndPopupOwner->GetStyle() & WS_CHILD)
+		pWndPopupOwner = pWndPopupOwner->GetParent();
+
+	int response = pPopup->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON | TPM_RETURNCMD,
+		point.x,
+		point.y,
+		pWndPopupOwner);
+
+	switch (response)
+	{
+
+	case ID_POPUP_ADD:
+		OnBnClickedButtonAdd();
+		break;
+
+	case ID_POPUP_EDIT:
+		OnBnClickedButtonEdit();
+		break;
+
+	case ID_POPUP_DELETE:
+		OnBnClickedButtonRemove();
+		break;
+
+	case ID_POPUP_VIEW:
+	{
+		if (subjectsList.GetCurSel() != LB_ERR)
+		{
+			SUBJECT tmp;
+			BOOL isOK = TRUE;
+			SubjectDatabaseInterface subjectStore{ &databaseConnection };
+
+			isOK = subjectStore.Load(subjectsList.GetItemData(subjectsList.GetCurSel()), tmp);
+			if (!isOK)
+			{
+				int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
+				return;
+			}
+			CombinedSubjectDlg dlg{ eDialogMode_View, tmp };
+			dlg.DoModal();
+		}
+	}
+	break;
+	default:
+		break;
 	}
 }

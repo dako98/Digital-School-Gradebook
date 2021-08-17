@@ -24,9 +24,6 @@ IMPLEMENT_DYNAMIC(ViewAllGradesDlg, CDialog)
 
 ViewAllGradesDlg::ViewAllGradesDlg(CWnd* pParent)
 	: CDialog(IDD_ALL_GRADES_DLG, pParent)
-	, m_gradeStore(&databaseConnection)
-	, m_studentStore(&databaseConnection)
-	, m_subjectStore(&databaseConnection)
 {
 
 }
@@ -50,23 +47,25 @@ ViewAllGradesDlg::~ViewAllGradesDlg()
 BOOL ViewAllGradesDlg::PrintAllGrades()
 {
 	m_gradesList.ResetContent();
-//	m_lsGrades.ResetContent();
 	
 	BOOL isOK;
 
 	std::vector<GRADE> allGrades;
 	std::vector<STUDENT> allStudents;
 	std::vector<SUBJECT> allSubjects;
+	GradeDatabaseInterface		gradeStore	{ &databaseConnection };
+	StudentDatabaseInterface	studentStore{ &databaseConnection };
+	SubjectDatabaseInterface	subjectStore{ &databaseConnection };
 
-	isOK = m_gradeStore.LoadAll(allGrades);
+	isOK = gradeStore.LoadAll(allGrades);
 
 	if (isOK)
 	{
-		isOK = m_studentStore.LoadAll(allStudents);
+		isOK = studentStore.LoadAll(allStudents);
 
 		if (isOK)
 		{
-			m_subjectStore.LoadAll(allSubjects);
+			subjectStore.LoadAll(allSubjects);
 		}
 	}
 
@@ -95,9 +94,7 @@ BOOL ViewAllGradesDlg::PrintAllGrades()
 				MapGradeName(grade.value));
 
 			int index = m_gradesList.AddString(currentRow);
-//			int index = m_lsGrades.AddString(currentRow);
 			m_gradesList.SetItemData(index, grade.nID);
-//			m_lsGrades.SetItemData(index, grade.nID);
 		}
 	}
 
@@ -107,7 +104,7 @@ BOOL ViewAllGradesDlg::PrintAllGrades()
 void ViewAllGradesDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	//DDX_Control(pDX, IDC_GRADES_LIST, m_gradesList);
+
 	DDX_Control(pDX, IDC_GRADES_LIST, m_gradesList);
 	DDX_Control(pDX, IDC_LIST1, m_lsGrades);
 }
@@ -117,6 +114,7 @@ BEGIN_MESSAGE_MAP(ViewAllGradesDlg, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON1, &ViewAllGradesDlg::OnBnClickedButtonAdd)
 	ON_BN_CLICKED(IDC_BUTTON2, &ViewAllGradesDlg::OnBnClickedButtonEdit)
 	ON_BN_CLICKED(IDC_BUTTON3, &ViewAllGradesDlg::OnBnClickedButtonRemove)
+	ON_WM_CONTEXTMENU()
 END_MESSAGE_MAP()
 
 
@@ -136,11 +134,12 @@ void ViewAllGradesDlg::OnBnClickedButtonAdd()
 	tmp.dtDate.second	= now.second;
 
 	BOOL isOK = TRUE;
+	GradeDatabaseInterface		gradeStore{ &databaseConnection };
 
 	CombinedGradeDlg dlg{ eDialogMode_Add, tmp };
 	if (dlg.DoModal() == IDOK)
 	{
-		isOK = m_gradeStore.Add(tmp);
+		isOK = gradeStore.Add(tmp);
 	}
 	if (!isOK)
 	{
@@ -160,8 +159,9 @@ void ViewAllGradesDlg::OnBnClickedButtonEdit()
 
 		GRADE tmp;
 		tmp.nID = m_gradesList.GetItemData(m_gradesList.GetCurSel());
+		GradeDatabaseInterface		gradeStore{ &databaseConnection };
 
-		isOK = m_gradeStore.Load(tmp.nID, tmp);
+		isOK = gradeStore.Load(tmp.nID, tmp);
 		if (!isOK)
 		{
 			int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
@@ -171,7 +171,7 @@ void ViewAllGradesDlg::OnBnClickedButtonEdit()
 		CombinedGradeDlg dlg{ eDialogMode_Edit, tmp };
 		if (dlg.DoModal() == IDOK)
 		{
-			isOK = m_gradeStore.Edit(tmp);
+			isOK = gradeStore.Edit(tmp);
 		}
 		if (!isOK)
 		{
@@ -192,8 +192,9 @@ void ViewAllGradesDlg::OnBnClickedButtonRemove()
 
 		GRADE tmp;
 		tmp.nID = m_gradesList.GetItemData(m_gradesList.GetCurSel());
+		GradeDatabaseInterface		gradeStore{ &databaseConnection };
 
-		isOK = m_gradeStore.Load(tmp.nID, tmp);
+		isOK = gradeStore.Load(tmp.nID, tmp);
 		if (!isOK)
 		{
 			int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
@@ -203,7 +204,7 @@ void ViewAllGradesDlg::OnBnClickedButtonRemove()
 		CombinedGradeDlg dlg{ eDialogMode_Remove, tmp };
 		if (dlg.DoModal() == IDOK)
 		{
-			isOK = m_gradeStore.Delete(tmp.nID);
+			isOK = gradeStore.Delete(tmp.nID);
 		}
 		if (!isOK)
 		{
@@ -212,5 +213,75 @@ void ViewAllGradesDlg::OnBnClickedButtonRemove()
 		}
 
 		PrintAllGrades();
+	}
+}
+
+
+void ViewAllGradesDlg::OnContextMenu(CWnd* pWnd, CPoint point)
+{
+	// TODO: Add your message handler code here
+	if ((point.x == -1) && (point.y == -1))
+	{
+		// Keystroke invocation
+		CRect rect;
+
+		GetClientRect(rect);
+		ClientToScreen(rect);
+
+		point = rect.TopLeft();
+		point.Offset(5, 5);
+	}
+
+	CMenu menu;
+	VERIFY(menu.LoadMenu(IDR_SUBJECT));
+
+	CMenu* pPopup = menu.GetSubMenu(0);
+	ASSERT(pPopup != NULL);
+	CWnd* pWndPopupOwner = this;
+
+	while (pWndPopupOwner->GetStyle() & WS_CHILD)
+		pWndPopupOwner = pWndPopupOwner->GetParent();
+
+	int response = pPopup->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON | TPM_RETURNCMD,
+		point.x,
+		point.y,
+		pWndPopupOwner);
+
+	switch (response)
+	{
+
+	case ID_POPUP_ADD:
+		OnBnClickedButtonAdd();
+		break;
+
+	case ID_POPUP_EDIT:
+		OnBnClickedButtonEdit();
+		break;
+
+	case ID_POPUP_DELETE:
+		OnBnClickedButtonRemove();
+		break;
+
+	case ID_POPUP_VIEW:
+	{
+		if (m_gradesList.GetCurSel() != LB_ERR)
+		{
+			GRADE tmp;
+			BOOL isOK = TRUE;
+			GradeDatabaseInterface		gradeStore{ &databaseConnection };
+
+			isOK = gradeStore.Load(m_gradesList.GetItemData(m_gradesList.GetCurSel()), tmp);
+			if (!isOK)
+			{
+				int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
+				return;
+			}
+			CombinedGradeDlg dlg{ eDialogMode_View, tmp };
+			dlg.DoModal();
+		}
+	}
+	break;
+	default:
+		break;
 	}
 }

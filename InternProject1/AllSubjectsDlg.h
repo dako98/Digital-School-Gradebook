@@ -31,5 +31,7 @@ public:
 private:
 	BOOL PrintAll();
 
-	SubjectDatabaseInterface m_subjectStore;
+//	SubjectDatabaseInterface m_subjectStore;
+public:
+	afx_msg void OnContextMenu(CWnd* /*pWnd*/, CPoint /*point*/);
 };
