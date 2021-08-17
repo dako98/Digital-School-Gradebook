@@ -12,7 +12,7 @@
 #define IDD_STUDENT_COMBINED            158
 #define IDD_TEACHER_COMBINED            160
 #define IDD_GRADES_COMBINED             162
-#define IDD_ALL_GRADES                  164
+#define IDD_ALL_GRADES_DLG              164
 #define IDD_SUBJECT_COMBINED            166
 #define IDD_STUDENT_AVERAGE_GRADE       168
 #define IDD_EXCELLENT_STUDENTS          170
@@ -21,6 +21,8 @@
 #define IDD_SCHEDULE                    176
 #define IDD_EDIT_SCHEDULE               178
 #define IDD_COMBINED_SCHEDULED_CLASS    180
+#define IDR_SUBJECT                     182
+#define IDD_ALL_TEACHERS_DLG            183
 #define IDC_EDIT1                       1000
 #define IDC_DATETIMEPICKER1             1001
 #define IDC_ALL_STUDENTS                1002
@@ -44,16 +46,28 @@
 #define IDC_GRADES_STUDENT_COMBO        1037
 #define IDC_GRADE_DATETIMEPICKER1       1038
 #define IDC_GRADES_LIST                 1039
+#define IDC_GRADES_LIST1                1039
 #define IDC_COMBO_CLASSES               1040
 #define IDC_EDIT4                       1041
+#define IDC_TEACHERS_LIST               1043
+#define IDC_BTN_TEACHERS_ADD            1044
+#define IDC_BTN_TEACHERS_EDIT           1045
+#define IDC_BTN_TEACHERS_REMOVE         1046
+#define ID_ADD_EDIT                     32771
+#define ID_ADD_DELETE                   32772
+#define ID_ADD_VIEW                     32773
+#define ID_POPUP_ADD                    32774
+#define ID_POPUP_EDIT                   32775
+#define ID_POPUP_DELETE                 32776
+#define ID_POPUP_VIEW                   32777
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        182
-#define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1043
+#define _APS_NEXT_RESOURCE_VALUE        185
+#define _APS_NEXT_COMMAND_VALUE         32778
+#define _APS_NEXT_CONTROL_VALUE         1047
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

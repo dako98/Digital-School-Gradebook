@@ -30,4 +30,6 @@ public:
 
 private:
 	StudentDatabaseInterface m_studentStore;
+public:
+	afx_msg void OnBnClickedButton3();
 };

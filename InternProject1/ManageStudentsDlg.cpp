@@ -11,6 +11,7 @@
 #include "CStudent.h"
 
 #include "AllStudentsDlg.h"
+#include "AllTeachersDlg.h"
 #include "CombinedStudentDlg.h"
 #include "StudentAverageDlg.h"
 #include "ExcellentStudentsDlg.h"
@@ -46,6 +47,7 @@ BEGIN_MESSAGE_MAP(ManageStudentsDlg, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON5, &ManageStudentsDlg::OnBnClickedButtonExcellents)
 	ON_BN_CLICKED(IDC_BUTTON1, &ManageStudentsDlg::OnBnClickedButtonBirthdayers)
 	ON_BN_CLICKED(IDC_BUTTON7, &ManageStudentsDlg::OnBnClickedButtonFails)
+	ON_BN_CLICKED(IDC_BUTTON3, &ManageStudentsDlg::OnBnClickedButton3)
 END_MESSAGE_MAP()
 
 
@@ -100,5 +102,12 @@ void ManageStudentsDlg::OnBnClickedButtonBirthdayers()
 void ManageStudentsDlg::OnBnClickedButtonFails()
 {
 	FailsDlg dlg;
+	dlg.DoModal();
+}
+
+
+void ManageStudentsDlg::OnBnClickedButton3()
+{
+	AllTeachersDlg dlg;
 	dlg.DoModal();
 }

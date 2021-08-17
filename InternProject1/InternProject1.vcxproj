@@ -186,6 +186,7 @@
   <ItemGroup>
     <ClInclude Include="AllStudentsDlg.h" />
     <ClInclude Include="AllSubjectsDlg.h" />
+    <ClInclude Include="AllTeachersDlg.h" />
     <ClInclude Include="BirthdayersDlg.h" />
     <ClInclude Include="CBaseRecordSet.h" />
     <ClInclude Include="CClass.h" />
@@ -230,6 +231,7 @@
   <ItemGroup>
     <ClCompile Include="AllStudentsDlg.cpp" />
     <ClCompile Include="AllSubjectsDlg.cpp" />
+    <ClCompile Include="AllTeachersDlg.cpp" />
     <ClCompile Include="BirthdayersDlg.cpp" />
     <ClCompile Include="CBaseRecordSet.cpp" />
     <ClCompile Include="CClass.cpp" />

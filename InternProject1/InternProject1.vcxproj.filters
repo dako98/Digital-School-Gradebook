@@ -144,6 +144,9 @@
     <ClInclude Include="CScheduleDatabaseInterface.h">
       <Filter>DatabaseConnectors</Filter>
     </ClInclude>
+    <ClInclude Include="AllTeachersDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="InternProject1.cpp">
@@ -259,6 +262,9 @@
     </ClCompile>
     <ClCompile Include="CScheduleDatabaseInterface.cpp">
       <Filter>DatabaseConnectors</Filter>
+    </ClCompile>
+    <ClCompile Include="AllTeachersDlg.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
