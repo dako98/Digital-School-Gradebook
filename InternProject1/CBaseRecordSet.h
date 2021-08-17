@@ -177,11 +177,6 @@ BOOL CBaseRecordSet<T>::Load(const int ID, T& result)
 
     assert(response.size() <= 1, "ID is not unique!");
 
-    if (CRecordset::GetRowsFetched() > 1)
-    {
-        throw std::length_error("ID is not unique!");
-    }
-
     result = ((response.size() >= 1) ? response[0] : result);
 
     return isOK;
