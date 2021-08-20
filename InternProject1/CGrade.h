@@ -27,10 +27,4 @@ struct GRADE
 	int value;
 
 	BOOL Validate() const;
-
-	friend std::ostream& operator<<(std::ostream& out, const GRADE& obj);
-	friend std::istream& operator>>(std::istream& in, GRADE& obj);
-
-protected:
-	void Read(std::istream& in);
 };

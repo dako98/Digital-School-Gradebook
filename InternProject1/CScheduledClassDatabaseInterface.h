@@ -15,7 +15,6 @@ public:
     {}
 
 
-
     virtual void DoFieldExchange(CFieldExchange* pFX) override;
 
 };
