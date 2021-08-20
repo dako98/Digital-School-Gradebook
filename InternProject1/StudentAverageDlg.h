@@ -39,6 +39,6 @@ public:
 	CEdit						m_subjectAverage;
 	float						m_studentAverageVal;
 	float						m_subjectAverageVal;
-	afx_msg void OnCbnSelchangeCombo1();
-	afx_msg void OnCbnSelchangeCombo2();
+	afx_msg void OnCbnSelchangeStudent();
+	afx_msg void OnCbnSelchangeSubject();
 };

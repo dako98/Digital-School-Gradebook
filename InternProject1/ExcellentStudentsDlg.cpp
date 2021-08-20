@@ -88,7 +88,7 @@ ExcellentStudentsDlg::~ExcellentStudentsDlg()
 void ExcellentStudentsDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_LIST1, m_excellentStudentsList);
+	DDX_Control(pDX, IDC_EXCELLENT_STUDENTS_LIST, m_excellentStudentsList);
 }
 
 

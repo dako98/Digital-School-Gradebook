@@ -164,25 +164,25 @@ StudentAverageDlg::~StudentAverageDlg()
 void StudentAverageDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_COMBO1, m_studentDropList);
-	DDX_Control(pDX, IDC_COMBO2, m_subjectDropList);
-	DDX_Control(pDX, IDC_EDIT1, m_studentAverage);
-	DDX_Control(pDX, IDC_EDIT2, m_subjectAverage);
-	DDX_Text(pDX, IDC_EDIT1, m_studentAverageVal);
-	DDX_Text(pDX, IDC_EDIT2, m_subjectAverageVal);
+	DDX_Control(pDX, IDD_STUDENT_AVERAGE_GRADE_STUDENT_COMBO, m_studentDropList);
+	DDX_Control(pDX, IDD_STUDENT_AVERAGE_GRADE_SUBJECT_COMBO, m_subjectDropList);
+	DDX_Control(pDX, IDD_STUDENT_AVERAGE_GRADE_STUDENT_EDIT, m_studentAverage);
+	DDX_Control(pDX, IDD_STUDENT_AVERAGE_GRADE_SUBJECT_EDIT, m_subjectAverage);
+	DDX_Text(pDX, IDD_STUDENT_AVERAGE_GRADE_STUDENT_EDIT, m_studentAverageVal);
+	DDX_Text(pDX, IDD_STUDENT_AVERAGE_GRADE_SUBJECT_EDIT, m_subjectAverageVal);
 }
 
 
 BEGIN_MESSAGE_MAP(StudentAverageDlg, CDialog)
-	ON_CBN_SELCHANGE(IDC_COMBO1, &StudentAverageDlg::OnCbnSelchangeCombo1)
-	ON_CBN_SELCHANGE(IDC_COMBO2, &StudentAverageDlg::OnCbnSelchangeCombo2)
+	ON_CBN_SELCHANGE(IDD_STUDENT_AVERAGE_GRADE_STUDENT_COMBO, &StudentAverageDlg::OnCbnSelchangeStudent)
+	ON_CBN_SELCHANGE(IDD_STUDENT_AVERAGE_GRADE_SUBJECT_COMBO, &StudentAverageDlg::OnCbnSelchangeSubject)
 END_MESSAGE_MAP()
 
 
 // StudentAverageDlg message handlers
 
 
-void StudentAverageDlg::OnCbnSelchangeCombo1()
+void StudentAverageDlg::OnCbnSelchangeStudent()
 {
 	if (!UpdateAverage())
 	{
@@ -191,7 +191,7 @@ void StudentAverageDlg::OnCbnSelchangeCombo1()
 }
 
 
-void StudentAverageDlg::OnCbnSelchangeCombo2()
+void StudentAverageDlg::OnCbnSelchangeSubject()
 {
 	if (!UpdateAverage())
 	{

@@ -143,21 +143,21 @@ BOOL ScheduledClassEditDlg::OnInitDialog()
 void ScheduledClassEditDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_COMBO1, m_daysOfWeekList);
-	DDX_Control(pDX, IDC_LIST1, m_classesInDayList);
-	DDX_Control(pDX, IDC_EDIT1, m_currentClassEdit);
-	DDX_Control(pDX, IDC_BUTTON2, m_buttonUp);
-	DDX_Control(pDX, IDC_BUTTON3, m_buttonDown);
+	DDX_Control(pDX, IDC_EDIT_SCHEDULE_COMBO, m_daysOfWeekList);
+	DDX_Control(pDX, IDC_EDIT_SCHEDULE_LIST, m_classesInDayList);
+	DDX_Control(pDX, IDC_EDIT_SCHEDULE_EDIT, m_currentClassEdit);
+	DDX_Control(pDX, IDC_BTN_EDIT_SCHEDULE_UP, m_buttonUp);
+	DDX_Control(pDX, IDC_BTN_EDIT_SCHEDULE_DOWN, m_buttonDown);
 }
 
 
 BEGIN_MESSAGE_MAP(ScheduledClassEditDlg, CDialog)
-	ON_CBN_SELCHANGE(IDC_COMBO1, &ScheduledClassEditDlg::OnCbnSelchangeCombo1)
-	ON_BN_CLICKED(IDC_BUTTON2, &ScheduledClassEditDlg::OnBnClickedButtonUp)
-	ON_BN_CLICKED(IDC_BUTTON3, &ScheduledClassEditDlg::OnBnClickedButtonDown)
-	ON_LBN_SELCHANGE(IDC_LIST1, &ScheduledClassEditDlg::OnLbnSelchangeList1)
-	ON_BN_CLICKED(IDC_BUTTON1, &ScheduledClassEditDlg::OnBnClickedButton1)
-	ON_BN_CLICKED(IDC_BUTTON4, &ScheduledClassEditDlg::OnBnClickedButton4)
+	ON_CBN_SELCHANGE(IDC_EDIT_SCHEDULE_COMBO, &ScheduledClassEditDlg::OnCbnSelchangeDay)
+	ON_BN_CLICKED(IDC_BTN_EDIT_SCHEDULE_UP, &ScheduledClassEditDlg::OnBnClickedButtonUp)
+	ON_BN_CLICKED(IDC_BTN_EDIT_SCHEDULE_DOWN, &ScheduledClassEditDlg::OnBnClickedButtonDown)
+	ON_LBN_SELCHANGE(IDC_EDIT_SCHEDULE_LIST, &ScheduledClassEditDlg::OnLbnSelchangeClass)
+	ON_BN_CLICKED(IDC_BTN_EDIT_SCHEDULE_ADD, &ScheduledClassEditDlg::OnBnClickedButtonAdd)
+	ON_BN_CLICKED(IDC_BTN_EDIT_SCHEDULE_REMOVE, &ScheduledClassEditDlg::OnBnClickedButtonRemove)
 	ON_BN_CLICKED(IDOK, &ScheduledClassEditDlg::OnBnClickedOk)
 END_MESSAGE_MAP()
 
@@ -165,7 +165,7 @@ END_MESSAGE_MAP()
 // ScheduledClassEditDlg message handlers
 
 
-void ScheduledClassEditDlg::OnCbnSelchangeCombo1()
+void ScheduledClassEditDlg::OnCbnSelchangeDay()
 {
 	// TODO: Add your control notification handler code here
 	PrintClassesOfDay(m_daysOfWeekList.GetItemData(m_daysOfWeekList.GetCurSel()));
@@ -179,7 +179,7 @@ void ScheduledClassEditDlg::OnBnClickedButtonUp()
 	MoveScheduledClass(id, 1, 0);
 	PrintClassesOfDay(m_daysOfWeekList.GetItemData(m_daysOfWeekList.GetCurSel()));
 	m_classesInDayList.SetCurSel(GetIndexByData(id,m_classesInDayList));
-	OnLbnSelchangeList1();
+	OnLbnSelchangeClass();
 }
 
 
@@ -190,11 +190,11 @@ void ScheduledClassEditDlg::OnBnClickedButtonDown()
 	MoveScheduledClass(id, -1, 0);
 	PrintClassesOfDay(m_daysOfWeekList.GetItemData(m_daysOfWeekList.GetCurSel()));
 	m_classesInDayList.SetCurSel(GetIndexByData(id, m_classesInDayList));
-	OnLbnSelchangeList1();
+	OnLbnSelchangeClass();
 }
 
 
-void ScheduledClassEditDlg::OnLbnSelchangeList1()
+void ScheduledClassEditDlg::OnLbnSelchangeClass()
 {
 	// TODO: Add your control notification handler code here
 	if (m_classesInDayList.GetCurSel() <= 0)
@@ -218,7 +218,7 @@ void ScheduledClassEditDlg::OnLbnSelchangeList1()
 }
 
 
-void ScheduledClassEditDlg::OnBnClickedButton1()
+void ScheduledClassEditDlg::OnBnClickedButtonAdd()
 {
 	// TODO: Add your control notification handler code here
 	int day = m_daysOfWeekList.GetItemData(m_daysOfWeekList.GetCurSel());
@@ -253,7 +253,7 @@ void ScheduledClassEditDlg::OnBnClickedButton1()
 }
 
 
-void ScheduledClassEditDlg::OnBnClickedButton4()
+void ScheduledClassEditDlg::OnBnClickedButtonRemove()
 {
 	// TODO: Add your control notification handler code here
 	SUBJECT subject;

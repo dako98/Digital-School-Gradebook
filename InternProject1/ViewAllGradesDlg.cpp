@@ -46,7 +46,7 @@ ViewAllGradesDlg::~ViewAllGradesDlg()
 
 BOOL ViewAllGradesDlg::PrintAllGrades()
 {
-	m_gradesList.ResetContent();
+	m_lsGrades.ResetContent();
 	
 	BOOL isOK;
 
@@ -93,8 +93,8 @@ BOOL ViewAllGradesDlg::PrintAllGrades()
 				subjectNameMap[grade.nSubjectID],
 				MapGradeName(grade.value));
 
-			int index = m_gradesList.AddString(currentRow);
-			m_gradesList.SetItemData(index, grade.nID);
+			int index = m_lsGrades.AddString(currentRow);
+			m_lsGrades.SetItemData(index, grade.nID);
 		}
 	}
 
@@ -105,15 +105,15 @@ void ViewAllGradesDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
 
-	DDX_Control(pDX, IDC_GRADES_LIST, m_gradesList);
-	DDX_Control(pDX, IDC_LIST1, m_lsGrades);
+	DDX_Control(pDX, IDC_GRADES_LIST, m_lsGrades);
+//	DDX_Control(pDX, IDC_LIST1, m_lsGrades);
 }
 
 
 BEGIN_MESSAGE_MAP(ViewAllGradesDlg, CDialog)
-	ON_BN_CLICKED(IDC_BUTTON1, &ViewAllGradesDlg::OnBnClickedButtonAdd)
-	ON_BN_CLICKED(IDC_BUTTON2, &ViewAllGradesDlg::OnBnClickedButtonEdit)
-	ON_BN_CLICKED(IDC_BUTTON3, &ViewAllGradesDlg::OnBnClickedButtonRemove)
+	ON_BN_CLICKED(IDC_BTN_GRADES_ADD,		&ViewAllGradesDlg::OnBnClickedButtonAdd)
+	ON_BN_CLICKED(IDC_BTN_GRADES_EDIT,		&ViewAllGradesDlg::OnBnClickedButtonEdit)
+	ON_BN_CLICKED(IDC_BTN_GRADES_REMOVE,	&ViewAllGradesDlg::OnBnClickedButtonRemove)
 	ON_WM_CONTEXTMENU()
 END_MESSAGE_MAP()
 
@@ -153,12 +153,12 @@ void ViewAllGradesDlg::OnBnClickedButtonAdd()
 
 void ViewAllGradesDlg::OnBnClickedButtonEdit()
 {
-	if (m_gradesList.GetCurSel() != LB_ERR)
+	if (m_lsGrades.GetCurSel() != LB_ERR)
 	{
 		BOOL isOK = TRUE;
 
 		GRADE tmp;
-		tmp.nID = m_gradesList.GetItemData(m_gradesList.GetCurSel());
+		tmp.nID = m_lsGrades.GetItemData(m_lsGrades.GetCurSel());
 		GradeDatabaseInterface		gradeStore{ &databaseConnection };
 
 		isOK = gradeStore.Load(tmp.nID, tmp);
@@ -186,12 +186,12 @@ void ViewAllGradesDlg::OnBnClickedButtonEdit()
 
 void ViewAllGradesDlg::OnBnClickedButtonRemove()
 {
-	if (m_gradesList.GetCurSel() != LB_ERR)
+	if (m_lsGrades.GetCurSel() != LB_ERR)
 	{
 		BOOL isOK = TRUE;
 
 		GRADE tmp;
-		tmp.nID = m_gradesList.GetItemData(m_gradesList.GetCurSel());
+		tmp.nID = m_lsGrades.GetItemData(m_lsGrades.GetCurSel());
 		GradeDatabaseInterface		gradeStore{ &databaseConnection };
 
 		isOK = gradeStore.Load(tmp.nID, tmp);
@@ -264,13 +264,13 @@ void ViewAllGradesDlg::OnContextMenu(CWnd* pWnd, CPoint point)
 
 	case ID_POPUP_VIEW:
 	{
-		if (m_gradesList.GetCurSel() != LB_ERR)
+		if (m_lsGrades.GetCurSel() != LB_ERR)
 		{
 			GRADE tmp;
 			BOOL isOK = TRUE;
 			GradeDatabaseInterface		gradeStore{ &databaseConnection };
 
-			isOK = gradeStore.Load(m_gradesList.GetItemData(m_gradesList.GetCurSel()), tmp);
+			isOK = gradeStore.Load(m_lsGrades.GetItemData(m_lsGrades.GetCurSel()), tmp);
 			if (!isOK)
 			{
 				int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);

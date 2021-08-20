@@ -36,21 +36,21 @@ void ManageGradesDlg::DoDataExchange(CDataExchange* pDX)
 
 
 BEGIN_MESSAGE_MAP(ManageGradesDlg, CDialog)
-	ON_BN_CLICKED(IDC_BUTTON1, &ManageGradesDlg::OnBnClickedButton1)
-	ON_BN_CLICKED(IDC_BUTTON2, &ManageGradesDlg::OnBnClickedButton2)
+	ON_BN_CLICKED(IDC_BTN_ALL_GRADES, &ManageGradesDlg::OnBnClickedButtonAllGrades)
+	ON_BN_CLICKED(IDC_BTN_ADD_GRADES, &ManageGradesDlg::OnBnClickedButtonAddGrade)
 END_MESSAGE_MAP()
 
 
 // ManageGradesDlg message handlers
 
 
-void ManageGradesDlg::OnBnClickedButton1()
+void ManageGradesDlg::OnBnClickedButtonAllGrades()
 {
 	ViewAllGradesDlg dlg;
 	dlg.DoModal();
 }
 
-void ManageGradesDlg::OnBnClickedButton2()
+void ManageGradesDlg::OnBnClickedButtonAddGrade()
 {
 	GRADE tmp;
 	DBTIMESTAMP now;

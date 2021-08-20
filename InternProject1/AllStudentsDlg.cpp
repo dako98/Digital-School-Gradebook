@@ -18,7 +18,7 @@
 IMPLEMENT_DYNAMIC(AllStudentsDlg, CDialog)
 
 AllStudentsDlg::AllStudentsDlg(CWnd* pParent /*=nullptr*/)
-	: CDialog(IDD_ALL_STUDENTS, pParent)
+	: CDialog(IDD_ALL_STUDENTS_DLG, pParent)
 	, m_allStudentsListVal(_T(""))
 {
 }
@@ -76,9 +76,9 @@ void AllStudentsDlg::DoDataExchange(CDataExchange* pDX)
 
 
 BEGIN_MESSAGE_MAP(AllStudentsDlg, CDialog)
-	ON_BN_CLICKED(IDC_BUTTON1, &AllStudentsDlg::OnBnClickedButtonEdit)
-	ON_BN_CLICKED(IDC_BUTTON3, &AllStudentsDlg::OnBnClickedButtonAdd)
-	ON_BN_CLICKED(IDC_BUTTON2, &AllStudentsDlg::OnBnClickedButtonRemove)
+	ON_BN_CLICKED(IDC_BTN_STUDENTS_EDIT,	&AllStudentsDlg::OnBnClickedButtonEdit)
+	ON_BN_CLICKED(IDC_BTN_STUDENTS_ADD,		&AllStudentsDlg::OnBnClickedButtonAdd)
+	ON_BN_CLICKED(IDC_BTN_STUDENTS_REMOVE,	&AllStudentsDlg::OnBnClickedButtonRemove)
 	ON_WM_CONTEXTMENU()
 END_MESSAGE_MAP()
 
@@ -185,29 +185,31 @@ void AllStudentsDlg::OnContextMenu(CWnd* pWnd, CPoint point)
 	while (pWndPopupOwner->GetStyle() & WS_CHILD)
 		pWndPopupOwner = pWndPopupOwner->GetParent();
 
-	int response = pPopup->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON | TPM_RETURNCMD,
-		point.x,
-		point.y,
-		pWndPopupOwner);
-
-	switch (response)
+	if (m_allStudentsList.GetCurSel() != LB_ERR)
 	{
-	case ID_POPUP_ADD:
-		OnBnClickedButtonAdd();
-		break;
 
-	case ID_POPUP_EDIT:
-		OnBnClickedButtonEdit();
-		break;
+		int response = pPopup->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON | TPM_RETURNCMD,
+			point.x,
+			point.y,
+			pWndPopupOwner);
 
-	case ID_POPUP_DELETE:
-		OnBnClickedButtonRemove();
-		break;
-
-	case ID_POPUP_VIEW:
-	{
-		if (m_allStudentsList.GetCurSel() != LB_ERR)
+		switch (response)
 		{
+		case ID_POPUP_ADD:
+			OnBnClickedButtonAdd();
+			break;
+
+		case ID_POPUP_EDIT:
+			OnBnClickedButtonEdit();
+			break;
+
+		case ID_POPUP_DELETE:
+			OnBnClickedButtonRemove();
+			break;
+
+		case ID_POPUP_VIEW:
+		{
+
 			STUDENT tmp;
 			BOOL isOK = TRUE;
 			StudentDatabaseInterface studentStore{ &databaseConnection };
@@ -220,10 +222,11 @@ void AllStudentsDlg::OnContextMenu(CWnd* pWnd, CPoint point)
 			}
 			CombinedStudentDlg dlg{ eDialogMode_View, tmp };
 			dlg.DoModal();
+
 		}
-	}
-	break;
-	default:
 		break;
+		default:
+			break;
+		}
 	}
 }

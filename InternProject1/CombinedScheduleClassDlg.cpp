@@ -12,7 +12,7 @@
 IMPLEMENT_DYNAMIC(CombinedScheduleClassDlg, CDialog)
 
 CombinedScheduleClassDlg::CombinedScheduleClassDlg(DialogMode eMode, ScheduleClass& data)
-	: CDialog(IDD_COMBINED_SCHEDULED_CLASS, nullptr)
+	: CDialog(IDD_COMBINED_SCHEDULED_CLASS_DLG, nullptr)
 	, m_dialogMode(eMode)
 	, m_scheduledClassStore(&databaseConnection)
 	, m_subjectStore(&databaseConnection)
@@ -78,7 +78,7 @@ CombinedScheduleClassDlg::~CombinedScheduleClassDlg()
 void CombinedScheduleClassDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_COMBO1, subjectsList);
+	DDX_Control(pDX, IDD_COMBINED_SCHEDULED_CLASS_COMBO, subjectsList);
 }
 
 

@@ -167,8 +167,8 @@ FailsDlg::~FailsDlg()
 void FailsDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_LIST1, failsList);
-	DDX_Control(pDX, IDC_LIST2, badGradesList);
+	DDX_Control(pDX, IDC_RETAKE_LIST, failsList);
+	DDX_Control(pDX, IDC_BAD_GRADES_LIST, badGradesList);
 }
 
 

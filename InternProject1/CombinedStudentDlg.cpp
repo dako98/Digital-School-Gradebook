@@ -99,14 +99,14 @@ CombinedStudentDlg::~CombinedStudentDlg()
 void CombinedStudentDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_EDIT1, m_studentNumber);
-	DDX_Control(pDX, IDC_EDIT2, m_studentFirstName);
-	DDX_Control(pDX, IDC_EDIT3, m_studentLastName);
-	DDX_Control(pDX, IDC_DATETIMEPICKER1, m_studentBirthDate);
-	DDX_Text(pDX, IDC_EDIT1, m_studentNumberVal);
-	DDX_DateTimeCtrl(pDX, IDC_DATETIMEPICKER1, m_studentBirthDateVal);
+	DDX_Control(pDX, IDC_STUDENT_ID, m_studentNumber);
+	DDX_Control(pDX, IDC_STUDENT_FIRST_NAME_EDIT, m_studentFirstName);
+	DDX_Control(pDX, IDC_STUDENT_LAST_NAME_EDIT, m_studentLastName);
+	DDX_Control(pDX, IDC_DATETIMEPICKER, m_studentBirthDate);
+	DDX_Text(pDX, IDC_STUDENT_ID, m_studentNumberVal);
+	DDX_DateTimeCtrl(pDX, IDC_DATETIMEPICKER, m_studentBirthDateVal);
 	DDX_Control(pDX, IDC_COMBO_CLASSES, m_classList);
-	DDX_Control(pDX, IDC_EDIT4, m_numberInClassEditBox);
+	DDX_Control(pDX, IDC_STUDENT_NUMBER_IN_CLASS_EDIT, m_numberInClassEditBox);
 }
 
 BOOL CombinedStudentDlg::LoadAllClasses()

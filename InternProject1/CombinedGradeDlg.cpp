@@ -171,12 +171,12 @@ CombinedGradeDlg::~CombinedGradeDlg()
 void CombinedGradeDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	DDX_Text(pDX, IDC_EDIT1, m_gradeIDVal);
+	DDX_Text(pDX, IDC_GRADES_GRADE_ID, m_gradeIDVal);
 	DDX_Control(pDX, IDC_GRADES_STUDENT_COMBO, m_studentDropdown);
-	DDX_Control(pDX, IDC_COMBO2, m_subjectDropdown);
-	DDX_Control(pDX, IDC_COMBO3, m_gradeDropdown);
-	DDX_Control(pDX, IDC_GRADE_DATETIMEPICKER1, m_gradeDate);
-	DDX_DateTimeCtrl(pDX, IDC_GRADE_DATETIMEPICKER1, m_gradeDateVal);
+	DDX_Control(pDX, IDC_GRADES_SUBJECT_COMBO, m_subjectDropdown);
+	DDX_Control(pDX, IDC_GRADES_GRADE_COMBO, m_gradeDropdown);
+	DDX_Control(pDX, IDC_GRADE_DATETIMEPICKER, m_gradeDate);
+	DDX_DateTimeCtrl(pDX, IDC_GRADE_DATETIMEPICKER, m_gradeDateVal);
 }
 
 

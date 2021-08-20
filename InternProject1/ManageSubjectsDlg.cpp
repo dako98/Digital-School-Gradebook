@@ -34,22 +34,22 @@ void ManageSubjectsDlg::DoDataExchange(CDataExchange* pDX)
 
 
 BEGIN_MESSAGE_MAP(ManageSubjectsDlg, CDialog)
-	ON_BN_CLICKED(IDC_BUTTON1, &ManageSubjectsDlg::OnBnClickedButton1)
-	ON_BN_CLICKED(IDC_BUTTON2, &ManageSubjectsDlg::OnBnClickedButton2)
+	ON_BN_CLICKED(IDC_BTN_ALL_SUBJECTS, &ManageSubjectsDlg::OnBnClickedButtonViewAll)
+	ON_BN_CLICKED(IDC_BTN_ADD_SUBJECT, &ManageSubjectsDlg::OnBnClickedButtonAdd)
 END_MESSAGE_MAP()
 
 
 // ManageSubjectsDlg message handlers
 
 
-void ManageSubjectsDlg::OnBnClickedButton1()
+void ManageSubjectsDlg::OnBnClickedButtonViewAll()
 {
 	AllSubjectsDlg dlg;
 	dlg.DoModal();
 }
 
 
-void ManageSubjectsDlg::OnBnClickedButton2()
+void ManageSubjectsDlg::OnBnClickedButtonAdd()
 {
 
 	BOOL isOK = TRUE;

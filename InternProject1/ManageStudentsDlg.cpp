@@ -24,7 +24,7 @@
 IMPLEMENT_DYNAMIC(ManageStudentsDlg, CDialog)
 
 ManageStudentsDlg::ManageStudentsDlg()
-	: CDialog(IDD_MANAGESTUDENTS)
+	: CDialog(IDD_MANAGE_PEOPLE)
 	, m_studentStore(&databaseConnection)
 {
 

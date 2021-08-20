@@ -42,11 +42,11 @@ public:
 	CButton								m_buttonUp;
 	CButton								m_buttonDown;
 
-	afx_msg void OnCbnSelchangeCombo1();
+	afx_msg void OnCbnSelchangeDay();
 	afx_msg void OnBnClickedButtonUp();
 	afx_msg void OnBnClickedButtonDown();
-	afx_msg void OnLbnSelchangeList1();
-	afx_msg void OnBnClickedButton1();
-	afx_msg void OnBnClickedButton4();
+	afx_msg void OnLbnSelchangeClass();
+	afx_msg void OnBnClickedButtonAdd();
+	afx_msg void OnBnClickedButtonRemove();
 	afx_msg void OnBnClickedOk();
 };

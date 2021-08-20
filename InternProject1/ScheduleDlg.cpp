@@ -144,21 +144,22 @@ BOOL ScheduleDlg::OnInitDialog()
 void ScheduleDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_LIST1, m_ScheduleListControl);
-	DDX_Control(pDX, IDC_COMBO1, m_classSelectDropList);
+	DDX_Control(pDX, IDC_SCHEDULE_LIST, m_ScheduleListControl);
+	DDX_Control(pDX, IDC_SCHEDULE_CLASS_COMBO, m_classSelectDropList);
 }
 
 
 BEGIN_MESSAGE_MAP(ScheduleDlg, CDialog)
-	ON_CBN_SELCHANGE(IDC_COMBO1, &ScheduleDlg::OnCbnSelchangeCombo1)
-	ON_BN_CLICKED(IDC_BUTTON1, &ScheduleDlg::OnBnClickedButtonEdit)
+	ON_CBN_SELCHANGE(IDC_SCHEDULE_CLASS_COMBO, &ScheduleDlg::OnCbnSelchangeClassCombo)
+	ON_BN_CLICKED(IDC_BTN_SCHEDULE_EDIT, &ScheduleDlg::OnBnClickedButtonEdit)
+	ON_WM_CONTEXTMENU()
 END_MESSAGE_MAP()
 
 
 // ScheduleDlg message handlers
 
 
-void ScheduleDlg::OnCbnSelchangeCombo1()
+void ScheduleDlg::OnCbnSelchangeClassCombo()
 {
 	// TODO: Add your control notification handler code here
 	PrintSchedule();
@@ -171,4 +172,26 @@ void ScheduleDlg::OnBnClickedButtonEdit()
 	ScheduledClassEditDlg dlg(m_schedule);
 	dlg.DoModal();
 	PrintSchedule();
+}
+
+
+void ScheduleDlg::OnContextMenu(CWnd* pWnd, CPoint point)
+{
+	POSITION pos = m_ScheduleListControl.GetFirstSelectedItemPosition();
+	bool bIsItemSelected = pos != NULL;
+
+	CMenu submenu;
+	submenu.CreatePopupMenu();
+
+	submenu.AppendMenu(MF_STRING, ID_POPUP_ADD,		_T("Add student"));
+	submenu.AppendMenu(MF_STRING, ID_POPUP_EDIT,	_T("Edit student"));
+	submenu.AppendMenu(MF_STRING, ID_POPUP_DELETE,	_T("Delete student"));
+	submenu.AppendMenu(MF_STRING, ID_POPUP_VIEW,	_T("View student"));
+
+	//disable edit/delete/view from submenu
+	submenu.EnableMenuItem(ID_POPUP_EDIT,		!bIsItemSelected);
+	submenu.EnableMenuItem(ID_POPUP_DELETE,		!bIsItemSelected);
+	submenu.EnableMenuItem(ID_POPUP_VIEW,		!bIsItemSelected);
+
+	submenu.TrackPopupMenu(TPM_LEFTALIGN, point.x, point.y, this);
 }

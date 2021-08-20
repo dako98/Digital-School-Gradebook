@@ -27,11 +27,10 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-	CListBox					m_gradesList;
+	CListBox					m_lsGrades;
 
 	afx_msg void OnBnClickedButtonAdd();
 	afx_msg void OnBnClickedButtonEdit();
 	afx_msg void OnBnClickedButtonRemove();
-	CListBox m_lsGrades;
 	afx_msg void OnContextMenu(CWnd* /*pWnd*/, CPoint /*point*/);
 };

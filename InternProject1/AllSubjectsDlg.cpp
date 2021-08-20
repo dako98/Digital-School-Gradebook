@@ -18,7 +18,7 @@
 IMPLEMENT_DYNAMIC(AllSubjectsDlg, CDialog)
 
 AllSubjectsDlg::AllSubjectsDlg(CWnd* pParent /*=nullptr*/)
-	: CDialog(IDD_ALL_SUBJECTS, pParent)
+	: CDialog(IDD_ALL_SUBJECTS_DLG, pParent)
 {
 
 }
@@ -27,7 +27,7 @@ AllSubjectsDlg::~AllSubjectsDlg()
 {
 }
 
-BOOL AllSubjectsDlg::PrintAll()
+BOOL AllSubjectsDlg::PrintAllSubjects()
 {
 	subjectsList.ResetContent();
 
@@ -61,20 +61,20 @@ BOOL AllSubjectsDlg::OnInitDialog()
 	if(!CDialog::OnInitDialog())
 		return FALSE;
 
-	return PrintAll();
+	return PrintAllSubjects();
 }
 
 void AllSubjectsDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_LIST1, subjectsList);
+	DDX_Control(pDX, IDC_SUBJECTS_LIST, subjectsList);
 }
 
 
 BEGIN_MESSAGE_MAP(AllSubjectsDlg, CDialog)
-	ON_BN_CLICKED(IDC_BUTTON1, &AllSubjectsDlg::OnBnClickedButtonAdd)
-	ON_BN_CLICKED(IDC_BUTTON2, &AllSubjectsDlg::OnBnClickedButtonEdit)
-	ON_BN_CLICKED(IDC_BUTTON3, &AllSubjectsDlg::OnBnClickedButtonRemove)
+	ON_BN_CLICKED(IDC_BTN_SUBJECTS_ADD,		&AllSubjectsDlg::OnBnClickedButtonAdd)
+	ON_BN_CLICKED(IDC_BTN_SUBJECTS_EDIT,	&AllSubjectsDlg::OnBnClickedButtonEdit)
+	ON_BN_CLICKED(IDC_BTN_SUBJECTS_REMOVE,	&AllSubjectsDlg::OnBnClickedButtonRemove)
 	ON_WM_CONTEXTMENU()
 END_MESSAGE_MAP()
 
@@ -98,7 +98,7 @@ void AllSubjectsDlg::OnBnClickedButtonAdd()
 		int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
 		return;
 	}
-	PrintAll();
+	PrintAllSubjects();
 }
 
 
@@ -128,7 +128,7 @@ void AllSubjectsDlg::OnBnClickedButtonEdit()
 			return;
 		}
 
-		PrintAll();
+		PrintAllSubjects();
 	}
 }
 
@@ -159,7 +159,7 @@ void AllSubjectsDlg::OnBnClickedButtonRemove()
 			return;
 		}
 
-		PrintAll();
+		PrintAllSubjects();
 	}
 }
 

@@ -102,11 +102,11 @@ CombinedSubjectDlg::~CombinedSubjectDlg()
 void CombinedSubjectDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_COMBO1, m_teacherDropdown);
-	DDX_Text(pDX, IDC_EDIT1, m_subjectIDVal);
-	DDX_Control(pDX, IDC_EDIT2, m_subjectName);
-	DDX_Control(pDX, IDC_EDIT3, m_subjectRoom);
-	DDX_Control(pDX, IDC_EDIT1, m_subjectID);
+	DDX_Control(pDX, IDC_SUBJECT_TEACHER_COMBO, m_teacherDropdown);
+	DDX_Text(pDX, IDC_SUBJECT_ID_EDIT, m_subjectIDVal);
+	DDX_Control(pDX, IDC_SUBJECT_NAME_EDIT, m_subjectName);
+	DDX_Control(pDX, IDC_SUBJECT_ROOM_EDIT, m_subjectRoom);
+	DDX_Control(pDX, IDC_SUBJECT_ID_EDIT, m_subjectID);
 }
 
 

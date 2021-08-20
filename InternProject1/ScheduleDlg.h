@@ -36,6 +36,7 @@ private:
 	ClassesDatabaseInterface	m_classStore;
 	CSchedule					m_schedule;
 public:
-	afx_msg void OnCbnSelchangeCombo1();
+	afx_msg void OnCbnSelchangeClassCombo();
 	afx_msg void OnBnClickedButtonEdit();
+	afx_msg void OnContextMenu(CWnd* /*pWnd*/, CPoint /*point*/);
 };

@@ -74,10 +74,10 @@ CombinedTeacherDlg::~CombinedTeacherDlg()
 void CombinedTeacherDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_EDIT1, m_teacherNum);
-	DDX_Control(pDX, IDC_EDIT2, m_teacherFirstName);
-	DDX_Control(pDX, IDC_EDIT3, m_teacherLastName);
-	DDX_Text(pDX, IDC_EDIT1, m_teacherNumberVal);
+	DDX_Control(pDX, IDC_TEACHER_ID_EDIT, m_teacherNum);
+	DDX_Control(pDX, IDC_TEACHER_FIRST_NAME_EDIT, m_teacherFirstName);
+	DDX_Control(pDX, IDC_TEACHER_LAST_NAME_EDIT, m_teacherLastName);
+	DDX_Text(pDX, IDC_TEACHER_ID_EDIT, m_teacherNumberVal);
 }
 
 

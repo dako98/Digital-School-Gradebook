@@ -29,9 +29,8 @@ public:
 	afx_msg void OnBnClickedButtonEdit();
 	afx_msg void OnBnClickedButtonRemove();
 private:
-	BOOL PrintAll();
+	BOOL PrintAllSubjects();
 
-//	SubjectDatabaseInterface m_subjectStore;
 public:
 	afx_msg void OnContextMenu(CWnd* /*pWnd*/, CPoint /*point*/);
 };
