@@ -86,7 +86,9 @@ BOOL CBaseRecordSet<T>::Edit(const T& input)
     try
     {
         if (!CRecordset::Open(CRecordset::dynaset, CRecordset::m_strTableName, CRecordset::none))
+        {
             return FALSE;
+        }
     }
     catch (const CDBException&)
     {
@@ -110,11 +112,13 @@ BOOL CBaseRecordSet<T>::Edit(const T& input)
     try
     {
         if (!CRecordset::Update())
+        {
             if (isDifferent)
             {
                 CRecordset::Close();
                 return FALSE;
             }
+        }
     }
     catch (const CDBException&)
     {
@@ -135,7 +139,9 @@ BOOL CBaseRecordSet<T>::Delete(const int id)
     try
     {
         if (!CRecordset::Open(CRecordset::dynaset, CRecordset::m_strTableName, CRecordset::none))
+        {
             return FALSE;
+        }
     }
     catch (const CDBException&)
     {
@@ -173,13 +179,16 @@ BOOL CBaseRecordSet<T>::Load(const int ID, T& result)
     filter.Format(_T("[ID] = %d"), ID);
     std::vector<T> response;
 
-    BOOL isOK = LoadWhere(filter, response);
+    if (!LoadWhere(filter, response))
+    {
+        return FALSE;
+    }
 
     assert(response.size() <= 1, "ID is not unique!");
 
     result = ((response.size() >= 1) ? response[0] : result);
 
-    return isOK;
+    return TRUE;
 }
 
 template<class T>
