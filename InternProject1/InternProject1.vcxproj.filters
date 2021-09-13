@@ -276,9 +276,6 @@
     <None Include="res\InternProject1.rc2">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Storage.c++">
-      <Filter>Source Files</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\InternProject1.ico">

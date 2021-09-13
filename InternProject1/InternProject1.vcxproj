@@ -279,7 +279,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="res\InternProject1.rc2" />
-    <None Include="Storage.c++" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\InternProject1.ico" />

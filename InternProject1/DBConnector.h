@@ -2,13 +2,6 @@
 
 #include <unordered_map>
 
-#include "CTeacher.h"
-#include "CGrade.h"
-#include "CSubject.h"
-#include "CClass.h"
-#include "CSchedule.h"
-
-
 
 class IDtoNameSet : public CRecordset
 {

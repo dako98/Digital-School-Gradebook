@@ -1,8 +1,7 @@
 #include "pch.h"
 #include "Utility.h"
-#include <algorithm>
 #include "CGrade.h"
-#include <limits>
+
 
 const char* const databaseConnectionString = "Driver={ODBC Driver 17 for SQL Server}; Server=(localdb)\\MSSQLLocalDB; Database=Test1;";
 
