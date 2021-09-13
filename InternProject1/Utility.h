@@ -14,7 +14,6 @@ enum DialogMode
 
 extern int		        GetIndexByData(const int target, const CComboBox& comboBox);
 extern int              GetIndexByData(const int target, const CListBox& listBox);
-extern CString	        MapGradeName(const int value) noexcept;
 extern unsigned short   DigitsCount(INT32 x) noexcept;
 
 template <class T>

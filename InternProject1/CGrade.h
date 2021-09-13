@@ -2,6 +2,7 @@
 
 #include <fstream>
 
+extern CString MapGradeName(const int value) noexcept;
 
 struct GRADE
 {

@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "Utility.h"
-#include "CGrade.h"
 
 
 const char* const databaseConnectionString = "Driver={ODBC Driver 17 for SQL Server}; Server=(localdb)\\MSSQLLocalDB; Database=Test1;";
@@ -39,26 +38,6 @@ inline int GetIndexByData(const int target, const CListBox& listBox)
 	return result;
 }
 
-CString MapGradeName(const int value) noexcept
-{
-	CString name;
-
-	switch (value)
-	{
-	case GRADE::GRADES::A:	name = "Excellent";	break;
-	case GRADE::GRADES::B:	name = "Very good";	break;
-	case GRADE::GRADES::C:	name = "Good";		break;
-	case GRADE::GRADES::D:	name = "Average";	break;
-	case GRADE::GRADES::F:	name = "Bad";		break;
-
-	default:
-		name = "";
-		ASSERT(false && "Invalid grade.");
-		break;
-	}
-
-	return name;
-}
 
 inline unsigned short DigitsCount(INT32 x) noexcept
 {
@@ -117,7 +96,7 @@ inline unsigned short DigitsCount(INT32 x) noexcept
 template <class T>
 unsigned int DigitsCount(T number, unsigned short radix = 10)
 {
-	assert(radix > 2, "Only positive radixes greater than 1 are supported.");
+	assert(radix > 1, "Only positive radixes greater than 1 are supported.");
 
 	unsigned int digits = 1;
 	while (number /= radix)
