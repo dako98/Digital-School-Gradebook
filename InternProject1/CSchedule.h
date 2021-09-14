@@ -10,7 +10,7 @@
 
 struct ScheduleClass
 {
-    static const int MAX_LEN_CHAR_TIME = 8 + 1; // Why does the "+1" fix the heap corruptions
+    static const int MAX_LEN_CHAR_TIME = 8 + 1; // FIXME: Why does the "+1" fix the heap corruptions
                                                 // during edit?! (format: hh:mm:ss)
 
     ScheduleClass()
