@@ -64,7 +64,12 @@ BOOL AllStudentsDlg::OnInitDialog()
 		return FALSE;
 	}
 
-	PrintAllStudents();
+	if (!PrintAllStudents())
+	{
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 void AllStudentsDlg::DoDataExchange(CDataExchange* pDX)
