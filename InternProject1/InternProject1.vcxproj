@@ -184,6 +184,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AllStudentClassesDlg.h" />
     <ClInclude Include="AllStudentsDlg.h" />
     <ClInclude Include="AllSubjectsDlg.h" />
     <ClInclude Include="AllTeachersDlg.h" />
@@ -198,11 +199,14 @@
     <ClInclude Include="CombinedStudentDlg.h" />
     <ClInclude Include="CombinedSubjectDlg.h" />
     <ClInclude Include="CombinedTeacherDlg.h" />
+    <ClInclude Include="CombinedViewDlg.h" />
     <ClInclude Include="CPerson.h" />
     <ClInclude Include="CSchedule.h" />
     <ClInclude Include="CScheduleDatabaseInterface.h" />
     <ClInclude Include="CScheduledClassDatabaseInterface.h" />
     <ClInclude Include="CStudent.h" />
+    <ClInclude Include="CStudentClass.h" />
+    <ClInclude Include="CStudentClassDatabaseInterface.h" />
     <ClInclude Include="CStudentDatabaseInterface.h" />
     <ClInclude Include="CSubject.h" />
     <ClInclude Include="CSubjectDatabaseInterface.h" />
@@ -217,6 +221,7 @@
     <ClInclude Include="ManageGradesDlg.h" />
     <ClInclude Include="ManageStudentsDlg.h" />
     <ClInclude Include="ManageSubjectsDlg.h" />
+    <ClInclude Include="CombinedClassDlg.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ScheduledClassEditDlg.h" />
@@ -229,6 +234,7 @@
     <ClInclude Include="ViewAllGradesDlg.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AllStudentClassesDlg.cpp" />
     <ClCompile Include="AllStudentsDlg.cpp" />
     <ClCompile Include="AllSubjectsDlg.cpp" />
     <ClCompile Include="AllTeachersDlg.cpp" />
@@ -243,11 +249,14 @@
     <ClCompile Include="CombinedStudentDlg.cpp" />
     <ClCompile Include="CombinedSubjectDlg.cpp" />
     <ClCompile Include="CombinedTeacherDlg.cpp" />
+    <ClCompile Include="CombinedViewDlg.cpp" />
     <ClCompile Include="CPerson.cpp" />
     <ClCompile Include="CSchedule.cpp" />
     <ClCompile Include="CScheduleDatabaseInterface.cpp" />
     <ClCompile Include="CScheduledClassDatabaseInterface.cpp" />
     <ClCompile Include="CStudent.cpp" />
+    <ClCompile Include="CStudentClass.cpp" />
+    <ClCompile Include="CStudentClassDatabaseInterface.cpp" />
     <ClCompile Include="CStudentDatabaseInterface.cpp" />
     <ClCompile Include="CSubject.cpp" />
     <ClCompile Include="CSubjectDatabaseInterface.cpp" />
@@ -261,6 +270,7 @@
     <ClCompile Include="ManageGradesDlg.cpp" />
     <ClCompile Include="ManageStudentsDlg.cpp" />
     <ClCompile Include="ManageSubjectsDlg.cpp" />
+    <ClCompile Include="CombinedClassDlg.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

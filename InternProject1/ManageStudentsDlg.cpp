@@ -17,6 +17,7 @@
 #include "ExcellentStudentsDlg.h"
 #include "BirthdayersDlg.h"
 #include "FailsDlg.h"
+#include "AllStudentClassesDlg.h"
 
 
 // ManageStudentsDlg dialog
@@ -48,6 +49,7 @@ BEGIN_MESSAGE_MAP(ManageStudentsDlg, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON1, &ManageStudentsDlg::OnBnClickedButtonBirthdayers)
 	ON_BN_CLICKED(IDC_BUTTON7, &ManageStudentsDlg::OnBnClickedButtonFails)
 	ON_BN_CLICKED(IDC_BUTTON3, &ManageStudentsDlg::OnBnClickedButton3)
+	ON_BN_CLICKED(IDC_BTN_ADD_NEW_CLASS, &ManageStudentsDlg::OnBnClickedButtonNewClass)
 END_MESSAGE_MAP()
 
 
@@ -109,5 +111,11 @@ void ManageStudentsDlg::OnBnClickedButtonFails()
 void ManageStudentsDlg::OnBnClickedButton3()
 {
 	AllTeachersDlg dlg;
+	dlg.DoModal();
+}
+
+void ManageStudentsDlg::OnBnClickedButtonNewClass()
+{
+	AllStudentClassesDlg dlg;
 	dlg.DoModal();
 }

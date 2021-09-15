@@ -28,8 +28,14 @@
 #define IDD_COMBINED_SCHEDULED_CLASS_DLG 180
 #define IDR_SUBJECT                     182
 #define IDD_ALL_TEACHERS_DLG            183
+#define IDD_NEW_CLASS                   185
+#define IDD_COMBINED_CLASS              185
+#define IDD_COMBINED_VIEW_ALL_DIALOG    187
+#define IDD_MANAGE_STUDENT_CLASSES      189
 #define IDC_EDIT1                       1000
 #define IDC_TEACHER_ID_EDIT             1000
+#define IDC_EDIT_NEW_CLASS_NAME         1000
+#define IDC_EDIT_COMBINED_CLASS_NAME    1000
 #define IDC_DATETIMEPICKER1             1001
 #define IDC_DATETIMEPICKER              1001
 #define IDC_ALL_STUDENTS                1002
@@ -40,9 +46,14 @@
 #define IDC_BUTTON3                     1010
 #define IDC_BUTTON4                     1011
 #define IDC_BTN_EDIT_SCHEDULE_REMOVE    1011
+#define IDC_BTN_ADD_NEW_CLASS           1011
+#define IDC_BTN_REMOVE                  1011
+#define IDC_BTN_MANAGE_STUDENT_CLASSES  1011
 #define IDC_MANAGESTUDENTS              1012
 #define IDC_COMBO1                      1013
 #define IDC_SUBJECT_TEACHER_COMBO       1013
+#define IDC_COMBO_NEW_CLASS_TEACHERS    1013
+#define IDC_COMBO_COMBINED_CLASS_TEACHERS 1013
 #define IDC_LIST2                       1016
 #define IDC_BUTTON1                     1017
 #define IDC_LIST1                       1018
@@ -117,6 +128,13 @@
 #define IDC_TEACHER_ID_STATIC           1093
 #define IDC_TEACHER_FIRST_NAME_STATIC   1094
 #define IDC_TEACHER_LAST_NAME_STATIC    1095
+#define IDC_BTN_VIEW                    1097
+#define IDC_BTN_ADD                     1098
+#define IDC_BTN_EDIT                    1099
+#define IDC_BTN_ADD_STUDENT_CLASS       1100
+#define IDC_BTN_EDIT_STUDENT_CLASS      1101
+#define IDC_BTN_REMOVE_STUDENT_CLASS    1102
+#define IDC_ALL_STUDENT_CLASSES_LIST    1103
 #define ID_ADD_EDIT                     32771
 #define ID_ADD_DELETE                   32772
 #define ID_ADD_VIEW                     32773
@@ -129,9 +147,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        185
+#define _APS_NEXT_RESOURCE_VALUE        191
 #define _APS_NEXT_COMMAND_VALUE         32778
-#define _APS_NEXT_CONTROL_VALUE         1096
+#define _APS_NEXT_CONTROL_VALUE         1104
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

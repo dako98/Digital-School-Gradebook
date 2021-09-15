@@ -147,6 +147,21 @@
     <ClInclude Include="AllTeachersDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CombinedClassDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CStudentClassDatabaseInterface.h">
+      <Filter>DatabaseConnectors</Filter>
+    </ClInclude>
+    <ClInclude Include="CStudentClass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CombinedViewDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AllStudentClassesDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="InternProject1.cpp">
@@ -264,6 +279,21 @@
       <Filter>DatabaseConnectors</Filter>
     </ClCompile>
     <ClCompile Include="AllTeachersDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CombinedClassDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CStudentClassDatabaseInterface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CStudentClass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CombinedViewDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AllStudentClassesDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
