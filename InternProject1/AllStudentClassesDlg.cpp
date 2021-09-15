@@ -9,7 +9,7 @@
 #include "Utility.h"
 
 #include "CStudentClassDatabaseInterface.h"
-#include "CombinedClassDlg.h"
+#include "CombinedStudentClassDlg.h"
 
 
 // AllStudentClassesDlg dialog
@@ -99,7 +99,7 @@ void AllStudentClassesDlg::OnBnClickedBtnAddStudentClass()
 	STUDENT_CLASS tmp;
 	StudentClassDatabaseInterface studentClassStore{ &databaseConnection };
 
-	CombinedClassDlg dlg{ eDialogMode_Add, tmp };
+	CombinedStudentClassDlg dlg{ eDialogMode_Add, tmp };
 	if (dlg.DoModal() == IDOK)
 	{
 		if (!studentClassStore.Add(tmp))
@@ -129,7 +129,7 @@ void AllStudentClassesDlg::OnBnClickedBtnEditStudentClass()
 		return;
 	}
 
-	CombinedClassDlg dlg{ eDialogMode_Edit, tmp };
+	CombinedStudentClassDlg dlg{ eDialogMode_Edit, tmp };
 	if (dlg.DoModal() == IDOK)
 	{
 		if (!studentClassStore.Edit(tmp))
@@ -156,7 +156,7 @@ void AllStudentClassesDlg::OnBnClickedBtnRemoveStudentClass()
 			return;
 		}
 
-		CombinedClassDlg dlg{ eDialogMode_Remove, tmp };
+		CombinedStudentClassDlg dlg{ eDialogMode_Remove, tmp };
 		if (dlg.DoModal() == IDOK)
 		{
 
@@ -245,7 +245,7 @@ void AllStudentClassesDlg::OnContextMenu(CWnd* pWnd, CPoint point)
 				int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
 				return;
 			}
-			CombinedClassDlg dlg{ eDialogMode_View, tmp };
+			CombinedStudentClassDlg dlg{ eDialogMode_View, tmp };
 			dlg.DoModal();
 		}
 		break;

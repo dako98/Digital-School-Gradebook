@@ -30,7 +30,7 @@
 #define IDD_ALL_TEACHERS_DLG            183
 #define IDD_NEW_CLASS                   185
 #define IDD_COMBINED_CLASS              185
-#define IDD_MANAGE_STUDENT_CLASSES      189
+#define IDD_COMBINED_STUDENT_CLASS      185
 #define IDD_ALL_STUDENT_CLASSES         189
 #define IDC_EDIT1                       1000
 #define IDC_TEACHER_ID_EDIT             1000

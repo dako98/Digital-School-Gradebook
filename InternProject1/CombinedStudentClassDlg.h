@@ -1,21 +1,21 @@
 #pragma once
 
 #include "CStudentClass.h"
-// CombinedClassDlg dialog
+// CombinedStudentClassDlg dialog
 
-class CombinedClassDlg : public CDialog
+class CombinedStudentClassDlg : public CDialog
 {
-	DECLARE_DYNAMIC(CombinedClassDlg)
+	DECLARE_DYNAMIC(CombinedStudentClassDlg)
 
 public:
-	CombinedClassDlg(DialogMode dialogMode, STUDENT_CLASS& studentClass);   // standard constructor
+	CombinedStudentClassDlg(DialogMode dialogMode, STUDENT_CLASS& studentClass);   // standard constructor
 	BOOL OnInitDialog() override;
-	virtual ~CombinedClassDlg();
+	virtual ~CombinedStudentClassDlg();
 
 // Dialog Data
 #ifdef AFX_DESIGN_TIME
 //	enum { IDD = IDD_DIALOG1 };
-	enum { IDD = IDD_COMBINED_CLASS };
+	enum { IDD = IDD_COMBINED_STUDENT_CLASS};
 #endif
 
 protected:

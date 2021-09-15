@@ -220,7 +220,7 @@
     <ClInclude Include="ManageGradesDlg.h" />
     <ClInclude Include="ManageStudentsDlg.h" />
     <ClInclude Include="ManageSubjectsDlg.h" />
-    <ClInclude Include="CombinedClassDlg.h" />
+    <ClInclude Include="CombinedStudentClassDlg.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ScheduledClassEditDlg.h" />
@@ -268,7 +268,7 @@
     <ClCompile Include="ManageGradesDlg.cpp" />
     <ClCompile Include="ManageStudentsDlg.cpp" />
     <ClCompile Include="ManageSubjectsDlg.cpp" />
-    <ClCompile Include="CombinedClassDlg.cpp" />
+    <ClCompile Include="CombinedStudentClassDlg.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

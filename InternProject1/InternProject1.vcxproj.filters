@@ -147,7 +147,7 @@
     <ClInclude Include="AllTeachersDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CombinedClassDlg.h">
+    <ClInclude Include="CombinedStudentClassDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CStudentClassDatabaseInterface.h">
@@ -278,7 +278,7 @@
     <ClCompile Include="AllTeachersDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CombinedClassDlg.cpp">
+    <ClCompile Include="CombinedStudentClassDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CStudentClassDatabaseInterface.cpp">

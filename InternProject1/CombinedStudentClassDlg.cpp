@@ -1,21 +1,21 @@
-// CombinedClassDlg.cpp : implementation file
+// CombinedStudentClassDlg.cpp : implementation file
 //
 
 #include "pch.h"
 #include "InternProject1.h"
-#include "CombinedClassDlg.h"
+#include "CombinedStudentClassDlg.h"
 #include "afxdialogex.h"
 #include "CTeacher.h"
 #include "CTeacherDatabaseInterface.h"
 #include "CStudentClass.h"
 
 
-// CombinedClassDlg dialog
+// CombinedStudentClassDlg dialog
 
-IMPLEMENT_DYNAMIC(CombinedClassDlg, CDialog)
+IMPLEMENT_DYNAMIC(CombinedStudentClassDlg, CDialog)
 
-CombinedClassDlg::CombinedClassDlg(DialogMode dialogMode, STUDENT_CLASS& data)
-	: CDialog(IDD_COMBINED_CLASS, nullptr)
+CombinedStudentClassDlg::CombinedStudentClassDlg(DialogMode dialogMode, STUDENT_CLASS& data)
+	: CDialog(IDD_COMBINED_STUDENT_CLASS, nullptr)
 	, m_eDialogMode(dialogMode)
 	, m_data(data)
 	, m_tmp(m_data)
@@ -23,7 +23,7 @@ CombinedClassDlg::CombinedClassDlg(DialogMode dialogMode, STUDENT_CLASS& data)
 
 }
 
-BOOL CombinedClassDlg::OnInitDialog()
+BOOL CombinedStudentClassDlg::OnInitDialog()
 {
 	if (!CDialog::OnInitDialog())
 	{
@@ -90,11 +90,11 @@ BOOL CombinedClassDlg::OnInitDialog()
 	return TRUE;
 }
 
-CombinedClassDlg::~CombinedClassDlg()
+CombinedStudentClassDlg::~CombinedStudentClassDlg()
 {
 }
 
-void CombinedClassDlg::DoDataExchange(CDataExchange* pDX)
+void CombinedStudentClassDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_COMBO_COMBINED_CLASS_TEACHERS, m_teachersDropdown);
@@ -102,15 +102,15 @@ void CombinedClassDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 
-BEGIN_MESSAGE_MAP(CombinedClassDlg, CDialog)
-	ON_BN_CLICKED(IDOK, &CombinedClassDlg::OnBnClickedOk)
+BEGIN_MESSAGE_MAP(CombinedStudentClassDlg, CDialog)
+	ON_BN_CLICKED(IDOK, &CombinedStudentClassDlg::OnBnClickedOk)
 END_MESSAGE_MAP()
 
 
-// CombinedClassDlg message handlers
+// CombinedStudentClassDlg message handlers
 
 
-void CombinedClassDlg::OnBnClickedOk()
+void CombinedStudentClassDlg::OnBnClickedOk()
 {
 	// TODO: Add your control notification handler code here
 	UpdateData();
