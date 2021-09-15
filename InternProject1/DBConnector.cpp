@@ -1,8 +1,6 @@
 #include "pch.h"
-
 #include "DBConnector.h"
 
-#include "Utility.h"
 #include <sstream>
 
 CString DBTIMEToCString(const DBTIME& time)
