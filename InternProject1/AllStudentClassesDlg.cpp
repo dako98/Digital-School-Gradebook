@@ -17,7 +17,7 @@
 IMPLEMENT_DYNAMIC(AllStudentClassesDlg, CDialog)
 
 AllStudentClassesDlg::AllStudentClassesDlg(CWnd* pParent /*=nullptr*/)
-	: CDialog(IDD_MANAGE_STUDENT_CLASSES, pParent)
+	: CDialog(IDD_ALL_STUDENT_CLASSES, pParent)
 {
 
 }
@@ -86,6 +86,7 @@ BEGIN_MESSAGE_MAP(AllStudentClassesDlg, CDialog)
 	ON_BN_CLICKED(IDC_BTN_ADD_STUDENT_CLASS, &AllStudentClassesDlg::OnBnClickedBtnAddStudentClass)
 	ON_BN_CLICKED(IDC_BTN_EDIT_STUDENT_CLASS, &AllStudentClassesDlg::OnBnClickedBtnEditStudentClass)
 	ON_BN_CLICKED(IDC_BTN_REMOVE_STUDENT_CLASS, &AllStudentClassesDlg::OnBnClickedBtnRemoveStudentClass)
+	ON_WM_CONTEXTMENU()
 END_MESSAGE_MAP()
 
 
@@ -183,5 +184,73 @@ void AllStudentClassesDlg::OnBnClickedBtnRemoveStudentClass()
 			}
 		}
 		PrintAllStudentClasses();
+	}
+}
+
+
+void AllStudentClassesDlg::OnContextMenu(CWnd* pWnd, CPoint point)
+{
+	// TODO: Add your message handler code here
+	if ((point.x == -1) && (point.y == -1))
+	{
+		// Keystroke invocation
+		CRect rect;
+
+		GetClientRect(rect);
+		ClientToScreen(rect);
+
+		point = rect.TopLeft();
+		point.Offset(5, 5);
+	}
+
+	CMenu menu;
+	VERIFY(menu.LoadMenu(IDR_SUBJECT));
+
+	CMenu* pPopup = menu.GetSubMenu(0);
+	ASSERT(pPopup != NULL);
+	CWnd* pWndPopupOwner = this;
+
+	while (pWndPopupOwner->GetStyle() & WS_CHILD)
+		pWndPopupOwner = pWndPopupOwner->GetParent();
+
+	if (m_allStudentClassesList.GetCurSel() != LB_ERR)
+	{
+
+		int response = pPopup->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON | TPM_RETURNCMD,
+			point.x,
+			point.y,
+			pWndPopupOwner);
+
+		switch (response)
+		{
+		case ID_POPUP_ADD:
+			OnBnClickedBtnAddStudentClass();
+			break;
+
+		case ID_POPUP_EDIT:
+			OnBnClickedBtnEditStudentClass();
+			break;
+
+		case ID_POPUP_DELETE:
+			OnBnClickedBtnRemoveStudentClass();
+			break;
+
+		case ID_POPUP_VIEW:
+		{
+			STUDENT_CLASS tmp;
+			StudentClassDatabaseInterface studentsClassStore{ &databaseConnection };
+
+			if (!studentsClassStore.Load(m_allStudentClassesList.GetItemData(m_allStudentClassesList.GetCurSel()), tmp))
+			{
+				int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
+				return;
+			}
+			CombinedClassDlg dlg{ eDialogMode_View, tmp };
+			dlg.DoModal();
+		}
+		break;
+		default:
+			break;
+		}
 	}
 }

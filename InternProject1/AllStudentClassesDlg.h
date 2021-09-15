@@ -14,7 +14,7 @@ public:
 
 // Dialog Data
 #ifdef AFX_DESIGN_TIME
-	enum { IDD = IDD_MANAGE_STUDENT_CLASSES };
+	enum { IDD = IDD_ALL_STUDENT_CLASSES};
 #endif
 
 private:
@@ -29,4 +29,5 @@ public:
 	afx_msg void OnBnClickedBtnAddStudentClass();
 	afx_msg void OnBnClickedBtnEditStudentClass();
 	afx_msg void OnBnClickedBtnRemoveStudentClass();
+	afx_msg void OnContextMenu(CWnd* /*pWnd*/, CPoint /*point*/);
 };
