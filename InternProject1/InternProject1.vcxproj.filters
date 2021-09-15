@@ -156,9 +156,6 @@
     <ClInclude Include="CStudentClass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CombinedViewDlg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="AllStudentClassesDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -288,9 +285,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CStudentClass.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CombinedViewDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="AllStudentClassesDlg.cpp">

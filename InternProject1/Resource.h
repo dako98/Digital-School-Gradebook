@@ -30,7 +30,6 @@
 #define IDD_ALL_TEACHERS_DLG            183
 #define IDD_NEW_CLASS                   185
 #define IDD_COMBINED_CLASS              185
-#define IDD_COMBINED_VIEW_ALL_DIALOG    187
 #define IDD_MANAGE_STUDENT_CLASSES      189
 #define IDC_EDIT1                       1000
 #define IDC_TEACHER_ID_EDIT             1000
@@ -47,7 +46,6 @@
 #define IDC_BUTTON4                     1011
 #define IDC_BTN_EDIT_SCHEDULE_REMOVE    1011
 #define IDC_BTN_ADD_NEW_CLASS           1011
-#define IDC_BTN_REMOVE                  1011
 #define IDC_BTN_MANAGE_STUDENT_CLASSES  1011
 #define IDC_MANAGESTUDENTS              1012
 #define IDC_COMBO1                      1013
@@ -128,9 +126,6 @@
 #define IDC_TEACHER_ID_STATIC           1093
 #define IDC_TEACHER_FIRST_NAME_STATIC   1094
 #define IDC_TEACHER_LAST_NAME_STATIC    1095
-#define IDC_BTN_VIEW                    1097
-#define IDC_BTN_ADD                     1098
-#define IDC_BTN_EDIT                    1099
 #define IDC_BTN_ADD_STUDENT_CLASS       1100
 #define IDC_BTN_EDIT_STUDENT_CLASS      1101
 #define IDC_BTN_REMOVE_STUDENT_CLASS    1102
