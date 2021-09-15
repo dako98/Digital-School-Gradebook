@@ -23,7 +23,7 @@ template <class T, class U>
 void XOR(T& A, const U& B) noexcept(sizeof(A) == sizeof(B) && sizeof(A) % sizeof(unsigned char) == 0)
 {
 	unsigned char* pA = (unsigned char*)(&A);
-	const unsigned char* const pLast = pA + 1;
+	const unsigned char* const pLast = pA + sizeof(A);
 	unsigned char* pB = (unsigned char*)(&B);
 
 	while (pA < pLast)
