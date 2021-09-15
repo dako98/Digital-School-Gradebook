@@ -43,6 +43,6 @@ void* XOR2(T& A, U& B) noexcept(sizeof(A) == sizeof(B))
 template <class T>
 void Clear(T& st) noexcept
 {
-	XOR(st, st);
-//	SecureZeroMemory(&st, sizeof(st));
+//	XOR(st, st);
+	SecureZeroMemory(&st, sizeof(st));
 }
