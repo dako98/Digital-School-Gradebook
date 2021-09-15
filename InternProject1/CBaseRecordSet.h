@@ -79,8 +79,6 @@ BOOL CBaseRecordSet<T>::Add(T& input)
 template<class T>
 BOOL CBaseRecordSet<T>::Edit(const T& input)
 {
-    BOOL isDifferent = TRUE;
-
     CRecordset::m_strFilter.Format(_T("[ID] = %d"), input.nID);
 
     try
@@ -103,9 +101,13 @@ BOOL CBaseRecordSet<T>::Edit(const T& input)
         throw std::length_error("ID is not unique!");
     }
 
-    CRecordset::Edit();
+    if (memcmp(&m_oData, &input, sizeof(input)) == 0)
+    {
+        CRecordset::Close();
+        return TRUE;
+    }
 
-    isDifferent = memcmp(&m_oData, &input, sizeof(T)) != 0;
+    CRecordset::Edit();
 
     m_oData = input;
 
@@ -113,11 +115,8 @@ BOOL CBaseRecordSet<T>::Edit(const T& input)
     {
         if (!CRecordset::Update())
         {
-            if (isDifferent)
-            {
-                CRecordset::Close();
-                return FALSE;
-            }
+            CRecordset::Close();
+            return FALSE;
         }
     }
     catch (const CDBException&)
