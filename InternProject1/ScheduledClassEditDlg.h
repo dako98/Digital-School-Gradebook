@@ -2,6 +2,12 @@
 
 #include <unordered_map>
 
+enum Direction
+{
+	Up,
+	Down
+};
+
 // ScheduledClassEditDlg dialog
 
 class ScheduledClassEditDlg : public CDialog
@@ -9,7 +15,7 @@ class ScheduledClassEditDlg : public CDialog
 	DECLARE_DYNAMIC(ScheduledClassEditDlg)
 
 public:
-	ScheduledClassEditDlg(const CSchedule& m_schedule);   // standard constructor
+	ScheduledClassEditDlg(const int classID, const int daysInWeek);   // standard constructor
 	virtual ~ScheduledClassEditDlg();
 
 	BOOL OnInitDialog() override;
@@ -23,16 +29,11 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 private:
-	void PrintClassesOfDay(int day);
-	void MoveScheduledClass(int id, int up = 0, int tomorrow = 0);
+	BOOL PrintClassesOfDay(int day);
+	BOOL MoveScheduledClass(int id, Direction direction);
 
-	CSchedule							m_schedule;
-	std::unordered_map<int, CString>	m_subjectNames;
-	SubjectDatabaseInterface			m_subjectStore;
-	ScheduledClassDatabaseInterface		m_scheduledClassStore;
-	ScheduleDatabaseInterface			m_scheduleStore;
-	std::vector<ScheduleClass>			m_toDelete;
-	std::vector<ScheduleClass>			m_toAdd;
+	const int m_classID;
+	const int m_daysInWeek;
 
 	DECLARE_MESSAGE_MAP()
 public:

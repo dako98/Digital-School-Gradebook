@@ -169,7 +169,7 @@ void ScheduleDlg::OnCbnSelchangeClassCombo()
 void ScheduleDlg::OnBnClickedButtonEdit()
 {
 	// TODO: Add your control notification handler code here
-	ScheduledClassEditDlg dlg(m_schedule);
+	ScheduledClassEditDlg dlg(m_schedule.classID, CSchedule::DAYS_IN_WEEK);
 	dlg.DoModal();
 	PrintSchedule();
 }

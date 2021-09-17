@@ -106,6 +106,5 @@ void CombinedScheduleClassDlg::OnBnClickedOk()
 void CombinedScheduleClassDlg::OnBnClickedCancel()
 {
 	// TODO: Add your control notification handler code here
-	m_data.nSubjectID = -1;
 	CDialog::OnCancel();
 }

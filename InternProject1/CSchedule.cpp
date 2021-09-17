@@ -8,5 +8,6 @@ ScheduleDay::ScheduleDay()
 
 BOOL ScheduleClass::Validate() const
 {
-    return nSubjectID != -1;
+    return nSubjectID >= -1 &&
+        nNumberInDay > 0;
 }

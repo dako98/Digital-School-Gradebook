@@ -8,7 +8,7 @@ public:
     ScheduledClassDatabaseInterface(CDatabase* pDB)
         :CBaseRecordSet(_T("Schedule"), pDB)
     {
-        CRecordset::m_nFields = 6;
+        CRecordset::m_nFields = 5;
     }
 
     virtual ~ScheduledClassDatabaseInterface()

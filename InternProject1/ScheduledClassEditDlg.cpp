@@ -15,12 +15,10 @@
 
 IMPLEMENT_DYNAMIC(ScheduledClassEditDlg, CDialog)
 
-ScheduledClassEditDlg::ScheduledClassEditDlg(const CSchedule& m_schedule)
-	: CDialog(IDD_EDIT_SCHEDULE, nullptr)
-	, m_subjectStore(&databaseConnection)
-	, m_scheduledClassStore(&databaseConnection)
-	, m_scheduleStore(&databaseConnection)
-	, m_schedule(m_schedule)
+ScheduledClassEditDlg::ScheduledClassEditDlg(const int classID, const int daysInWeek)
+	:CDialog(IDD_EDIT_SCHEDULE, nullptr)
+	, m_classID(classID)
+	, m_daysInWeek(daysInWeek)
 {
 }
 
@@ -28,116 +26,136 @@ ScheduledClassEditDlg::~ScheduledClassEditDlg()
 {
 }
 
-void ScheduledClassEditDlg::PrintClassesOfDay(int day)
+BOOL ScheduledClassEditDlg::PrintClassesOfDay(int day)
 {
 	m_classesInDayList.ResetContent();
-	for (const auto& scheduledClass : m_schedule.days[day].classes)
+	if (day == CB_ERR)
 	{
-		int index = m_classesInDayList.AddString(m_subjectNames[scheduledClass.nSubjectID]);
+		return TRUE;
+	}
+
+	ScheduledClassDatabaseInterface scheduleStore(&databaseConnection);
+	CString filter;
+	filter.Format(_T("[ClassID] = %d AND [DayOfWeek] = %d"), m_classID, day);
+	std::vector<ScheduleClass> dayClasses;
+	if (!scheduleStore.LoadWhere(filter, dayClasses))
+	{
+		return FALSE;
+	}
+	sorted_vector<ScheduleClass> sorted;
+	sorted.SetSorted(true);
+
+	for (const auto& i : dayClasses)
+	{
+		sorted.push_unsorted(i);
+	}
+	sorted.sort();
+
+	CString subjectName;
+	for (const auto& scheduledClass : sorted)
+	{
+		if (!IDtoNameMapper(&databaseConnection, _T("Subjects"), _T("ID"), _T("Name"), scheduledClass.nSubjectID, subjectName))
+		{
+			return FALSE;
+		}
+		int index = m_classesInDayList.AddString(subjectName);
 		m_classesInDayList.SetItemData(index, scheduledClass.nID);
 	}
+
+	return TRUE;
 }
 
-void ScheduledClassEditDlg::MoveScheduledClass(int id, int up, int tomorrow)
+BOOL ScheduledClassEditDlg::MoveScheduledClass(int currentItemId, Direction direction /*int up/*, int tomorrow*/)
 {
-	unsigned int daysInWeek = m_schedule.days.size();
-	unsigned int dayLength = 0;
-	unsigned int day, indexInDay = 0;
-
-	bool found = false;
-
-	for (day = 0; day < daysInWeek; day++)
+	int currentItemInList = m_classesInDayList.GetCurSel();
+	ScheduleClass currentItem, otherItem;
+	int otherItemInList;
+	int otherItemID;
+	ScheduledClassDatabaseInterface scheduleStore(&databaseConnection);
+	if (!scheduleStore.Load(currentItemId, currentItem))
 	{
-		dayLength = m_schedule.days[day].classes.size();
-
-		for (indexInDay = 0; indexInDay < dayLength; indexInDay++)
-		{
-			if (m_schedule.days[day].classes[indexInDay].nID == id)
-			{
-				found = true;
-				break;
-			}
-		}
-		if (found)
-		{
-			break;
-		}
-	}
-	if (up > 0)
-	{
-		ASSERT(indexInDay > 0);
-
-		std::swap(m_schedule.days[day].classes[indexInDay].nID, m_schedule.days[day].classes[indexInDay - 1].nID);
-		std::swap(m_schedule.days[day].classes[indexInDay].nSubjectID, m_schedule.days[day].classes[indexInDay - 1].nSubjectID);
-	}
-	else if (up < 0)
-	{
-		ASSERT(indexInDay < dayLength - 1);
-
-		std::swap(m_schedule.days[day].classes[indexInDay].nID, m_schedule.days[day].classes[indexInDay + 1].nID);
-		std::swap(m_schedule.days[day].classes[indexInDay].nSubjectID, m_schedule.days[day].classes[indexInDay + 1].nSubjectID);
+		return FALSE;
 	}
 
-	if (tomorrow > 0)
+	switch (direction)
 	{
-		ASSERT(day > 0);
+	case Up:
+	{
+		otherItemInList = currentItemInList - 1;
 
-		std::swap(m_schedule.days[day].classes[indexInDay].nID, m_schedule.days[day - 1].classes[indexInDay].nID);
-		std::swap(m_schedule.days[day].classes[indexInDay].nSubjectID, m_schedule.days[day - 1].classes[indexInDay].nSubjectID);
+		ASSERT(otherItemInList > LB_ERR && currentItemInList > LB_ERR &&
+			otherItemInList < m_classesInDayList.GetCount() && currentItemInList < m_classesInDayList.GetCount());
+
 	}
-	else if (tomorrow < 0)
-	{
-		ASSERT(day < daysInWeek - 1);
+	break;
+	case Down:
 
-		std::swap(m_schedule.days[day].classes[indexInDay].nID, m_schedule.days[day + 1].classes[indexInDay].nID);
-		std::swap(m_schedule.days[day].classes[indexInDay].nSubjectID, m_schedule.days[day + 1].classes[indexInDay].nSubjectID);
+	{
+		otherItemInList = currentItemInList + 1;
+
+		ASSERT(otherItemInList > LB_ERR && currentItemInList > LB_ERR &&
+			otherItemInList < m_classesInDayList.GetCount() && currentItemInList < m_classesInDayList.GetCount());
+		
+	}
+	break;
+
+
+	default:
+	{
+		return TRUE;
+	}
+	break;
+	}
+
+	otherItemID = m_classesInDayList.GetItemData(otherItemInList);
+
+	if (!scheduleStore.Load(otherItemID, otherItem))
+	{
+		return FALSE;
+	}
+
+	std::swap(currentItem.nNumberInDay, otherItem.nNumberInDay);
+
+	databaseConnection.BeginTrans();
+
+	if (!scheduleStore.Edit(currentItem) || 
+		!scheduleStore.Edit(otherItem))
+	{
+		databaseConnection.Rollback();
+		return FALSE;
+	}
+	else
+	{
+		databaseConnection.CommitTrans();
+
+		return TRUE;
 	}
 }
 
 BOOL ScheduledClassEditDlg::OnInitDialog()
 {
-	if(!CDialog::OnInitDialog())
+	if (!CDialog::OnInitDialog())
+	{
 		return FALSE;
+	}
 
-	BOOL isOK = TRUE;
-
-	CString className;
-	isOK = IDtoNameMapper(&databaseConnection, CString{ "Classes" }, CString{ "ID" }, CString{ "Name" },  m_schedule.classID , className);
-
-	m_currentClassEdit.SetWindowText(className);
-
-
-	std::set<int> uniqueIDs;
 
 	// Print days of week
-	unsigned int daysInWeek = m_schedule.days.size();
 	CString text;
-	for (size_t i = 0; i < daysInWeek; i++)
+	for (int i = 0; i < m_daysInWeek; i++)
 	{
 		text.Format(_T("Day %d"), i + 1);
 		int index = m_daysOfWeekList.AddString(text);
 		m_daysOfWeekList.SetItemData(index, i);
-
-		for (const auto& _class : m_schedule.days[i].classes)
-		{
-			uniqueIDs.insert(_class.nSubjectID);
-		}
 	}
 
-	// Map subject names
-	std::vector<int> ids(uniqueIDs.begin(), uniqueIDs.end());
-	isOK = IDtoNameMapper(&databaseConnection, CString{ "Subjects" }, CString{ "ID" }, CString{ "Name" }, ids, m_subjectNames);
-
-	// Select first day
-	m_daysOfWeekList.SetCurSel(daysInWeek > 0 ? 0 : CB_ERR);
-
-	// Print classes for the day
-	if (m_daysOfWeekList.GetCurSel() != CB_ERR)
+	if (!PrintClassesOfDay(m_daysOfWeekList.GetCurSel()))
 	{
-		PrintClassesOfDay(m_daysOfWeekList.GetItemData(m_daysOfWeekList.GetCurSel()));
+		return FALSE;
 	}
+	OnLbnSelchangeClass();
 
-	return isOK;
+	return TRUE;
 }
 
 void ScheduledClassEditDlg::DoDataExchange(CDataExchange* pDX)
@@ -168,6 +186,10 @@ END_MESSAGE_MAP()
 void ScheduledClassEditDlg::OnCbnSelchangeDay()
 {
 	// TODO: Add your control notification handler code here
+	if (m_daysOfWeekList.GetCurSel() == CB_ERR)
+	{
+		return;
+	}
 	PrintClassesOfDay(m_daysOfWeekList.GetItemData(m_daysOfWeekList.GetCurSel()));
 }
 
@@ -176,9 +198,9 @@ void ScheduledClassEditDlg::OnBnClickedButtonUp()
 {
 	// TODO: Add your control notification handler code here
 	int id = m_classesInDayList.GetItemData(m_classesInDayList.GetCurSel());
-	MoveScheduledClass(id, 1, 0);
+	MoveScheduledClass(id, Direction::Up);
 	PrintClassesOfDay(m_daysOfWeekList.GetItemData(m_daysOfWeekList.GetCurSel()));
-	m_classesInDayList.SetCurSel(GetIndexByData(id,m_classesInDayList));
+	m_classesInDayList.SetCurSel(GetIndexByData(id, m_classesInDayList));
 	OnLbnSelchangeClass();
 }
 
@@ -187,7 +209,7 @@ void ScheduledClassEditDlg::OnBnClickedButtonDown()
 {
 	// TODO: Add your control notification handler code here
 	int id = m_classesInDayList.GetItemData(m_classesInDayList.GetCurSel());
-	MoveScheduledClass(id, -1, 0);
+	MoveScheduledClass(id, Direction::Down);
 	PrintClassesOfDay(m_daysOfWeekList.GetItemData(m_daysOfWeekList.GetCurSel()));
 	m_classesInDayList.SetCurSel(GetIndexByData(id, m_classesInDayList));
 	OnLbnSelchangeClass();
@@ -214,106 +236,80 @@ void ScheduledClassEditDlg::OnLbnSelchangeClass()
 	{
 		m_buttonDown.EnableWindow(TRUE);
 	}
-
 }
 
 
 void ScheduledClassEditDlg::OnBnClickedButtonAdd()
 {
-	// TODO: Add your control notification handler code here
-	int day = m_daysOfWeekList.GetItemData(m_daysOfWeekList.GetCurSel());
-	int classesinDayCount = m_schedule.days[day].classes.size();
+
+	if (m_daysOfWeekList.GetCurSel() == CB_ERR)
+	{
+		return;
+	}
+
+	ScheduledClassDatabaseInterface scheduleStore(&databaseConnection);
+
 	ScheduleClass tmp;
-	if (classesinDayCount > 0)
+	tmp.nNumberInDay = 1;
+
+	if (m_classesInDayList.GetCount() > 0)
 	{
-		StrCpyW(tmp.duration, m_schedule.days[day].classes[classesinDayCount - 1].duration);
-
-		DBTIME tmpTime = CStringToDBTIME(m_schedule.days[day].classes[classesinDayCount - 1].begin);
-		tmpTime.hour += (tmpTime.minute + CStringToDBTIME(tmp.duration).minute + 10) / 60;
-
-		StrCpyW(tmp.begin, DBTIMEToCString(tmpTime));
-
-		tmpTime.minute = (tmpTime.minute + CStringToDBTIME(tmp.duration).minute + 10) % 60;
-
-		StrCpyW(tmp.begin, DBTIMEToCString(tmpTime));
+		int debug = m_classesInDayList.GetCount();
+		int id = m_classesInDayList.GetItemData(m_classesInDayList.GetCount() - 1);
+		ScheduleClass lastClass;
+		scheduleStore.Load(id, lastClass);
+		tmp.nNumberInDay = lastClass.nNumberInDay + 1;
 	}
+	
+	tmp.classID = m_classID;
+	tmp.dayOfWeek = m_daysOfWeekList.GetItemData(m_daysOfWeekList.GetCurSel());
 
-	CombinedScheduleClassDlg subjectPicker(eDialogMode_Add, tmp);
-	subjectPicker.DoModal();
+	CombinedScheduleClassDlg dlg{ DialogMode::eDialogMode_Add, tmp };
 
-	if (tmp.nSubjectID != -1)
+	if (dlg.DoModal() == IDOK)
 	{
-		m_schedule.days[day].classes.push_sorted(tmp);
-		tmp.classID = m_schedule.classID;
-		tmp.dayOfWeek = day;
-		m_toAdd.push_back(tmp);
-		PrintClassesOfDay(day);
+		if (!scheduleStore.Add(tmp))
+		{
+			int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
+			return;
+		}
+		PrintClassesOfDay(m_daysOfWeekList.GetCurSel());
 	}
-
 }
 
 
 void ScheduledClassEditDlg::OnBnClickedButtonRemove()
 {
-	// TODO: Add your control notification handler code here
-	SUBJECT subject;
+
+	if (m_classesInDayList.GetCurSel() == LB_ERR)
+	{
+		return;
+	}
+
 	int id = m_classesInDayList.GetItemData(m_classesInDayList.GetCurSel());
-	
-	unsigned int daysInWeek = m_schedule.days.size();
-	unsigned int dayLength = 0;
-	unsigned int day, indexInDay = 0;
-	bool found = false;;
 
-	for (day = 0; day < daysInWeek; day++)
-	{
-		dayLength = m_schedule.days[day].classes.size();
 
-		for (indexInDay = 0; indexInDay < dayLength; indexInDay++)
-		{
-			if (m_schedule.days[day].classes[indexInDay].nID == id)
-			{
-				found = true;
-				break;
-			}
-		}
-		if (found)
-		{
-			break;
-		}
-	}
+	ScheduledClassDatabaseInterface scheduleStore{ &databaseConnection };
 	ScheduleClass tmp;
-	m_scheduledClassStore.Load(m_schedule.days[day].classes[indexInDay].nID,tmp);
-
-	CombinedScheduleClassDlg subjectPicker(eDialogMode_Remove, tmp);
-	subjectPicker.DoModal();
-
-	if (tmp.nSubjectID != -1)
+	if (!scheduleStore.Load(id, tmp))
 	{
-		m_toDelete.push_back(m_schedule.days[day].classes[indexInDay]);
-
-		m_schedule.days[day].classes.erase(m_schedule.days[day].classes.begin() + indexInDay);
-		PrintClassesOfDay(day);
+		int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
+		return;
 	}
-}
 
+	CombinedScheduleClassDlg dlg{ DialogMode::eDialogMode_Remove, tmp };
+	if (dlg.DoModal() == IDOK)
+	{
+		if (!scheduleStore.Delete(id))
+		{
+			int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
+			return;
+		}
+	}
+	PrintClassesOfDay(m_daysOfWeekList.GetCurSel());
+}
 
 void ScheduledClassEditDlg::OnBnClickedOk()
 {
-	// TODO: Add your control notification handler code here
-
-	for (auto& scheduledClass : m_toAdd)
-	{
-		ASSERT(scheduledClass.nSubjectID != -1);
-
-		m_scheduledClassStore.Add(scheduledClass);
-	}
-	m_scheduleStore.Edit(m_schedule);
-	for (const auto& scheduledClass : m_toDelete)
-	{
-		if (scheduledClass.nID != -1)
-		{
-			m_scheduledClassStore.Delete(scheduledClass.nID);
-		}
-	}
 	CDialog::OnOK();
 }
