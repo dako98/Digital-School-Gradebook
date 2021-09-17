@@ -93,7 +93,6 @@ void CombinedTeacherDlg::OnBnClickedOk()
 {
 	UpdateData();
 
-	BOOL isOK = TRUE;
 	TEACHER st;
 	CString buff;
 

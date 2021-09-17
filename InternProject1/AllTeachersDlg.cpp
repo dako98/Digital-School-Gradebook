@@ -201,21 +201,21 @@ void AllTeachersDlg::OnContextMenu(CWnd* pWnd, CPoint point)
 
 	case ID_POPUP_VIEW:
 	{
-		if (m_allTeachersList.GetCurSel() != LB_ERR)
+		if (m_allTeachersList.GetCurSel() == LB_ERR)
 		{
-			TEACHER tmp;
-			BOOL isOK = TRUE;
-			TeacherDatabaseInterface teacherStore{ &databaseConnection };
-
-			isOK = teacherStore.Load(m_allTeachersList.GetItemData(m_allTeachersList.GetCurSel()), tmp);
-			if (!isOK)
-			{
-				int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
-				return;
-			}
-			CombinedTeacherDlg dlg{ eDialogMode_View, tmp };
-			dlg.DoModal();
+			return;
 		}
+		TEACHER tmp;
+
+		TeacherDatabaseInterface teacherStore{ &databaseConnection };
+
+		if (!teacherStore.Load(m_allTeachersList.GetItemData(m_allTeachersList.GetCurSel()), tmp))
+		{
+			int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
+			return;
+		}
+		CombinedTeacherDlg dlg{ eDialogMode_View, tmp };
+		dlg.DoModal();
 	}
 	break;
 	default:

@@ -58,19 +58,16 @@ END_MESSAGE_MAP()
 
 void ManageStudentsDlg::OnBnClickedButton2()
 {
-	BOOL isOK = TRUE;
-
 	STUDENT tmp;
 
 	CombinedStudentDlg dlg{ eDialogMode_Add, tmp };
 	if (dlg.DoModal() == IDOK)
 	{
-		isOK = m_studentStore.Add(tmp);
-	}
-	if (!isOK)
-	{
-		int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
-		return;
+		if (!m_studentStore.Add(tmp))
+		{
+			int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
+			return;
+		}
 	}
 }
 

@@ -31,13 +31,16 @@ ViewAllGradesDlg::ViewAllGradesDlg(CWnd* pParent)
 BOOL ViewAllGradesDlg::OnInitDialog()
 {
 	if (!CDialog::OnInitDialog())
+	{
 		return FALSE;
+	}
 
-	BOOL isOK = TRUE;
+	if (!PrintAllGrades())
+	{
+		return FALSE;
+	}
 
-	isOK = PrintAllGrades();
-
-	return isOK;
+	return TRUE;
 }
 
 ViewAllGradesDlg::~ViewAllGradesDlg()
@@ -47,58 +50,56 @@ ViewAllGradesDlg::~ViewAllGradesDlg()
 BOOL ViewAllGradesDlg::PrintAllGrades()
 {
 	m_lsGrades.ResetContent();
-	
-	BOOL isOK;
 
-	std::vector<GRADE> allGrades;
-	std::vector<STUDENT> allStudents;
-	std::vector<SUBJECT> allSubjects;
-	GradeDatabaseInterface		gradeStore	{ &databaseConnection };
+	std::vector<GRADE>		allGrades;
+	std::vector<STUDENT>	allStudents;
+	std::vector<SUBJECT>	allSubjects;
+	GradeDatabaseInterface		gradeStore{ &databaseConnection };
 	StudentDatabaseInterface	studentStore{ &databaseConnection };
 	SubjectDatabaseInterface	subjectStore{ &databaseConnection };
 
-	isOK = gradeStore.LoadAll(allGrades);
-
-	if (isOK)
+	if (!gradeStore.LoadAll(allGrades))
 	{
-		isOK = studentStore.LoadAll(allStudents);
-
-		if (isOK)
-		{
-			subjectStore.LoadAll(allSubjects);
-		}
+		return FALSE;
 	}
 
-	if (isOK)
+	if (!studentStore.LoadAll(allStudents))
 	{
-		std::unordered_map<int, std::pair<CString, CString>> studentNameMap;
-		std::unordered_map<int, CString> subjectNameMap;
-
-		for (const auto& student : allStudents)
-		{
-			studentNameMap[student.nID] = std::make_pair<CString, CString>(CString{ student.szFirstName }, CString{ student.szLastName });
-		}
-		for (const auto& subject : allSubjects)
-		{
-			subjectNameMap[subject.nID] = CString{ subject.szName };
-		}
-
-		CString currentRow;
-
-		for (const auto& grade : allGrades)
-		{
-			currentRow.Format(_T("%d %s %s %s"),
-				grade.nID,
-				studentNameMap[grade.nStudentID].first,
-				subjectNameMap[grade.nSubjectID],
-				MapGradeName(grade.value));
-
-			int index = m_lsGrades.AddString(currentRow);
-			m_lsGrades.SetItemData(index, grade.nID);
-		}
+		return FALSE;
 	}
 
-	return isOK;
+	if (!subjectStore.LoadAll(allSubjects))
+	{
+		return FALSE;
+	}
+
+	std::unordered_map<int, std::pair<CString, CString>> studentNameMap;
+	std::unordered_map<int, CString> subjectNameMap;
+
+	for (const auto& student : allStudents)
+	{
+		studentNameMap[student.nID] = std::make_pair<CString, CString>(CString{ student.szFirstName }, CString{ student.szLastName });
+	}
+	for (const auto& subject : allSubjects)
+	{
+		subjectNameMap[subject.nID] = CString{ subject.szName };
+	}
+
+	CString currentRow;
+
+	for (const auto& grade : allGrades)
+	{
+		currentRow.Format(_T("%d %s %s %s"),
+			grade.nID,
+			studentNameMap[grade.nStudentID].first,
+			subjectNameMap[grade.nSubjectID],
+			MapGradeName(grade.value));
+
+		int index = m_lsGrades.AddString(currentRow);
+		m_lsGrades.SetItemData(index, grade.nID);
+	}
+
+	return TRUE;
 }
 
 void ViewAllGradesDlg::DoDataExchange(CDataExchange* pDX)
@@ -133,36 +134,33 @@ void ViewAllGradesDlg::OnBnClickedButtonAdd()
 	tmp.dtDate.minute	= now.minute;
 	tmp.dtDate.second	= now.second;
 
-	BOOL isOK = TRUE;
 	GradeDatabaseInterface		gradeStore{ &databaseConnection };
 
 	CombinedGradeDlg dlg{ eDialogMode_Add, tmp };
 	if (dlg.DoModal() == IDOK)
 	{
-		isOK = gradeStore.Add(tmp);
+		if (!gradeStore.Add(tmp))
+		{
+			int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
+			return;
+		}
+		PrintAllGrades();
 	}
-	if (!isOK)
-	{
-		int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
-		return;
-	}
-
-	PrintAllGrades();
 }
 
 
 void ViewAllGradesDlg::OnBnClickedButtonEdit()
 {
-	if (m_lsGrades.GetCurSel() != LB_ERR)
+	if (m_lsGrades.GetCurSel() == LB_ERR)
 	{
-		BOOL isOK = TRUE;
+		return;
+	}
 
 		GRADE tmp;
 		tmp.nID = m_lsGrades.GetItemData(m_lsGrades.GetCurSel());
 		GradeDatabaseInterface		gradeStore{ &databaseConnection };
 
-		isOK = gradeStore.Load(tmp.nID, tmp);
-		if (!isOK)
+		if (!gradeStore.Load(tmp.nID, tmp))
 		{
 			int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
 			return;
@@ -171,31 +169,29 @@ void ViewAllGradesDlg::OnBnClickedButtonEdit()
 		CombinedGradeDlg dlg{ eDialogMode_Edit, tmp };
 		if (dlg.DoModal() == IDOK)
 		{
-			isOK = gradeStore.Edit(tmp);
-		}
-		if (!isOK)
-		{
-			int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
-			return;
-		}
+			if (!gradeStore.Edit(tmp))
+			{
+				int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
+				return;
+			}
 
-		PrintAllGrades();
+			PrintAllGrades();
+		}
 	}
-}
 
 
 void ViewAllGradesDlg::OnBnClickedButtonRemove()
 {
-	if (m_lsGrades.GetCurSel() != LB_ERR)
+	if (m_lsGrades.GetCurSel() == LB_ERR)
 	{
-		BOOL isOK = TRUE;
+		return;
+	}
 
 		GRADE tmp;
 		tmp.nID = m_lsGrades.GetItemData(m_lsGrades.GetCurSel());
 		GradeDatabaseInterface		gradeStore{ &databaseConnection };
 
-		isOK = gradeStore.Load(tmp.nID, tmp);
-		if (!isOK)
+		if (!gradeStore.Load(tmp.nID, tmp))
 		{
 			int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
 			return;
@@ -204,17 +200,15 @@ void ViewAllGradesDlg::OnBnClickedButtonRemove()
 		CombinedGradeDlg dlg{ eDialogMode_Remove, tmp };
 		if (dlg.DoModal() == IDOK)
 		{
-			isOK = gradeStore.Delete(tmp.nID);
-		}
-		if (!isOK)
-		{
-			int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
-			return;
-		}
+			if (!gradeStore.Delete(tmp.nID))
+			{
+				int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
+				return;
+			}
 
-		PrintAllGrades();
+			PrintAllGrades();
+		}
 	}
-}
 
 
 void ViewAllGradesDlg::OnContextMenu(CWnd* pWnd, CPoint point)
@@ -267,11 +261,9 @@ void ViewAllGradesDlg::OnContextMenu(CWnd* pWnd, CPoint point)
 		if (m_lsGrades.GetCurSel() != LB_ERR)
 		{
 			GRADE tmp;
-			BOOL isOK = TRUE;
 			GradeDatabaseInterface		gradeStore{ &databaseConnection };
 
-			isOK = gradeStore.Load(m_lsGrades.GetItemData(m_lsGrades.GetCurSel()), tmp);
-			if (!isOK)
+			if(!gradeStore.Load(m_lsGrades.GetItemData(m_lsGrades.GetCurSel()), tmp))
 			{
 				int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
 				return;

@@ -31,29 +31,28 @@ BOOL AllSubjectsDlg::PrintAllSubjects()
 {
 	subjectsList.ResetContent();
 
-	BOOL isOK = TRUE;
-
 	std::vector<SUBJECT> all;
 	SubjectDatabaseInterface subjectStore{ &databaseConnection };
 
-	isOK = subjectStore.LoadAll(all);
-
-	if (isOK)
+	if (!subjectStore.LoadAll(all))
 	{
-		CString currentRow;
-
-		for (const auto& subject : all)
-		{
-			currentRow.Format(_T("%d %s %s"),
-				subject.nID,
-				CString{ subject.szName },
-				CString{ subject.szRoom });
-
-			int index = subjectsList.AddString(currentRow);
-			subjectsList.SetItemData(index, subject.nID);
-		}
+		return FALSE;
 	}
-	return isOK;
+
+	CString currentRow;
+
+	for (const auto& subject : all)
+	{
+		currentRow.Format(_T("%d %s %s"),
+			subject.nID,
+			CString{ subject.szName },
+			CString{ subject.szRoom });
+
+		int index = subjectsList.AddString(currentRow);
+		subjectsList.SetItemData(index, subject.nID);
+	}
+
+	return TRUE;
 }
 
 BOOL AllSubjectsDlg::OnInitDialog()
@@ -85,18 +84,17 @@ END_MESSAGE_MAP()
 void AllSubjectsDlg::OnBnClickedButtonAdd()
 {
 	SUBJECT tmp;
-	BOOL isOK = TRUE;
+
 	SubjectDatabaseInterface subjectStore{ &databaseConnection };
 
 	CombinedSubjectDlg dlg{ eDialogMode_Add, tmp };
 	if (dlg.DoModal() == IDOK)
 	{
-		isOK = subjectStore.Add(tmp);
-	}
-	if (!isOK)
-	{
-		int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
-		return;
+		if (!subjectStore.Add(tmp))
+		{
+			int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
+			return;
+		}
 	}
 	PrintAllSubjects();
 }
@@ -104,56 +102,56 @@ void AllSubjectsDlg::OnBnClickedButtonAdd()
 
 void AllSubjectsDlg::OnBnClickedButtonEdit()
 {
-	if (subjectsList.GetCurSel() != LB_ERR)
+	if (subjectsList.GetCurSel() == LB_ERR)
 	{
-		SUBJECT tmp;
-		BOOL isOK = TRUE;
-		SubjectDatabaseInterface subjectStore{ &databaseConnection };
-
-		isOK = subjectStore.Load(subjectsList.GetItemData(subjectsList.GetCurSel()), tmp);
-		if (!isOK)
-		{
-			int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
-			return;
-		}
-
-		CombinedSubjectDlg dlg{ eDialogMode_Edit, tmp };
-		if (dlg.DoModal() == IDOK)
-		{
-			isOK = subjectStore.Edit(tmp);
-		}
-		if (!isOK)
-		{
-			int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
-			return;
-		}
-
-		PrintAllSubjects();
+		return;
 	}
+
+	SUBJECT tmp;
+
+	SubjectDatabaseInterface subjectStore{ &databaseConnection };
+
+	if (!subjectStore.Load(subjectsList.GetItemData(subjectsList.GetCurSel()), tmp))
+	{
+		int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
+		return;
+	}
+
+	CombinedSubjectDlg dlg{ eDialogMode_Edit, tmp };
+	if (dlg.DoModal() == IDOK)
+	{
+		if (!subjectStore.Edit(tmp))
+		{
+			int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
+			return;
+		}
+	}
+
+	PrintAllSubjects();
 }
 
 
 void AllSubjectsDlg::OnBnClickedButtonRemove()
 {
-	if (subjectsList.GetCurSel() != LB_ERR)
+	if (subjectsList.GetCurSel() == LB_ERR)
 	{
-		SUBJECT tmp;
-		BOOL isOK = TRUE;
-		SubjectDatabaseInterface subjectStore{ &databaseConnection };
+		return;
+	}
 
-		isOK = subjectStore.Load(subjectsList.GetItemData(subjectsList.GetCurSel()), tmp);
-		if (!isOK)
-		{
-			int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
-			return;
-		}
+	SUBJECT tmp;
 
-		CombinedSubjectDlg dlg{ eDialogMode_Remove, tmp };
-		if (dlg.DoModal() == IDOK)
-		{
-			isOK = subjectStore.Delete(tmp.nID);
-		}
-		if (!isOK)
+	SubjectDatabaseInterface subjectStore{ &databaseConnection };
+
+	if (!subjectStore.Load(subjectsList.GetItemData(subjectsList.GetCurSel()), tmp))
+	{
+		int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
+		return;
+	}
+
+	CombinedSubjectDlg dlg{ eDialogMode_Remove, tmp };
+	if (dlg.DoModal() == IDOK)
+	{
+		if (!subjectStore.Delete(tmp.nID))
 		{
 			int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
 			return;
@@ -212,11 +210,10 @@ void AllSubjectsDlg::OnContextMenu(CWnd* pWnd, CPoint point)
 		if (subjectsList.GetCurSel() != LB_ERR)
 		{
 			SUBJECT tmp;
-			BOOL isOK = TRUE;
+
 			SubjectDatabaseInterface subjectStore{ &databaseConnection };
 
-			isOK = subjectStore.Load(subjectsList.GetItemData(subjectsList.GetCurSel()), tmp);
-			if (!isOK)
+			if (!subjectStore.Load(subjectsList.GetItemData(subjectsList.GetCurSel()), tmp))
 			{
 				int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
 				return;

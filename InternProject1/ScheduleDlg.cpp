@@ -32,8 +32,6 @@ ScheduleDlg::~ScheduleDlg()
 
 BOOL ScheduleDlg::PrintSchedule()
 {
-	BOOL isOK = TRUE;
-
 	int nCount = m_ScheduleListControl.GetItemCount();
 
 	// Delete all of the items from the list view control.
@@ -50,8 +48,12 @@ BOOL ScheduleDlg::PrintSchedule()
 		m_ScheduleListControl.DeleteColumn(0);
 	}
 
-	
-	isOK = m_scheduleStore.Load(m_classSelectDropList.GetItemData(m_classSelectDropList.GetCurSel()), m_schedule);
+
+	if (!m_scheduleStore.Load(m_classSelectDropList.GetItemData(m_classSelectDropList.GetCurSel()), m_schedule))
+	{
+		return FALSE;
+	}
+
 	ListView_SetExtendedListViewStyle(m_ScheduleListControl, LVS_EX_GRIDLINES);
 
 	CString text;
@@ -87,58 +89,63 @@ BOOL ScheduleDlg::PrintSchedule()
 	std::vector<int> ids(uniqueIDs.begin(), uniqueIDs.end());
 	std::unordered_map<int, CString> m_subjectNames;
 
-	isOK = IDtoNameMapper(&databaseConnection, CString{ "Subjects" }, CString{ "ID" }, CString{ "Name" }, ids, m_subjectNames);
-
-	if (isOK)
+	if(!IDtoNameMapper(&databaseConnection, _T("Subjects"), _T("ID"), _T("Name"), ids, m_subjectNames));
 	{
-		for (size_t col = 0; col < days; col++)
+		// Failing to map the names is a non-critical error.
+		int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
+	}
+
+	for (size_t col = 0; col < days; col++)
+	{
+		int row = 0;
+		for (const auto& _class : m_schedule.days[col].classes)
 		{
-			int row = 0;
-			for (const auto& _class : m_schedule.days[col].classes)
-			{
-				text.Format(_T("%s"), m_subjectNames[_class.nSubjectID]);
-				m_ScheduleListControl.SetItemText(row, col, text);
-				row++;
-			}
+			text.Format(_T("%s"), m_subjectNames[_class.nSubjectID]);
+			m_ScheduleListControl.SetItemText(row, col, text);
+			++row;
 		}
 	}
-	return isOK;
+
+	return TRUE;
 }
 
 BOOL ScheduleDlg::OnInitDialog()
 {
 	if (!CDialog::OnInitDialog())
+	{
 		return FALSE;
-
-	BOOL isOK = TRUE;
+	}
 
 	std::vector<CClass> allClasses;
 
-	isOK = m_classStore.LoadAll(allClasses);
-
-	if (isOK)
+	if (!m_classStore.LoadAll(allClasses))
 	{
-		CString currentRow;
-
-		for (const auto& cClass : allClasses)
-		{
-			currentRow.Format(_T("%d %s"),
-				cClass.nID,
-				cClass.szName);
-
-			int index = m_classSelectDropList.AddString(currentRow);
-			m_classSelectDropList.SetItemData(index, cClass.nID);
-		}
-
-		m_classSelectDropList.SetCurSel(allClasses.size() > 0 ? 0 : CB_ERR);
-
-		if (m_classSelectDropList.GetCurSel() != CB_ERR)
-		{
-			isOK = PrintSchedule();
-		}
-
+		return FALSE;
 	}
-	return isOK;
+
+	CString currentRow;
+
+	for (const auto& cClass : allClasses)
+	{
+		currentRow.Format(_T("%d %s"),
+			cClass.nID,
+			cClass.szName);
+
+		int index = m_classSelectDropList.AddString(currentRow);
+		m_classSelectDropList.SetItemData(index, cClass.nID);
+	}
+
+	m_classSelectDropList.SetCurSel(allClasses.size() > 0 ? 0 : CB_ERR);
+
+	if (m_classSelectDropList.GetCurSel() != CB_ERR)
+	{
+		if (!PrintSchedule())
+		{
+			return FALSE;
+		}
+	}
+
+	return TRUE;
 }
 
 void ScheduleDlg::DoDataExchange(CDataExchange* pDX)

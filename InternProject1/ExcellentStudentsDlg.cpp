@@ -28,16 +28,18 @@ ExcellentStudentsDlg::ExcellentStudentsDlg(CWnd* pParent /*=nullptr*/)
 BOOL ExcellentStudentsDlg::OnInitDialog()
 {
 	if (!CDialog::OnInitDialog())
+	{
 		return FALSE;
-
-	BOOL isOK;
+	}
 
 	// Get all grades
 	std::vector<GRADE> allGrades;
-	isOK = m_gradeStore.LoadAll(allGrades);
-
-	if (isOK)
+	if (!m_gradeStore.LoadAll(allGrades))
 	{
+		return FALSE;
+	}
+
+
 		// Filter grades
 		std::unordered_set<int> excellentStudentIDs;
 		std::unordered_set<int> nonexcellentStudentIDs;
@@ -63,11 +65,9 @@ BOOL ExcellentStudentsDlg::OnInitDialog()
 
 		for (const auto& studentID : excellentStudentIDs)
 		{
-			isOK = m_studentStore.Load(studentID, tmp);
-
-			if (!isOK)
+			if(! m_studentStore.Load(studentID, tmp))
 			{
-				break;
+				return FALSE;
 			}
 
 			currentRow.Format(_T("%d %s %s"),
@@ -77,8 +77,8 @@ BOOL ExcellentStudentsDlg::OnInitDialog()
 
 			m_excellentStudentsList.AddString(currentRow);
 		}
-	}
-	return isOK;
+	
+	return TRUE;
 }
 
 ExcellentStudentsDlg::~ExcellentStudentsDlg()

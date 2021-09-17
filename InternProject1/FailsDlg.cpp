@@ -33,7 +33,9 @@ FailsDlg::FailsDlg(CWnd* pParent /*=nullptr*/)
 BOOL FailsDlg::OnInitDialog()
 {
 	if (!CDialog::OnInitDialog())
+	{
 		return FALSE;
+	}
 
 	BOOL isOK;
 
@@ -155,6 +157,11 @@ BOOL FailsDlg::OnInitDialog()
 				}
 			}
 		}
+	}
+
+	if (!isOK)
+	{
+		int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
 	}
 
 	return isOK;

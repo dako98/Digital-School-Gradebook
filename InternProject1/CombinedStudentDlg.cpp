@@ -28,13 +28,17 @@ CombinedStudentDlg::CombinedStudentDlg(DialogMode eDialogMode, STUDENT& m_studen
 
 BOOL CombinedStudentDlg::OnInitDialog()
 {
-	if(!CDialog::OnInitDialog())
+	if (!CDialog::OnInitDialog())
+	{
 		return FALSE;
+	}
 
-	BOOL isOK = TRUE;
 
 	//TODO: Fill list with classes.
-	isOK = LoadAllClasses();
+	if (!LoadAllClasses())
+	{
+		return FALSE;
+	}
 
 	m_studentNumberVal = m_data.nID;
 
@@ -89,7 +93,7 @@ BOOL CombinedStudentDlg::OnInitDialog()
 		break;
 	}
 
-	return isOK;
+	return TRUE;
 }
 
 CombinedStudentDlg::~CombinedStudentDlg()
@@ -112,30 +116,29 @@ void CombinedStudentDlg::DoDataExchange(CDataExchange* pDX)
 BOOL CombinedStudentDlg::LoadAllClasses()
 {
 	std::vector<CClass> classes;
-	BOOL isOK = TRUE;
 
-	isOK = m_classesStore.LoadAll(classes);
-
-
-	if (isOK)
+	if (!m_classesStore.LoadAll(classes))
 	{
-		CString currentRow;
-
-		for (const auto& cClass : classes)
-		{
-			currentRow.Format(_T("%d %s"),
-				cClass.nID,
-				cClass.szName);
-
-			int index = m_classList.AddString(currentRow);
-			m_classList.SetItemData(index, cClass.nID);
-		}
-
-		m_classList.SetCurSel(GetIndexByData(m_data.classID, m_classList));
+		return FALSE;
 	}
+
+	CString currentRow;
+
+	for (const auto& cClass : classes)
+	{
+		currentRow.Format(_T("%d %s"),
+			cClass.nID,
+			cClass.szName);
+
+		int index = m_classList.AddString(currentRow);
+		m_classList.SetItemData(index, cClass.nID);
+	}
+
+	m_classList.SetCurSel(GetIndexByData(m_data.classID, m_classList));
+
 	UpdateData(FALSE);
 
-	return isOK;
+	return TRUE;
 }
 
 
@@ -150,8 +153,6 @@ END_MESSAGE_MAP()
 void CombinedStudentDlg::OnBnClickedOk()
 {
 	UpdateData();
-	
-	BOOL isOK = TRUE;
 
 	CString buff;
 
@@ -165,12 +166,10 @@ void CombinedStudentDlg::OnBnClickedOk()
 		if (buff.GetLength() <= STUDENT::MAX_NAME_SIZE)
 		{
 			StrCpyW(m_tmp.szFirstName, buff);
-//			m_tmp.szFirstName = buff;
 		}
 		else
 		{
 			StrCpyW(m_tmp.szFirstName, _T(""));
-//			m_tmp.szFirstName = "";
 		}
 
 		m_studentLastName.GetWindowTextW(buff);
@@ -178,12 +177,10 @@ void CombinedStudentDlg::OnBnClickedOk()
 		if (buff.GetLength() <= STUDENT::MAX_NAME_SIZE)
 		{
 			StrCpyW(m_tmp.szLastName, buff);
-//			m_tmp.szLastName = buff;
 		}
 		else
 		{
 			StrCpyW(m_tmp.szLastName, _T(""));
-//			m_tmp.szLastName = "";
 		}
 
 		DBTIMESTAMP date;
@@ -216,5 +213,4 @@ void CombinedStudentDlg::OnBnClickedOk()
 		m_data = m_tmp;
 		CDialog::OnOK();
 	}
-
 }

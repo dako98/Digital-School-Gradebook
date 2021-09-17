@@ -30,7 +30,9 @@ CombinedSubjectDlg::CombinedSubjectDlg(DialogMode eMode, SUBJECT& data)
 BOOL CombinedSubjectDlg::OnInitDialog()
 {
 	if (!CDialog::OnInitDialog())
+	{
 		return FALSE;
+	}
 
 	m_subjectIDVal = m_data.nID;
 
@@ -40,29 +42,28 @@ BOOL CombinedSubjectDlg::OnInitDialog()
 		m_subjectRoom.SetWindowText(CString{ m_data.szRoom });
 	}
 
-
-	BOOL isOK = TRUE;
-
 	std::vector<TEACHER> allTeachers;
-	isOK = m_teacherStore.LoadAll(allTeachers);
-
-	if (isOK)
+	if (!m_teacherStore.LoadAll(allTeachers))
 	{
-		CString currentRow;
-
-		for (const auto& teacher : allTeachers)
-		{
-			currentRow.Format(_T("%d %s %s"),
-				teacher.nID,
-				CString{ teacher.szFirstName },
-				CString{ teacher.szLastName });
-
-			int index = m_teacherDropdown.AddString(currentRow);
-			m_teacherDropdown.SetItemData(index, teacher.nID);
-		}
-
-		m_teacherDropdown.SetCurSel(GetIndexByData(m_data.nTeacherID, m_teacherDropdown));
+		return FALSE;
 	}
+
+
+	CString currentRow;
+
+	for (const auto& teacher : allTeachers)
+	{
+		currentRow.Format(_T("%d %s %s"),
+			teacher.nID,
+			CString{ teacher.szFirstName },
+			CString{ teacher.szLastName });
+
+		int index = m_teacherDropdown.AddString(currentRow);
+		m_teacherDropdown.SetItemData(index, teacher.nID);
+	}
+
+	m_teacherDropdown.SetCurSel(GetIndexByData(m_data.nTeacherID, m_teacherDropdown));
+
 	UpdateData(FALSE);
 
 	switch (m_eDialogMode)
@@ -92,7 +93,7 @@ BOOL CombinedSubjectDlg::OnInitDialog()
 		break;
 	}
 
-	return isOK;
+	return TRUE;
 }
 
 CombinedSubjectDlg::~CombinedSubjectDlg()
@@ -123,7 +124,6 @@ void CombinedSubjectDlg::OnBnClickedOk()
 
 	UpdateData();
 
-	BOOL isOK = TRUE;
 	SUBJECT su;
 	CString buff;
 
@@ -131,11 +131,14 @@ void CombinedSubjectDlg::OnBnClickedOk()
 
 	if (m_eDialogMode != DialogMode::eDialogMode_Remove)
 	{
+		if (m_teacherDropdown.GetCurSel() == CB_ERR)
+		{
+			return;
+		}
+
 		// Read data from window.
 		m_subjectName.GetWindowText(buff);
 
-		if (m_teacherDropdown.GetCurSel() != CB_ERR)
-		{
 			su.nTeacherID = m_teacherDropdown.GetItemData(m_teacherDropdown.GetCurSel());
 
 			if (buff.GetLength() <= SUBJECT::MAX_NAME_SIZE)
@@ -157,11 +160,6 @@ void CombinedSubjectDlg::OnBnClickedOk()
 			{
 				StrCpyW(su.szRoom, _T(""));
 			}
-		}
-		else
-		{
-			isOK = FALSE;
-		}
 
 		if (su.Validate())
 		{

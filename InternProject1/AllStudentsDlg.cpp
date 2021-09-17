@@ -216,11 +216,9 @@ void AllStudentsDlg::OnContextMenu(CWnd* pWnd, CPoint point)
 		{
 
 			STUDENT tmp;
-			BOOL isOK = TRUE;
 			StudentDatabaseInterface studentStore{ &databaseConnection };
 
-			isOK = studentStore.Load(m_allStudentsList.GetItemData(m_allStudentsList.GetCurSel()), tmp);
-			if (!isOK)
+			if(!studentStore.Load(m_allStudentsList.GetItemData(m_allStudentsList.GetCurSel()), tmp))
 			{
 				int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
 				return;

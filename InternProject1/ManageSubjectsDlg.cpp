@@ -51,20 +51,16 @@ void ManageSubjectsDlg::OnBnClickedButtonViewAll()
 
 void ManageSubjectsDlg::OnBnClickedButtonAdd()
 {
-
-	BOOL isOK = TRUE;
-
 	SUBJECT tmp;
 
 	CombinedSubjectDlg dlg{ eDialogMode_Add, tmp };
 	if (dlg.DoModal() == IDOK)
 	{
-		isOK = m_subjectStore.Add(tmp);
-	}
-	if (!isOK)
-	{
-		int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
-		return;
+		if (!m_subjectStore.Add(tmp))
+		{
+			int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
+			return;
+		}
 	}
 }
 

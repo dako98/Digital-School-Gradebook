@@ -27,7 +27,6 @@ BOOL CombinedScheduleClassDlg::OnInitDialog()
 	{
 		return FALSE;
 	}
-	BOOL isOK = TRUE;
 
 	std::vector<SUBJECT> allSubjects;
 
@@ -36,7 +35,10 @@ BOOL CombinedScheduleClassDlg::OnInitDialog()
 	case eDialogMode_Add:
 	{
 		CString text;
-		isOK = m_subjectStore.LoadAll(allSubjects);
+		if (!m_subjectStore.LoadAll(allSubjects))
+		{
+			return FALSE;
+		}
 
 		for (const auto& subject : allSubjects)
 		{
@@ -64,11 +66,11 @@ BOOL CombinedScheduleClassDlg::OnInitDialog()
 	case eDialogMode_View:
 
 	default:
-		ASSERT(FALSE, "Invalid window state.");
+		throw std::invalid_argument{ "Invalid window state." };
 		break;
 	}
 
-	return isOK;
+	return TRUE;
 }
 
 CombinedScheduleClassDlg::~CombinedScheduleClassDlg()
@@ -94,11 +96,14 @@ END_MESSAGE_MAP()
 void CombinedScheduleClassDlg::OnBnClickedOk()
 {
 	// TODO: Add your control notification handler code here
-	if (subjectsList.GetCurSel() != CB_ERR)
+	if (subjectsList.GetCurSel() == CB_ERR)
 	{
-		int id = subjectsList.GetItemData(subjectsList.GetCurSel());
-		m_data.nSubjectID = id;
+		return;
 	}
+
+	int id = subjectsList.GetItemData(subjectsList.GetCurSel());
+	m_data.nSubjectID = id;
+
 	CDialog::OnOK();
 }
 

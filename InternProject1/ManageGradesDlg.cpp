@@ -61,17 +61,15 @@ void ManageGradesDlg::OnBnClickedButtonAddGrade()
 	tmp.dtDate.hour		= now.hour;
 	tmp.dtDate.minute	= now.minute;
 	tmp.dtDate.second	= now.second;
-	BOOL isOK = TRUE;
 
 	CombinedGradeDlg dlg{ eDialogMode_Add, tmp };
 	if (dlg.DoModal() == IDOK)
 	{
-		isOK = m_gradeStore.Add(tmp);
-	}
-	if (!isOK)
-	{
-		int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
-		return;
+		if (!m_gradeStore.Add(tmp))
+		{
+			int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
+			return;
+		}
 	}
 }
 

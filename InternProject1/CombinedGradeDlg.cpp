@@ -27,60 +27,57 @@ CombinedGradeDlg::CombinedGradeDlg(DialogMode eMode, GRADE& data)
 
 BOOL CombinedGradeDlg::PrintAllStudents()
 {
-	BOOL isOK;
-
 	std::vector<STUDENT> allStudents;
-	isOK = m_studentStore.LoadAll(allStudents);
-
-	if (isOK)
+	if (!m_studentStore.LoadAll(allStudents))
 	{
-		CString currentRow;
-
-		for (const auto& student : allStudents)
-		{
-			currentRow.Format(_T("%d %s %s"),
-				student.nID,
-				CString{ student.szFirstName },
-				CString{ student.szLastName });
-
-			int index = m_studentDropdown.AddString(currentRow);
-			m_studentDropdown.SetItemData(index, student.nID);
-		}
+		return FALSE;
 	}
-	return isOK;
+
+	CString currentRow;
+
+	for (const auto& student : allStudents)
+	{
+		currentRow.Format(_T("%d %s %s"),
+			student.nID,
+			CString{ student.szFirstName },
+			CString{ student.szLastName });
+
+		int index = m_studentDropdown.AddString(currentRow);
+		m_studentDropdown.SetItemData(index, student.nID);
+	}
+
+	return TRUE;
 }
 
 BOOL CombinedGradeDlg::PrintAllSubjects()
 {
-	BOOL isOK;
-
 	std::vector<SUBJECT> allStudents;
-	isOK = m_subjectStore.LoadAll(allStudents);
-
-	if (isOK)
+	if (!m_subjectStore.LoadAll(allStudents))
 	{
-		CString currentRow;
-
-		for (const auto& student : allStudents)
-		{
-			currentRow.Format(_T("%d %s"),
-				student.nID,
-				CString{ student.szName });
-
-			int index = m_subjectDropdown.AddString(currentRow);
-			m_subjectDropdown.SetItemData(index, student.nID);
-		}
+		return FALSE;
 	}
-	return isOK;
+
+	CString currentRow;
+
+	for (const auto& student : allStudents)
+	{
+		currentRow.Format(_T("%d %s"),
+			student.nID,
+			CString{ student.szName });
+
+		int index = m_subjectDropdown.AddString(currentRow);
+		m_subjectDropdown.SetItemData(index, student.nID);
+	}
+
+	return TRUE;
 }
 
 BOOL CombinedGradeDlg::OnInitDialog()
 {
 	if (!CDialog::OnInitDialog())
+	{
 		return FALSE;
-
-	BOOL isOK;
-
+	}
 
 	if (m_eDialogMode != DialogMode::eDialogMode_Add)
 	{
@@ -88,41 +85,43 @@ BOOL CombinedGradeDlg::OnInitDialog()
 	}
 
 	// Load all students
-	isOK = PrintAllStudents();
-
-	if (isOK)
+	if (!PrintAllStudents())
 	{
-		// Select student
-		m_studentDropdown.SetCurSel(GetIndexByData(m_data.nStudentID, m_studentDropdown));
-
-		// Load all subjects
-		isOK = PrintAllSubjects();
+		return FALSE;
 	}
 
-	if (isOK)
+
+	// Select student
+	m_studentDropdown.SetCurSel(GetIndexByData(m_data.nStudentID, m_studentDropdown));
+
+	// Load all subjects
+	if (!PrintAllSubjects())
 	{
-		// Select subject
-		m_subjectDropdown.SetCurSel(GetIndexByData(m_data.nSubjectID, m_subjectDropdown));
-
-
-		// Load all grade values
-		for (size_t i = GRADE::GRADES::INVALID + 1; i < GRADE::GRADES::COUNT; i++)
-		{
-			int index = m_gradeDropdown.AddString(MapGradeName(i));
-			m_gradeDropdown.SetItemData(index, i);
-		}
-
-		// Select grade value
-		m_gradeDropdown.SetCurSel(GetIndexByData(m_data.value, m_gradeDropdown));
-
-		// Select date
-		m_gradeDateVal.SetDateTime(m_data.dtDate.year
-			, m_data.dtDate.month
-			, m_data.dtDate.day
-			, m_data.dtDate.hour
-			, m_data.dtDate.minute
-			, m_data.dtDate.second);
+		return FALSE;
 	}
+
+	// Select subject
+	m_subjectDropdown.SetCurSel(GetIndexByData(m_data.nSubjectID, m_subjectDropdown));
+
+
+	// Load all grade values
+	for (size_t i = GRADE::GRADES::INVALID + 1; i < GRADE::GRADES::COUNT; i++)
+	{
+		int index = m_gradeDropdown.AddString(MapGradeName(i));
+		m_gradeDropdown.SetItemData(index, i);
+	}
+
+	// Select grade value
+	m_gradeDropdown.SetCurSel(GetIndexByData(m_data.value, m_gradeDropdown));
+
+	// Select date
+	m_gradeDateVal.SetDateTime(m_data.dtDate.year
+		, m_data.dtDate.month
+		, m_data.dtDate.day
+		, m_data.dtDate.hour
+		, m_data.dtDate.minute
+		, m_data.dtDate.second);
+
 
 	UpdateData(FALSE);
 
@@ -161,7 +160,7 @@ BOOL CombinedGradeDlg::OnInitDialog()
 		throw std::invalid_argument{ "Invalid window state." };
 		break;
 	}
-	return isOK;
+	return TRUE;
 }
 
 CombinedGradeDlg::~CombinedGradeDlg()
@@ -192,7 +191,6 @@ void CombinedGradeDlg::OnBnClickedOk()
 {
 	UpdateData();
 
-	BOOL isOK = TRUE;
 	GRADE st;
 
 	st.nID = m_gradeIDVal;
