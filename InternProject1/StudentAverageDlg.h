@@ -3,6 +3,13 @@
 
 // StudentAverageDlg dialog
 
+
+
+// Class, Number, First name, Last name, Average grade
+extern std::array<CString, 5> colData;
+
+extern const float GRADE_EPS;
+
 class StudentAverageDlg : public CDialog
 {
 	DECLARE_DYNAMIC(StudentAverageDlg)
@@ -20,9 +27,9 @@ public:
 #endif
 
 private:
-	BOOL UpdateAverage();
-	BOOL PrintAllStudents();
-	BOOL PrintAllSubjects();
+	BOOL PrintStudentsAverage();
+	BOOL PrintClassesAverage();
+	BOOL PrintSchoolAverage();
 
 	StudentDatabaseInterface	m_studentStore;
 	GradeDatabaseInterface		m_gradeStore;
@@ -33,12 +40,11 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-	CComboBox					m_studentDropList;
-	CComboBox					m_subjectDropList;
-	CEdit						m_studentAverage;
-	CEdit						m_subjectAverage;
+	CEdit						m_schoolAverageGrade;
 	float						m_studentAverageVal;
 	float						m_subjectAverageVal;
 	afx_msg void OnCbnSelchangeStudent();
 	afx_msg void OnCbnSelchangeSubject();
+	CListCtrl m_studentsList;
+	CListCtrl m_classesList;
 };

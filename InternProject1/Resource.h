@@ -29,13 +29,13 @@
 #define IDR_SUBJECT                     182
 #define IDD_ALL_TEACHERS_DLG            183
 #define IDD_NEW_CLASS                   185
-#define IDD_COMBINED_CLASS              185
 #define IDD_COMBINED_STUDENT_CLASS      185
 #define IDD_ALL_STUDENT_CLASSES         189
 #define IDC_EDIT1                       1000
 #define IDC_TEACHER_ID_EDIT             1000
 #define IDC_EDIT_NEW_CLASS_NAME         1000
 #define IDC_EDIT_COMBINED_CLASS_NAME    1000
+#define IDC_SCHOOL_AVERAGE_EDIT         1000
 #define IDC_DATETIMEPICKER1             1001
 #define IDC_DATETIMEPICKER              1001
 #define IDC_ALL_STUDENTS                1002
@@ -131,6 +131,8 @@
 #define IDC_BTN_EDIT_STUDENT_CLASS      1101
 #define IDC_BTN_REMOVE_STUDENT_CLASS    1102
 #define IDC_ALL_STUDENT_CLASSES_LIST    1103
+#define IDC_STUDENTS_LIST               1105
+#define IDC_CLASSES_LIST                1106
 #define ID_ADD_EDIT                     32771
 #define ID_ADD_DELETE                   32772
 #define ID_ADD_VIEW                     32773
@@ -145,7 +147,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        191
 #define _APS_NEXT_COMMAND_VALUE         32778
-#define _APS_NEXT_CONTROL_VALUE         1104
+#define _APS_NEXT_CONTROL_VALUE         1107
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

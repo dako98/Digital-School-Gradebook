@@ -14,6 +14,10 @@
 #include "CStudent.h"
 #include "CSubject.h"
 #include "CGrade.h"
+#include "CStudentClassDatabaseInterface.h"
+
+
+std::array<CString, 5> colData = { _T("Class"), _T("Number"), _T("First name"), _T("Last name"), _T("Average grade") };
 
 // StudentAverageDlg dialog
 
@@ -29,107 +33,243 @@ StudentAverageDlg::StudentAverageDlg(CWnd* pParent /*=nullptr*/)
 {
 }
 
-BOOL StudentAverageDlg::PrintAllStudents()
+BOOL StudentAverageDlg::PrintStudentsAverage()
 {
-	std::vector<STUDENT> allStudents;
-	if (!m_studentStore.LoadAll(allStudents))
+	int nCount = m_studentsList.GetItemCount();
+
+	// Delete all of the items from the list view control.
+	for (int i = 0; i < nCount; i++)
+	{
+		m_studentsList.DeleteItem(0);
+	}
+
+	int nColumnCount = m_studentsList.GetHeaderCtrl()->GetItemCount();
+
+	// Delete all of the columns.
+	for (int i = 0; i < nColumnCount; i++)
+	{
+		m_studentsList.DeleteColumn(0);
+	}
+
+	ListView_SetExtendedListViewStyle(m_studentsList, LVS_EX_GRIDLINES);
+
+	std::vector<STUDENT>		allStudents;
+	std::vector<STUDENT_CLASS>	allClasses;
+	std::vector<GRADE>			allGrades;
+
+	std::unordered_map<int, CString> classNames;
+	unsigned int studentsCount;
+
+	StudentDatabaseInterface		studentStore{ &databaseConnection };
+	StudentClassDatabaseInterface	classesStore{ &databaseConnection };
+	GradeDatabaseInterface			gradeStore	{ &databaseConnection };
+
+	if (!studentStore.LoadAll(allStudents) ||
+		!gradeStore.LoadAll(allGrades))
 	{
 		return FALSE;
 	}
 
-	CString currentRow;
+	studentsCount = allStudents.size();
 
-	for (const auto& student : allStudents)
+	classesStore.LoadAll(allClasses);
+	std::vector<int> allClassesIds;
+	allClassesIds.reserve(allClasses.size());
+	for (const auto& _class : allClasses)
 	{
-		currentRow.Format(_T("%d %s %s"),
-			student.nID,
-			CString{ student.szFirstName },
-			CString{ student.szLastName });
-
-		int index = m_studentDropList.AddString(currentRow);
-		m_studentDropList.SetItemData(index, student.nID);
+		allClassesIds.push_back(_class.nID);
 	}
 
-	return TRUE;
-}
-
-BOOL StudentAverageDlg::PrintAllSubjects()
-{
-	std::vector<SUBJECT> allSubjects;
-	if (!m_subjectStore.LoadAll(allSubjects))
+	int colsCount = colData.size();
+	for (int i = 0; i < colsCount; ++i)
 	{
-		return FALSE;
+		m_studentsList.InsertColumn(i, colData[i], LVCFMT_CENTER, 80);
 	}
 
-	CString currentRow;
+	CString text;
 
-	for (const auto& subject : allSubjects)
+	//	std::vector <CString> classNames;
+	IDtoNameMapper(&databaseConnection, _T("Classes"), _T("ID"), _T("Name"), allClassesIds, classNames);
+
+	// get grades count and sum for each student ID
+	std::unordered_map<int, std::pair<int, int>> preAverageData;
+	for (const auto& grade : allGrades)
 	{
-		currentRow.Format(_T("%d %s"),
-			subject.nID,
-			CString{ subject.szName });
-
-		int index = m_subjectDropList.AddString(currentRow);
-		m_subjectDropList.SetItemData(index, subject.nID);
+		preAverageData[grade.nStudentID].first++;
+		preAverageData[grade.nStudentID].second += grade.value;
 	}
 
-	return TRUE;
-}
-
-
-BOOL StudentAverageDlg::UpdateAverage()
-{
-	int index = m_studentDropList.GetCurSel();
-	int studentID = -1;
-	int subjectID = -1;
-
-	if (index == CB_ERR)
+	// calculate average for each student
+	std::unordered_map<int, double> studentAverageGrade;
+	for (const auto& student : preAverageData)
 	{
-		return TRUE;
+		assert(student.second.first > 0);
+		studentAverageGrade[student.first] = (double)student.second.second / student.second.first;
+		// Note: No division by zero, because if there are no grades, the entry would not exist.
 	}
 
-	std::vector<GRADE> grades;
-	if (!m_gradeStore.LoadAll(grades))
+	for (size_t i = 0; i < studentsCount; i++)
 	{
-		return FALSE;
-	}
-	std::vector<GRADE> studentGrades;
-
-
-	studentID = m_studentDropList.GetItemData(index);
-
-	index = m_subjectDropList.GetCurSel();
-
-	if (index != CB_ERR)
-	{
-		subjectID = m_subjectDropList.GetItemData(index);
+		text.Format(_T("%d"), i + 1);
+		m_studentsList.InsertItem(0, text);
 	}
 
-	int studentSum = 0, studentCount = 0, subjectSum = 0, subjectCount = 0;
-
-	for (const auto& grade : grades)
+	for (int i = 0; i < studentsCount; ++i)
 	{
-		if (grade.nStudentID == studentID)
+		text.Format(_T("%s"), classNames[allStudents[i].classID]);
+		m_studentsList.SetItemText(i, 0, text);
+
+		text.Format(_T("%d"), allStudents[i].numberInClass);
+		m_studentsList.SetItemText(i, 1, text);
+
+		text.Format(_T("%s"), allStudents[i].szFirstName);
+		m_studentsList.SetItemText(i, 2, text);
+
+		text.Format(_T("%s"), allStudents[i].szLastName);
+		m_studentsList.SetItemText(i, 3, text);
+
+		if (studentAverageGrade[allStudents[i].nID] < GRADE_EPS)
 		{
-			studentSum += grade.value;
-			studentCount++;
+			m_studentsList.SetItemText(i, 4, _T("-"));
+		}
+		else
+		{
+			text.Format(_T("%g"), studentAverageGrade[allStudents[i].nID] + (2 - GRADE::F));
+			m_studentsList.SetItemText(i, 4, text);
+		}
+	}
+	return TRUE;
+}
 
-			if (grade.nSubjectID == subjectID)
+BOOL StudentAverageDlg::PrintClassesAverage()
+{
+	int nCount = m_classesList.GetItemCount();
+
+	// Delete all of the items from the list view control.
+	for (int i = 0; i < nCount; i++)
+	{
+		m_classesList.DeleteItem(0);
+	}
+
+	int nColumnCount = m_classesList.GetHeaderCtrl()->GetItemCount();
+
+	// Delete all of the columns.
+	for (int i = 0; i < nColumnCount; i++)
+	{
+		m_classesList.DeleteColumn(0);
+	}
+
+
+
+	ListView_SetExtendedListViewStyle(m_classesList, LVS_EX_GRIDLINES);
+
+	std::vector<STUDENT>		allStudents;
+	std::vector<STUDENT_CLASS>	allClasses;
+	std::vector<GRADE>			allGrades;
+
+	std::unordered_map<int, CString> classNames;
+	unsigned int studentsCount;
+
+	StudentDatabaseInterface		studentStore{ &databaseConnection };
+	StudentClassDatabaseInterface	classesStore{ &databaseConnection };
+	GradeDatabaseInterface			gradeStore	{ &databaseConnection };
+
+	if (!studentStore.LoadAll(allStudents) ||
+		!gradeStore.LoadAll(allGrades) ||
+		!classesStore.LoadAll(allClasses))
+	{
+		return FALSE;
+	}
+
+	studentsCount = allStudents.size();
+
+	std::vector<int>	allClassesIds;
+	allClassesIds.reserve(allClasses.size());
+	for (const auto& _class : allClasses)
+	{
+		allClassesIds.push_back(_class.nID);
+	}
+
+	int colsCount = allClasses.size();
+	for (int i = 0; i < colsCount; ++i)
+	{
+		m_classesList.InsertColumn(i, allClasses[i].szName, LVCFMT_CENTER, 80);
+	}
+
+	CString text;
+
+	// get grades count and sum for each student ID
+	std::unordered_map<int, std::pair<int, int>> preAverageData;
+	for (const auto& grade : allGrades)
+	{
+		STUDENT st;
+		for (auto& student : allStudents)
+		{
+			if (student.nID == grade.nStudentID)
 			{
-				subjectSum += grade.value;
-				subjectCount++;
+				st = student;
+				break;
 			}
+		}
+
+		preAverageData[st.classID].first++;
+		preAverageData[st.classID].second += grade.value;
+	}
+
+	// calculate average for each class
+	std::unordered_map<int, double> classAverageGrade;
+	for (const auto& _class : preAverageData)
+	{
+		assert(_class.second.first > 0);
+		classAverageGrade[_class.first] = (double)_class.second.second / _class.second.first;
+		// Note: No division by zero, because if there are no grades, the entry would not exist.
+	}
+
+	m_classesList.InsertItem(0, _T(""));
+
+	for (int i = 0; i < colsCount; ++i)
+	{
+		if (classAverageGrade[allClasses[i].nID] < GRADE_EPS)
+		{
+			m_classesList.SetItemText(0, i, _T("-"));
+		}
+		else
+		{
+			text.Format(_T("%g"), classAverageGrade[allClasses[i].nID] + (2 - GRADE::F));
+			m_classesList.SetItemText(0, i, text);
 		}
 	}
 
-	float tmpStVal = (studentSum / (float)(studentCount > 0 ? studentCount : 1));
-	float tmpSuVal = (subjectSum / (float)(subjectCount > 0 ? subjectCount : 1));
+	return TRUE;
+}
 
-	m_studentAverageVal = (tmpStVal < GRADE::GRADES::INVALID + 1 ? 0 : GRADE::GRADES::INVALID + 1 + tmpStVal);
-	m_subjectAverageVal = (tmpSuVal < GRADE::GRADES::INVALID + 1 ? 0 : GRADE::GRADES::INVALID + 1 + tmpSuVal);
+BOOL StudentAverageDlg::PrintSchoolAverage()
+{
+	double average;
+	int sum = 0;
+	std::vector<GRADE> allGrades;
+	GradeDatabaseInterface gradeStore{ &databaseConnection };
+	if (!gradeStore.LoadAll(allGrades))
+	{
+		return FALSE;
+	}
 
-	UpdateData(FALSE);
+	for (const auto& grade : allGrades)
+	{
+		sum += grade.value;
+	}
+	average = (double)sum / allGrades.size();
+	CString text;
+	if (average < GRADE_EPS)
+	{
+		m_schoolAverageGrade.SetWindowText(_T("-"));
+	}
+	else
+	{
+		text.Format(_T("%g"), average + (2 - GRADE::F));
+	}
 
+	m_schoolAverageGrade.SetWindowText(text);
 	return TRUE;
 }
 
@@ -139,21 +279,18 @@ BOOL StudentAverageDlg::OnInitDialog()
 	{
 		return FALSE;
 	}
-
-	// Load students
-	if (!PrintAllStudents())
+	
+	if (!PrintStudentsAverage())
 	{
 		return FALSE;
 	}
 
-	// Load subjects
-	if (!PrintAllSubjects())
+	if (!PrintClassesAverage())
 	{
 		return FALSE;
 	}
 
-	// Update averages
-	if (!UpdateAverage())
+	if (!PrintSchoolAverage())
 	{
 		return FALSE;
 	}
@@ -168,12 +305,9 @@ StudentAverageDlg::~StudentAverageDlg()
 void StudentAverageDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDD_STUDENT_AVERAGE_GRADE_STUDENT_COMBO, m_studentDropList);
-	DDX_Control(pDX, IDD_STUDENT_AVERAGE_GRADE_SUBJECT_COMBO, m_subjectDropList);
-	DDX_Control(pDX, IDD_STUDENT_AVERAGE_GRADE_STUDENT_EDIT, m_studentAverage);
-	DDX_Control(pDX, IDD_STUDENT_AVERAGE_GRADE_SUBJECT_EDIT, m_subjectAverage);
-	DDX_Text(pDX, IDD_STUDENT_AVERAGE_GRADE_STUDENT_EDIT, m_studentAverageVal);
-	DDX_Text(pDX, IDD_STUDENT_AVERAGE_GRADE_SUBJECT_EDIT, m_subjectAverageVal);
+	DDX_Control(pDX, IDC_STUDENTS_LIST, m_studentsList);
+	DDX_Control(pDX, IDC_CLASSES_LIST, m_classesList);
+	DDX_Control(pDX, IDC_SCHOOL_AVERAGE_EDIT, m_schoolAverageGrade);
 }
 
 
@@ -188,17 +322,9 @@ END_MESSAGE_MAP()
 
 void StudentAverageDlg::OnCbnSelchangeStudent()
 {
-	if (!UpdateAverage())
-	{
-		int errorBox = MessageBox((LPCWSTR)L"Error retrieving list.", NULL, MB_OK | MB_ICONWARNING);
-	}
 }
 
 
 void StudentAverageDlg::OnCbnSelchangeSubject()
 {
-	if (!UpdateAverage())
-	{
-		int errorBox = MessageBox((LPCWSTR)L"Error retrieving list.", NULL, MB_OK | MB_ICONWARNING);
-	}
 }
