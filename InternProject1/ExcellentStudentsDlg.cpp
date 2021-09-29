@@ -39,23 +39,33 @@ BOOL ExcellentStudentsDlg::OnInitDialog()
 		return FALSE;
 	}
 
-
+	
 		// Filter grades
 		std::unordered_set<int> excellentStudentIDs;
-		std::unordered_set<int> nonexcellentStudentIDs;
+
+		// get grades count and sum for each student ID
+		std::unordered_map<int, std::pair<int, int>> preAverageData;
 		for (const auto& grade : allGrades)
 		{
-			if (grade.value == GRADE::GRADES::A)
+			preAverageData[grade.nStudentID].first++;
+			preAverageData[grade.nStudentID].second += grade.value;
+		}
+
+		// calculate average for each student
+		std::unordered_map<int, double> studentAverageGrade;
+		for (const auto& student : preAverageData)
+		{
+			assert(student.second.first > 0);
+			studentAverageGrade[student.first] = (double)student.second.second / student.second.first;
+			// Note: No division by zero, because if there are no grades, the entry would not exist.
+		}
+
+		for (const auto& student : studentAverageGrade)
+		{
+			if ((student.second > (GRADE::B + abs(GRADE::A - GRADE::B) / 2.0)) ||
+				(abs(student.second - (GRADE::B + abs(GRADE::A - GRADE::B) / 2.0)) < GRADE_EPS))
 			{
-				if (nonexcellentStudentIDs.find(grade.nStudentID) == nonexcellentStudentIDs.end())
-				{
-					excellentStudentIDs.insert(grade.nStudentID);
-				}
-			}
-			else
-			{
-				excellentStudentIDs.erase(grade.nStudentID);
-				nonexcellentStudentIDs.insert(grade.nStudentID);
+				excellentStudentIDs.insert(student.first);
 			}
 		}
 

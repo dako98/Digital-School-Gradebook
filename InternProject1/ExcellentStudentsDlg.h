@@ -1,6 +1,7 @@
 #pragma once
 #include "DBConnector.h"
 
+const static float GRADE_EPS = 0.001;
 
 // ExcellentStudentsDlg dialog
 
