@@ -115,7 +115,7 @@ void CombinedStudentDlg::DoDataExchange(CDataExchange* pDX)
 
 BOOL CombinedStudentDlg::LoadAllClasses()
 {
-	std::vector<CClass> classes;
+	std::vector<STUDENT_CLASS> classes;
 
 	if (!m_classesStore.LoadAll(classes))
 	{

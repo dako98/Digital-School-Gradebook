@@ -190,7 +190,6 @@
     <ClInclude Include="AllTeachersDlg.h" />
     <ClInclude Include="BirthdayersDlg.h" />
     <ClInclude Include="CBaseRecordSet.h" />
-    <ClInclude Include="CClass.h" />
     <ClInclude Include="CClassesDatabaseInterface.h" />
     <ClInclude Include="CGrade.h" />
     <ClInclude Include="CGradeDatabaseInterface.h" />
@@ -239,7 +238,6 @@
     <ClCompile Include="AllTeachersDlg.cpp" />
     <ClCompile Include="BirthdayersDlg.cpp" />
     <ClCompile Include="CBaseRecordSet.cpp" />
-    <ClCompile Include="CClass.cpp" />
     <ClCompile Include="CClassesDatabaseInterface.cpp" />
     <ClCompile Include="CGrade.cpp" />
     <ClCompile Include="CGradeDatabaseInterface.cpp" />

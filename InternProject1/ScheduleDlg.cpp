@@ -89,7 +89,7 @@ BOOL ScheduleDlg::PrintSchedule()
 	std::vector<int> ids(uniqueIDs.begin(), uniqueIDs.end());
 	std::unordered_map<int, CString> m_subjectNames;
 
-	if(!IDtoNameMapper(&databaseConnection, _T("Subjects"), _T("ID"), _T("Name"), ids, m_subjectNames));
+	if(!IDtoNameMapper(&databaseConnection, _T("Subjects"), _T("ID"), _T("Name"), ids, m_subjectNames))
 	{
 		// Failing to map the names is a non-critical error.
 		int errorBox = MessageBox((LPCWSTR)L"Could not load storage.", NULL, MB_OK | MB_ICONWARNING);
@@ -116,7 +116,7 @@ BOOL ScheduleDlg::OnInitDialog()
 		return FALSE;
 	}
 
-	std::vector<CClass> allClasses;
+	std::vector<STUDENT_CLASS> allClasses;
 
 	if (!m_classStore.LoadAll(allClasses))
 	{

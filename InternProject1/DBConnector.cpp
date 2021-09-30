@@ -137,61 +137,56 @@ BOOL IDtoNameMapper(CDatabase* db,
 {
     unsigned int idsCount = ids.size();
 
-    BOOL isOK = idsCount > 0;
-
-        if (isOK)
+    if (idsCount > 0)
+    {
+        CString sSQL;
+        sSQL.Format(_T("SELECT [%s], [%s] FROM [%s] WHERE [%s] IN ("), idField, nameField, table, idField);
+        unsigned int len = 0;
+        for (int id : ids)
         {
-            CString sSQL;
-            sSQL.Format(_T("SELECT [%s], [%s] FROM [%s] WHERE [%s] IN ("), idField, nameField, table, idField);
-            unsigned int len = 0;
-            for (int id : ids)
-            {
-                len += DigitsCount(id);
-                len += sizeof(",") - 1;
-            }
-            len += 1;   // For '\0'
+            len += DigitsCount(id);
+            len += sizeof(",") - 1;
+        }
+        len += 1;   // For '\0'
 
-            sSQL.Preallocate(len);
+        sSQL.Preallocate(len);
 
-            for (size_t i = 0; i < idsCount - 1; i++)
-            {
-                sSQL.AppendFormat(_T("%d,"), ids[i]);
-            }
-            sSQL.AppendFormat(_T("%d)"), ids[idsCount - 1]);
+        for (size_t i = 0; i < idsCount - 1; i++)
+        {
+            sSQL.AppendFormat(_T("%d,"), ids[i]);
+        }
+        sSQL.AppendFormat(_T("%d)"), ids[idsCount - 1]);
 
-            // Begin reading all records
-            IDtoNameSet blk(db);
+        // Begin reading all records
+        IDtoNameSet blk(db);
 
-            try
-            {
-                blk.Open(AFX_DB_USE_DEFAULT_TYPE, sSQL, CRecordset::useMultiRowFetch);
-            }
-            catch (const std::exception&)
-            {
-                isOK = FALSE;
-            }
-
-            if (isOK)
-            {
-                int rowsFetched = blk.GetRowsFetched();
-                while (!blk.IsEOF())
-                {
-                    for (int nPosInRowset = 0; nPosInRowset < rowsFetched; nPosInRowset++)
-                    {
-                        int id = *(blk.m_rgID + nPosInRowset);
-                        CString name = CString{ blk.m_rgName + nPosInRowset * 256 };
-
-                        map[id] = name;
-                    }
-                    blk.MoveNext();
-                }
-            }// !Getting fields
-
+        try
+        {
+            blk.Open(AFX_DB_USE_DEFAULT_TYPE, sSQL, CRecordset::useMultiRowFetch);
+        }
+        catch (const std::exception&)
+        {
             blk.Close();
+            return FALSE;
+        }
 
-        }// !Creating SQL querry
+        int rowsFetched = blk.GetRowsFetched();
+        while (!blk.IsEOF())
+        {
+            for (int nPosInRowset = 0; nPosInRowset < rowsFetched; nPosInRowset++)
+            {
+                int id = *(blk.m_rgID + nPosInRowset);
+                CString name = CString{ blk.m_rgName + nPosInRowset * 256 };
 
-    return isOK;
+                map[id] = name;
+            }
+            blk.MoveNext();
+        }
+
+        blk.Close();
+
+    }// !Creating SQL querry
+    return TRUE;
 }
 
 BOOL IDtoNameMapper(CDatabase* db,

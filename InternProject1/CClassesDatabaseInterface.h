@@ -1,8 +1,8 @@
 #pragma once
 #include "CBaseRecordSet.h"
-#include "CClass.h"
+#include "CStudentClass.h"
 
-class ClassesDatabaseInterface : public CBaseRecordSet<CClass>
+class ClassesDatabaseInterface : public CBaseRecordSet<STUDENT_CLASS>
 {
 public:
     ClassesDatabaseInterface(CDatabase* pDB)
