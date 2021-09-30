@@ -31,6 +31,7 @@
 #define IDD_NEW_CLASS                   185
 #define IDD_COMBINED_STUDENT_CLASS      185
 #define IDD_ALL_STUDENT_CLASSES         189
+#define IDR_TOOLBAR_MENU                193
 #define IDC_EDIT1                       1000
 #define IDC_TEACHER_ID_EDIT             1000
 #define IDC_EDIT_NEW_CLASS_NAME         1000
@@ -140,14 +141,32 @@
 #define ID_POPUP_EDIT                   32775
 #define ID_POPUP_DELETE                 32776
 #define ID_POPUP_VIEW                   32777
+#define ID_STUDENTS_VIEWALL             32778
+#define ID_STUDENTS_ADDNEW              32779
+#define ID_STUDENTS_EXCELLENTS          32780
+#define ID_STUDENTS_AVERAGE             32781
+#define ID_STUDENTS_FAILS               32782
+#define ID_STUDENTS_BIRTHDAYERS         32783
+#define ID_TEACHERS_VIEWALL             32784
+#define ID_TEACHERS_ADDNEW              32785
+#define ID_CLASSES_VIEWALL              32786
+#define ID_CLASSES_ADDNEW               32787
+#define ID_SUBJECTS                     32788
+#define ID_SUBJECTS_VIEWALL             32789
+#define ID_SUBJECTS_ADDNEW              32790
+#define ID_GRADES                       32791
+#define ID_GRADES_VIEWALL               32792
+#define ID_GRADES_ADDNEW                32793
+#define ID_SCHEDULE                     32794
+#define ID_SCHEDULE_VIEW                32795
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        191
-#define _APS_NEXT_COMMAND_VALUE         32778
-#define _APS_NEXT_CONTROL_VALUE         1107
+#define _APS_NEXT_RESOURCE_VALUE        194
+#define _APS_NEXT_COMMAND_VALUE         32796
+#define _APS_NEXT_CONTROL_VALUE         1109
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
