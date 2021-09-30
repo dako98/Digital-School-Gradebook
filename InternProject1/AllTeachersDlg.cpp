@@ -85,6 +85,11 @@ void AllTeachersDlg::OnBnClickedBtnTeachersAdd()
 	TEACHER tmp;
 	TeacherDatabaseInterface teacherStore{ &databaseConnection };
 
+	// Това се подава на конструктора на диалога, за да знае за CRecordset класа какъв тип са данните
+	// Допълнително да има enum за данните и колоните, за да знае кое къде да слага.
+	// Също и една структура с параметри за това колко са колоните, колко големи да са, тип и др.
+//	TeacherDatabaseInterface::StructType;
+
 	CombinedTeacherDlg dlg{ eDialogMode_Add, tmp };
 	if (dlg.DoModal() == IDOK)
 	{

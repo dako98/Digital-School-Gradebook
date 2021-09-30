@@ -6,6 +6,9 @@ template<class T>
 class CBaseRecordSet : public CRecordset
 {
 public:
+    // В наследените класове трябва да използват Т::StructType или неюо такова...
+    typedef T StructType;
+public:
     CBaseRecordSet(const std::wstring& lpszTableName, CDatabase* pDB)
         : CRecordset(pDB)
     {
